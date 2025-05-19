@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from src.core.repositories import user
 from werkzeug.security import check_password_hash  # Agregar esta importación
+from src.web.helpers.auth import has_permission
 
 bp = Blueprint("usuarios", __name__, url_prefix="/users")
 
 @bp.route("/")
+@has_permission("user_index")
 def index():
     users_list = user.list_users()
     return render_template("users/index.html", users=users_list)

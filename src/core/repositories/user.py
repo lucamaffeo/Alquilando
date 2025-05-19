@@ -87,7 +87,7 @@ def has_permission(user_id, permission_name):
         and_(
             User.id == user_id,
             User.role_id == Role.id,
-            Role.permissions.any(Permission.name == permission_name)
+            Role.permissions.any(Permission.nombre == permission_name)  # Cambiado a .nombre
         )
     )).scalar()
 

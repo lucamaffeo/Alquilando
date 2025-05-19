@@ -1,11 +1,10 @@
 {% extends "base_show.html" %}
 
-{% block header %}Usuario: {{ user.alias or user.email }}{% endblock %}
+{% block header %}Usuario: {{ user.nombre }} {{ user.apellido }}{% endblock %}
 
 {% block details %}
 <p><strong>Email:</strong> {{ user.email }}</p>
-<p><strong>Nombre:</strong> {{ user.nombre }}</p>
-<p><strong>Apellido:</strong> {{ user.apellido }}</p>
+
 <p><strong>Rol:</strong> {{ user.role.name }}</p>
 <p><strong>DNI:</strong>{{ user.dni }}</p>
 <p><strong>Teléfono:</strong> {{ user.telefono }}</p>

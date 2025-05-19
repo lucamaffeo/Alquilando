@@ -26,7 +26,7 @@ def run():
         vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index
     ])
     usuario_role = create_role(name="usuario registrado", permissions=[
-        user_index, user_show, user_create, user_update
+        user_show, user_create, user_update
     ])
     empleado_role = create_role(name="empleado", permissions=[
         vehicle_update, user_create, vehicle_show, vehicle_index
