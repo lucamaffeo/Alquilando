@@ -18,6 +18,9 @@
 <label for="apellido">Apellido:</label>
 <input type="text" name="apellido" value="{{ user.apellido if is_update else '' }}" required>
 
+<label for="dni">DNI:</label>
+<input type="text" name="dni" value="{{ user.dni if is_update else '' }}" required>
+
 <label for="telefono">Teléfono (opcional):</label>
 <input type="tel" name="telefono" value="{{ user.telefono if is_update else '' }}">
 {% endblock %}

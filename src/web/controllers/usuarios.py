@@ -67,3 +67,36 @@ def logout():
     session.pop("user_role", None)
     flash("Sesión cerrada correctamente.", "success")
     return redirect(url_for("usuarios.login"))
+
+@bp.route("/delete/<int:user_id>", methods=["POST"])
+def delete(user_id):
+    if user.delete_user(user_id):
+        flash("Usuario eliminado correctamente.", "success")
+    else:
+        flash("No se pudo eliminar el usuario.", "error")
+    return redirect(url_for("usuarios.index"))
+
+@bp.route("/update/<int:user_id>", methods=["GET", "POST"])
+def update(user_id):
+    u = user.get_user_by_id(user_id)
+    if not u:
+        flash("Usuario no encontrado.", "error")
+        return redirect(url_for("usuarios.index"))
+    if request.method == "POST":
+        data = request.form
+        try:
+            user.update_user(
+                user_id,
+                nombre=data.get("nombre"),
+                apellido=data.get("apellido"),
+                telefono=data.get("telefono"),
+                fecha_nacimiento=data.get("fecha_nacimiento"),
+                dni=data.get("dni"),
+                # Solo actualizar contraseña si se ingresa una nueva
+                password=data["password"] if data.get("password") else None,
+            )
+            flash("Usuario actualizado correctamente.", "success")
+            return redirect(url_for("usuarios.show", user_id=user_id))
+        except ValueError as e:
+            flash(str(e), "error")
+    return render_template("users/register.html", user=u, is_update=True)

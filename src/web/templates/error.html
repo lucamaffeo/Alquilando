@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Error {{ error.code }} - {{ error.message }}</h1>
+  <p>{{ error.description }}</p>
+  <a href="{{ url_for('global.inicio_global') }}">Volver al inicio</a>
+{% endblock %}

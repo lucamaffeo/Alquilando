@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ALQUILER DE VEHICULOS{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/alquilando.png') }}">
 </head>
 <body>
+    <header>
+        <img src="{{ url_for('static', filename='images/alquilando.png') }}" alt="Logo" style="height:100px; margin:10px 0;">
+    </header>
     <nav>
         <a href="{{ url_for('global.inicio_global') }}">Inicio</a>
         <a href="{{ url_for('vehiculos.index') }}">Vehículos</a>
