@@ -4,12 +4,14 @@
 <h1>Inicio Global</h1>
 <form method="POST">
     <label for="sucursal">Sucursal:</label>
+    
     <select name="sucursal" id="sucursal" required>
         <option value="" disabled selected>Seleccione una sucursal</option>
         {% for sucursal in sucursales %}
         <option value="{{ sucursal.id }}">{{ sucursal.nombre }}</option>
         {% endfor %}
     </select>
+
 
     <label for="fecha_inicio">Fecha Inicio:</label>
     <input type="date" name="fecha_inicio" id="fecha_inicio" required>

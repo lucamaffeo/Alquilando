@@ -3,6 +3,7 @@ from src.core.repositories.rol import create_role
 from src.core.repositories.user import create_user
 from src.core.repositories.permission import create_permission 
 from src.core.repositories.vehiculo import create_vehiculo
+from src.core.repositories.sucursal import create_sucursal
 
 def run():
     # Crear permisos de usuarios
@@ -73,6 +74,14 @@ def run():
         fecha_nacimiento="2000-01-01",
     )
 
+    #crear sucursal
+
+    sucursal1 = create_sucursal(
+        nombre="Sucursal Centro",
+        ubicacion="Av. Corrientes 1234",
+    )
+
+
 
     #crear vehiculo
 
@@ -80,10 +89,9 @@ def run():
         marca="Toyota",
         modelo="Corolla",
         anio=2020,
-        color="Rojo",
         patente="ABC123",
         precio=20000,
-        usuario_id=1,
+        sucursal_id=sucursal1.id,
     )
 
     print("Seed ejecutado correctamente!")
