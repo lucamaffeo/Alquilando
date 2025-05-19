@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Inicio{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        {% if session.get("user_id") %}
+            <a href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a>
+            <a href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a>
+        {% else %}
+            <a href="{{ url_for('usuarios.login') }}">Iniciar Sesión</a>
+            <a href="{{ url_for('usuarios.register') }}">Registrarse</a>
+        {% endif %}
+    </nav>
+    <main>
+        {% block content %}
+        <h1>{% block header %}Listado{% endblock %}</h1>
+        <table>
+            <thead>
+                {% block table_header %}{% endblock %}
+            </thead>
+            <tbody>
+                {% block table_body %}{% endblock %}
+            </tbody>
+        </table>
+        {% endblock %}
+    </main>
+</body>
+</html>

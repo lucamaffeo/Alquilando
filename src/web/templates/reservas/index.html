@@ -1,0 +1,25 @@
+{% extends "base_index.html" %}
+
+{% block header %}Mis Reservas{% endblock %}
+
+{% block table_header %}
+<tr>
+    <th>ID</th>
+    <th>Vehículo</th>
+    <th>Fecha Inicio</th>
+    <th>Fecha Fin</th>
+    <th>Estado</th>
+</tr>
+{% endblock %}
+
+{% block table_body %}
+{% for reserva in reservas %}
+<tr>
+    <td>{{ reserva.id }}</td>
+    <td>{{ reserva.vehiculo.modelo }} ({{ reserva.vehiculo.patente }})</td>
+    <td>{{ reserva.fecha_inicio }}</td>
+    <td>{{ reserva.fecha_fin }}</td>
+    <td>{{ reserva.estado }}</td>
+</tr>
+{% endfor %}
+{% endblock %}

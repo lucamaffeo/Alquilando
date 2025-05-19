@@ -1,0 +1,18 @@
+{% extends "base_show.html" %}
+
+{% block header %}Usuario: {{ user.alias or user.email }}{% endblock %}
+
+{% block details %}
+<p><strong>ID:</strong> {{ user.id }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Alias:</strong> {{ user.alias }}</p>
+<p><strong>Rol:</strong> {{ user.role.name }}</p>
+<p><strong>Activo:</strong> {{ "Sí" if user.active else "No" }}</p>
+
+<div>
+    <a href="{{ url_for('usuarios.register', user_id=user.id) }}" class="btn btn-primary">Actualizar perfil</a>
+    <form method="POST" action="{{ url_for('usuarios.delete', user_id=user.id) }}" style="display:inline;">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</button>
+    </form>
+</div>
+{% endblock %}

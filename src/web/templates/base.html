@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Gestión{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('global.inicio_global') }}">Inicio</a>
+        <a href="{{ url_for('vehiculos.index') }}">Vehículos</a>
+        <a href="{{ url_for('usuarios.index') }}">Usuarios</a>
+        <a href="{{ url_for('sucursales.index') }}">Sucursales</a>
+        {% if session.get("user_id") %}
+            <a href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a>
+            <a href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a>
+        {% else %}
+            <a href="{{ url_for('usuarios.login') }}">Iniciar Sesión</a>
+            <a href="{{ url_for('usuarios.register') }}">Registrarse</a>
+        {% endif %}
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

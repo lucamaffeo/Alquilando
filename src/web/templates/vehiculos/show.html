@@ -1,0 +1,21 @@
+{% extends "base_show.html" %}
+
+{% block header %}Vehículo: {{ vehiculo.patente }}{% endblock %}
+
+{% block details %}
+<p><strong>ID:</strong> {{ vehiculo.id }}</p>
+<p><strong>Patente:</strong> {{ vehiculo.patente }}</p>
+<p><strong>Modelo:</strong> {{ vehiculo.modelo }}</p>
+<p><strong>Marca:</strong> {{ vehiculo.marca }}</p>
+<p><strong>Año:</strong> {{ vehiculo.anio }}</p>
+<p><strong>Categoría:</strong> {{ vehiculo.categoria }}</p>
+<p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>
+<p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }}</p>
+
+<div>
+    <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-primary">Modificar vehiculo</a>
+    <form method="POST" action="{{ url_for('vehiculos.delete', id=vehiculo.id) }}" style="display:inline;">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este vehículo?');">Eliminar</button>
+    </form>
+</div>
+{% endblock %}

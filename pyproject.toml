@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "grupo63"
+version = "0.3.2"
+description = ""
+authors = ["Luca Maffeo <lucamaffeo@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12.3"
+flask = "^3.0.3"
+psycopg2-binary = "^2.9.9"
+flask-sqlalchemy = "^3.1.1"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+
+[tool.basedpyright]
+typeCheckingMode = "basic"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

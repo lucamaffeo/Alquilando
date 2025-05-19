@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Resultados de Estadísticas</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Sucursal</th>
+            <th>Cantidad de Reservas</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for estadistica in estadisticas %}
+        <tr>
+            <td>{{ estadistica.sucursal.nombre }}</td>
+            <td>{{ estadistica.cantidad }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

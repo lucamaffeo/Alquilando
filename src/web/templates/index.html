@@ -1,0 +1,10 @@
+{% extends "global/inicio.html" %}
+
+{% block content %}
+<h1>Bienvenido</h1>
+{% if session.get("user_id") %}
+    <p>Hola, {{ user.alias }}. Este es tu inicio personalizado.</p>
+{% else %}
+    <p>Bienvenido visitante. Por favor, inicia sesión para más opciones.</p>
+{% endif %}
+{% endblock %}

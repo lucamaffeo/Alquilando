@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Ingresa el código</h1>
+<form action="{{ url_for('usuarios.login_code') }}" method="POST">
+    <label for="code">Código:</label>
+    <input type="text" name="code" required>
+    <button type="submit">Enviar</button>
+</form>
+{% endblock %}

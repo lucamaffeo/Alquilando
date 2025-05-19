@@ -1,0 +1,23 @@
+{% extends "base_index.html" %}
+
+{% block header %}Usuarios{% endblock %}
+
+{% block table_header %}
+<tr>
+    <th>ID</th>
+    <th>Email</th>
+    <th>Alias</th>
+    <th>Rol</th>
+</tr>
+{% endblock %}
+
+{% block table_body %}
+{% for user in users %}
+<tr>
+    <td>{{ user.id }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.alias }}</td>
+    <td>{{ user.role.name }}</td>
+</tr>
+{% endfor %}
+{% endblock %}
