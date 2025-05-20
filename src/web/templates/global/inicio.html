@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Inicio Global</h1>
+<h1>Busque una reserva</h1>
 <form method="POST">
     <label for="sucursal">Sucursal:</label>
     
     <select name="sucursal" id="sucursal" required>
         <option value="" disabled selected>Seleccione una sucursal</option>
         {% for sucursal in sucursales %}
-        <option value="{{ sucursal.id }}">{{ sucursal.nombre }}</option>
+        <option value="{{ sucursal.id }}">{{ sucursal.nombre }} - {{ sucursal.ubicacion }}</option>
         {% endfor %}
     </select>
 

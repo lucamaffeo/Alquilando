@@ -6,8 +6,8 @@
 <tr>
     <th>ID</th>
     <th>Email</th>
-    <th>Alias</th>
     <th>Rol</th>
+    <th>Acciones</th>
 </tr>
 {% endblock %}
 
@@ -16,8 +16,10 @@
 <tr>
     <td>{{ user.id }}</td>
     <td>{{ user.email }}</td>
-    <td>{{ user.alias }}</td>
     <td>{{ user.role.name }}</td>
+    <td>
+        <a href="{{ url_for('usuarios.show', user_id=user.id) }}" class="btn btn-info btn-sm">Ver perfil</a>
+    </td>
 </tr>
 {% endfor %}
 {% endblock %}

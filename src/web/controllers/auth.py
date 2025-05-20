@@ -11,9 +11,18 @@ auth_bp = Blueprint('auth', __name__)
 def login_code():
     if request.method == 'POST':
         code = request.form.get('code')
-        # Aquí puedes validar el código ingresado
-        if code == '1234':  # Ejemplo de código estático
-            return redirect(url_for('global.inicio_global'))  # Redirige al inicio
+        if code == '1234':
+            # Obtener email temporal y buscar usuario
+            email = session.pop("pending_admin_email", None)
+            if email:
+                from src.core.repositories import user as user_repo
+                user_data = user_repo.find_user_by_email(email)
+                if user_data:
+                    session["user_id"] = user_data.id
+                    session["user_role"] = user_data.role.name
+                    flash("Inicio de sesión exitoso.", "success")
+                    return redirect(url_for('global.inicio_global'))
+            flash("Error interno al autenticar.", "error")
         else:
             flash("El código es erróneo.", "error")
     return render_template("users/login-code.html")  # Renderiza la plantilla de login-code

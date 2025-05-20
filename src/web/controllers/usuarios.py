@@ -17,6 +17,7 @@ def show(user_id):
     return render_template("users/show.html", user=u)
 
 @bp.route("/register", methods=["GET", "POST"])
+@has_permission("user_create")
 def register():
     if request.method == "POST":
         data = request.form
@@ -41,27 +42,25 @@ def login():
     if request.method == "POST":
         data = request.form
         user_data = user.find_user_by_email(data["email"])
-        if user_data and check_password_hash(user_data.password, data["password"]):  # Usar check_password_hash
-            session["user_id"] = user_data.id
-            session["user_role"] = user_data.role.name
-            flash("Inicio de sesión exitoso.", "success")
+        if user_data and check_password_hash(user_data.password, data["password"]):
             # Redirigir según el rol
             if user_data.role.name == "admin":
-                return redirect(url_for("auth.login_code"))  # Corregido: login_code
+                session["pending_admin_email"] = user_data.email  # Guardar email temporalmente
+                flash("Ingrese el código de autenticación.", "info")
+                return redirect(url_for("auth.login_code"))
             elif user_data.role.name == "empleado":
-                return redirect(url_for("vehiculos.index"))  # Listado de vehículos
+                session["user_id"] = user_data.id
+                session["user_role"] = user_data.role.name
+                flash("Inicio de sesión exitoso.", "success")
+                return redirect(url_for("vehiculos.index"))
             else:
-                return redirect(url_for("global.inicio_global"))  # Página principal para clientes
+                session["user_id"] = user_data.id
+                session["user_role"] = user_data.role.name
+                flash("Inicio de sesión exitoso.", "success")
+                return redirect(url_for("global.inicio_global"))
         flash("Credenciales inválidas.", "error")
     return render_template("users/login.html")
 
-@bp.route("/inicio")
-def inicio_admin():
-    if session.get("user_role") != "administrador":
-        flash("Acceso denegado.", "error")
-        return redirect(url_for("usuarios.login"))
-    users_list = user.list_users()
-    return render_template("users/index.html", users=users_list)
 
 @bp.route("/logout")
 def logout():
@@ -71,6 +70,7 @@ def logout():
     return redirect(url_for("usuarios.login"))
 
 @bp.route("/delete/<int:user_id>", methods=["POST"])
+@has_permission("user_delete")
 def delete(user_id):
     if user.delete_user(user_id):
         flash("Usuario eliminado correctamente.", "success")
@@ -79,6 +79,7 @@ def delete(user_id):
     return redirect(url_for("usuarios.index"))
 
 @bp.route("/update/<int:user_id>", methods=["GET", "POST"])
+@has_permission("user_update")
 def update(user_id):
     u = user.get_user_by_id(user_id)
     if not u:

@@ -20,13 +20,18 @@ def run():
     vehicle_update = create_permission(nombre="vehicle_update")
     vehicle_delete = create_permission(nombre="vehicle_delete")
 
+    #crear permisos reservas
+    reserva_index = create_permission(nombre="reserva_index")
+    reserva_show = create_permission(nombre="reserva_show")
+    reserva_delete = create_permission(nombre="reserva_delete")
+
     # Crear roles
     admin_role = create_role(name="admin", permissions=[
         user_index, user_show, user_create, user_update, user_delete,
         vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index
     ])
     usuario_role = create_role(name="usuario registrado", permissions=[
-        user_show, user_create, user_update
+        user_show, user_create, user_update, reserva_index, reserva_show, reserva_delete,
     ])
     empleado_role = create_role(name="empleado", permissions=[
         vehicle_update, user_create, vehicle_show, vehicle_index
