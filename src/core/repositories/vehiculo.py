@@ -39,6 +39,21 @@ def update_vehiculo(vehiculo_id, **kwargs):
         return vehiculo
     return None
 
+def update_estado_vehiculo(vehiculo_id, en_mantenimiento):
+    """
+    Actualiza el estado de un vehiculo, indicando si está en mantenimiento o no.
+
+    :param vehiculo_id: ID del vehiculo a actualizar.
+    :param en_mantenimiento: Estado de mantenimiento a establecer.
+    :return: El vehiculo actualizado, o None si no existe.
+    """
+    vehiculo = get_vehiculo_by_id(vehiculo_id)
+    if vehiculo:
+        vehiculo.en_mantenimiento = en_mantenimiento
+        db.session.commit()
+        return vehiculo
+    return None
+
 def delete_vehiculo(vehiculo_id):
     """
     Elimina un vehiculo de la base de datos.

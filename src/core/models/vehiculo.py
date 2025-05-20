@@ -14,4 +14,7 @@ class Vehiculo(db.Model):
     categoria = db.Column(db.String(50), nullable=False)
     asientos = db.Column(db.Integer, nullable=False)
     sucursal_id = db.Column(db.Integer, db.ForeignKey('sucursales.id'), nullable=False)
-    
+    en_mantenimiento = db.Column(db.Boolean, default=False, nullable=False)  # Por defecto activo
+
+    def estado(self):
+        return "En mantenimiento" if self.en_mantenimiento else "Activo"

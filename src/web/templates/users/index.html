@@ -1,6 +1,11 @@
 {% extends "base_index.html" %}
 
-{% block header %}Usuarios{% endblock %}
+{% block header %}
+Usuarios
+{% if session.get("user_id") and has_permission(session.get("user_id"), "user_create") %}
+    <a href="{{ url_for('usuarios.register') }}" class="btn btn-success btn-sm ms-3">Registrar usuario</a>
+{% endif %}
+{% endblock %}
 
 {% block table_header %}
 <tr>

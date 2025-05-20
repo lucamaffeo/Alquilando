@@ -34,14 +34,14 @@ def run():
         user_show, user_create, user_update, reserva_index, reserva_show, reserva_delete,
     ])
     empleado_role = create_role(name="empleado", permissions=[
-        vehicle_update, user_create, vehicle_show, vehicle_index
+        user_create, vehicle_show, vehicle_index
     ])
 
     # Crear usuarios
     admin = create_user(
         nombre="admin",
         email="admin@admin.com",
-        password="admin",
+        password="admin123",  # Cambiado a 8 caracteres
         role_id=1,
         apellido="Maffeo",
         telefono="123456789",
@@ -51,7 +51,7 @@ def run():
     empleado = create_user(
         nombre="empleado",
         email="empleado@empleado.com",
-        password="empleado",
+        password="empleado123",  # Cambiado a más de 6 caracteres
         role_id=3,
         apellido="Proia",
         telefono="123456789",
@@ -97,6 +97,9 @@ def run():
         patente="ABC123",
         precio=20000,
         sucursal_id=sucursal1.id,
+        categoria="Sedan",        # Agregado
+        asientos=5,               # Agregado
+        en_mantenimiento=False,
     )
 
     print("Seed ejecutado correctamente!")

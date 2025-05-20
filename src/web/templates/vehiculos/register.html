@@ -7,28 +7,29 @@
 <form method="POST" enctype="multipart/form-data">
     {% block form_fields %}
     <label for="patente">Patente:</label>
-    <input type="text" name="patente" value="{{ vehiculo.patente if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
-    
+    <input type="text" name="patente" value="{{ vehiculo.patente if is_update else '' }}" required>
+
     <label for="modelo">Modelo:</label>
     <input type="text" name="modelo" value="{{ vehiculo.modelo if is_update else '' }}" required>
-    
+
     <label for="marca">Marca:</label>
     <input type="text" name="marca" value="{{ vehiculo.marca if is_update else '' }}" required>
-    
+
     <label for="anio">Año:</label>
     <input type="number" name="anio" value="{{ vehiculo.anio if is_update else '' }}" required>
-    
-    <label for="imagen">Imagen:</label>
-    <input type="file" name="imagen">
-    
-    <label for="ubicacion">Ubicación:</label>
-    <input type="text" name="ubicacion" value="{{ vehiculo.ubicacion if is_update else '' }}" required>
-    
+
+    <label for="precio">Precio:</label>
+    <input type="number" name="precio" value="{{ vehiculo.precio if is_update else '' }}" required>
+
     <label for="categoria">Categoría:</label>
     <input type="text" name="categoria" value="{{ vehiculo.categoria if is_update else '' }}" required>
-    
+
     <label for="asientos">Asientos:</label>
     <input type="number" name="asientos" value="{{ vehiculo.asientos if is_update else '' }}" required>
+
+    <label for="imagen">Imagen:</label>
+    <input type="text" name="imagen" value="{{ vehiculo.imagen if is_update else '' }}">
+
     {% endblock %}
     
     <button type="submit">{% if is_update %}Actualizar{% else %}Registrar Vehículo{% endif %}</button>

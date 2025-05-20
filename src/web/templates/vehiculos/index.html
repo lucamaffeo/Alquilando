@@ -1,10 +1,14 @@
 {% extends "base_index.html" %}
 
-{% block header %}Listado de Vehículos{% endblock %}
+{% block header %}
+Listado de Vehículos
+{% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_create") %}
+    <a href="{{ url_for('vehiculos.register') }}" class="btn btn-success btn-sm ms-3">Registrar vehículo</a>
+{% endif %}
+{% endblock %}
 
 {% block table_header %}
 <tr>
-    <th>ID</th>
     <th>Patente</th>
     <th>Modelo</th>
     <th>Marca</th>
@@ -17,19 +21,14 @@
 {% block table_body %}
 {% for vehiculo in vehiculos %}
 <tr>
-    <td>{{ vehiculo.id }}</td>
     <td>{{ vehiculo.patente }}</td>
     <td>{{ vehiculo.modelo }}</td>
     <td>{{ vehiculo.marca }}</td>
     <td>{{ vehiculo.anio }}</td>
-    <td>{{ "Apto" if not vehiculo.en_mantenimiento else "En mantenimiento" }}</td>
+    <td>{{ "Activo" if not vehiculo.en_mantenimiento else "En mantenimiento" }}</td>
     <td>
         <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info">Ver</a>
-        <form method="POST" action="{{ url_for('vehiculos.cambiar_mantenimiento', id=vehiculo.id) }}" style="display:inline;">
-            <button type="submit" class="btn btn-warning">
-                {{ "Poner en mantenimiento" if not vehiculo.en_mantenimiento else "Quitar de mantenimiento" }}
-            </button>
-        </form>
+        
     </td>
 </tr>
 {% endfor %}
