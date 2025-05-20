@@ -1,26 +1,61 @@
 {% extends "base_register.html" %}
 
-{% block title %}{% if is_update %}Actualizar Usuario{% else %}Registro{% endif %}{% endblock %}
 
-{% block form_fields %}
-<label for="email">Email:</label>
-<input type="email" name="email" value="{{ user.email if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
-
-<label for="password">Contraseña:</label>
-<input type="password" name="password" {% if is_update %}placeholder="Dejar vacío para no cambiar"{% endif %} required>
-
-<label for="fecha_nacimiento">Fecha de nacimiento:</label>
-<input type="text" name="fecha_nacimiento" value="{{ user.fecha_nacimiento if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
-
-<label for="nombre">Nombre:</label>
-<input type="text" name="nombre" value="{{ user.nombre if is_update else '' }}" required>
-
-<label for="apellido">Apellido:</label>
-<input type="text" name="apellido" value="{{ user.apellido if is_update else '' }}" required>
-
-<label for="dni">DNI:</label>
-<input type="text" name="dni" value="{{ user.dni if is_update else '' }}" required>
-
-<label for="telefono">Teléfono (opcional):</label>
-<input type="tel" name="telefono" value="{{ user.telefono if is_update else '' }}">
+{% block content %}
+<h1 class="mb-4">{% if is_update %}Actualizar Usuario{% else %}Registro Usuario{% endif %}</h1>
+<form method="POST" enctype="multipart/form-data" class="p-4 rounded border border-main shadow-sm" style="background:#fff; max-width:700px;">
+    <div class="row mb-3">
+        <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control border-main" name="email" value="{{ user.email if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="password" class="form-label">Contraseña:</label>
+            <input type="password" class="form-control border-main" name="password" {% if is_update %}placeholder="Dejar vacío para no cambiar"{% endif %} required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento:</label>
+            <input type="text" class="form-control border-main" name="fecha_nacimiento" value="{{ user.fecha_nacimiento if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="nombre" class="form-label">Nombre:</label>
+            <input type="text" class="form-control border-main" name="nombre" value="{{ user.nombre if is_update else '' }}" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="apellido" class="form-label">Apellido:</label>
+            <input type="text" class="form-control border-main" name="apellido" value="{{ user.apellido if is_update else '' }}" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="dni" class="form-label">DNI:</label>
+            <input type="text" class="form-control border-main" name="dni" value="{{ user.dni if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="telefono" class="form-label">Teléfono (opcional):</label>
+            <input type="tel" class="form-control border-main" name="telefono" value="{{ user.telefono if is_update else '' }}">
+        </div>
+        {% if is_update and session.get("user_role") == "admin" %}
+        <div class="col-md-6 mb-3">
+            <label for="role_id" class="form-label">Rol:</label>
+            <select name="role_id" class="form-select border-main"
+                {% if user.role.name == "admin" or user.role.name == "administrador" %}disabled{% endif %}>
+                {% for role in roles %}
+                    {% if user.role.name == "admin" or user.role.name == "administrador" %}
+                        {% if role.id == user.role_id %}
+                            <option value="{{ role.id }}" selected>{{ role.name }}</option>
+                        {% endif %}
+                    {% else %}
+                        {% if role.name == "empleado" or role.name == "usuario registrado" %}
+                            <option value="{{ role.id }}" {% if user.role_id == role.id %}selected{% endif %}>{{ role.name }}</option>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </select>
+            {% if user.role.name == "admin" or user.role.name == "administrador" %}
+                <div class="form-text text-danger">No se puede cambiar el rol de un administrador.</div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-main px-4">{% if is_update %}Actualizar{% else %}Registro Usuario{% endif %}</button>
+</form>
 {% endblock %}

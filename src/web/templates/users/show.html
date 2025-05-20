@@ -13,7 +13,7 @@
 
 
 <div>
-    <a href="{{ url_for('usuarios.register', user_id=user.id) }}" class="btn btn-primary">Actualizar perfil</a>
+    <a href="{{ url_for('usuarios.update', user_id=user.id) }}" class="btn btn-primary">Actualizar perfil</a>
     <form method="POST" action="{{ url_for('usuarios.delete', user_id=user.id) }}" style="display:inline;">
         <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</button>
     </form>

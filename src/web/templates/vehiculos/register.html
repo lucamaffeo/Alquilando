@@ -1,37 +1,43 @@
 {% extends "base_register.html" %}
 
-{% block title %}{% if is_update %}Actualizar Vehículo{% else %}Registrar Vehículo{% endif %}{% endblock %}
 
 {% block content %}
-<h1>{% if is_update %}Actualizar Vehículo{% else %}Registrar Vehículo{% endif %}</h1>
-<form method="POST" enctype="multipart/form-data">
-    {% block form_fields %}
-    <label for="patente">Patente:</label>
-    <input type="text" name="patente" value="{{ vehiculo.patente if is_update else '' }}" required>
-
-    <label for="modelo">Modelo:</label>
-    <input type="text" name="modelo" value="{{ vehiculo.modelo if is_update else '' }}" required>
-
-    <label for="marca">Marca:</label>
-    <input type="text" name="marca" value="{{ vehiculo.marca if is_update else '' }}" required>
-
-    <label for="anio">Año:</label>
-    <input type="number" name="anio" value="{{ vehiculo.anio if is_update else '' }}" required>
-
-    <label for="precio">Precio:</label>
-    <input type="number" name="precio" value="{{ vehiculo.precio if is_update else '' }}" required>
-
-    <label for="categoria">Categoría:</label>
-    <input type="text" name="categoria" value="{{ vehiculo.categoria if is_update else '' }}" required>
-
-    <label for="asientos">Asientos:</label>
-    <input type="number" name="asientos" value="{{ vehiculo.asientos if is_update else '' }}" required>
-
-    <label for="imagen">Imagen:</label>
-    <input type="text" name="imagen" value="{{ vehiculo.imagen if is_update else '' }}">
-
-    {% endblock %}
-    
-    <button type="submit">{% if is_update %}Actualizar{% else %}Registrar Vehículo{% endif %}</button>
+<h1 class="mb-4">{% if is_update %}Actualizar Vehículo{% else %}Registrar Vehículo{% endif %}</h1>
+<form method="POST" enctype="multipart/form-data" class="p-4 rounded border border-main shadow-sm" style="background:#fff; max-width:700px;">
+    <div class="row mb-3">
+        <div class="col-md-6 mb-3">
+            <label for="patente" class="form-label">Patente:</label>
+            <input type="text" class="form-control border-main" name="patente" value="{{ vehiculo.patente if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="modelo" class="form-label">Modelo:</label>
+            <input type="text" class="form-control border-main" name="modelo" value="{{ vehiculo.modelo if is_update else '' }}" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="marca" class="form-label">Marca:</label>
+            <input type="text" class="form-control border-main" name="marca" value="{{ vehiculo.marca if is_update else '' }}" required>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="anio" class="form-label">Año:</label>
+            <input type="number" class="form-control border-main" name="anio" value="{{ vehiculo.anio if is_update else '' }}" required>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="precio" class="form-label">Precio:</label>
+            <input type="number" class="form-control border-main" name="precio" value="{{ vehiculo.precio if is_update else '' }}" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="categoria" class="form-label">Categoría:</label>
+            <input type="text" class="form-control border-main" name="categoria" value="{{ vehiculo.categoria if is_update else '' }}" required>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="asientos" class="form-label">Asientos:</label>
+            <input type="number" class="form-control border-main" name="asientos" value="{{ vehiculo.asientos if is_update else '' }}" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="imagen" class="form-label">Imagen:</label>
+            <input type="file" class="form-control border-main" name="imagen" value="{{ vehiculo.imagen if is_update else '' }}">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-main px-4">{% if is_update %}Actualizar{% else %}Registrar Vehículo{% endif %}</button>
 </form>
 {% endblock %}

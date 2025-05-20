@@ -42,6 +42,39 @@
         .flash.success { background: #d4edda; color: #155724; }
         .flash.error { background: #f8d7da; color: #721c24; }
         .flash.info { background: #d1ecf1; color: #0c5460; }
+
+        /* Botones personalizados */
+        .btn-main, .btn.btn-primary, .btn.btn-success, .btn.btn-info, .btn.btn-warning, .btn.btn-danger {
+            background-color: #1E2A38 !important;
+            border-color: #1E2A38 !important;
+            color: #fff !important;
+        }
+        .btn.btn-warning {
+            color: #fff !important;
+        }
+        .btn.btn-outline-main {
+            border: 2px solid #1E2A38 !important;
+            color: #1E2A38 !important;
+            background: transparent !important;
+        }
+        .btn.btn-outline-main:hover {
+            background: #1E2A38 !important;
+            color: #fff !important;
+        }
+
+        /* Bordes de tablas y cuadros */
+        table, th, td {
+            border: 2px solid #1E2A38 !important;   
+        }
+        table {
+            border-collapse: collapse !important;
+        }
+        th, td {
+            padding: 8px 12px !important;
+        }
+        .card, .border-main {
+            border: 2px solid #1E2A38 !important;
+        }
     </style>
 </head>
 <body>
@@ -61,9 +94,19 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if session.get("user_id") %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.index') }}"><strong>Vehículos</strong></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.index') }}"><strong>Usuarios</strong></a></li>
-                    {% else %}
+                        {% if has_permission(session.get("user_id"), "vehicle_index") %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.index') }}"><strong>Vehículos</strong></a></li>
+                        {% endif %}
+                        {%  if has_permission(session.get("user_id"), "user_index") %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.index') }}"><strong>Usuarios</strong></a></li>
+                        {% endif %}
+                        {% if has_permission(session.get("user_id"), "vehicle_create") %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.register') }}"><strong>Registrar vehículo</strong></a></li>
+                        {% endif %}
+
+                        {% if has_permission(session.get("user_id"), "user_create") %}
+                        <a href="{{ url_for('usuarios.register') }}" class="nav-link"><Strong>Registrar usuario</Strong></a>
+                        {% endif %}
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">

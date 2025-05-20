@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from src.core.repositories import user
+from src.core.repositories import user, rol
 from werkzeug.security import check_password_hash  # Agregar esta importación
 from src.web.helpers.auth import has_permission
 
@@ -85,6 +85,7 @@ def update(user_id):
     if not u:
         flash("Usuario no encontrado.", "error")
         return redirect(url_for("usuarios.index"))
+    roles = rol.list_roles()
     if request.method == "POST":
         data = request.form
         try:
@@ -97,9 +98,11 @@ def update(user_id):
                 dni=data.get("dni"),
                 # Solo actualizar contraseña si se ingresa una nueva
                 password=data["password"] if data.get("password") else None,
+                # Permitir cambiar el rol solo si el usuario es admin
+                role_id=int(data.get("role_id")) if session.get("user_role") == "admin" and data.get("role_id") else u.role_id,
             )
             flash("Usuario actualizado correctamente.", "success")
             return redirect(url_for("usuarios.show", user_id=user_id))
         except ValueError as e:
             flash(str(e), "error")
-    return render_template("users/register.html", user=u, is_update=True)
+    return render_template("users/register.html", user=u, is_update=True, roles=roles)

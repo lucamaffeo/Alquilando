@@ -1,10 +1,7 @@
 {% extends "base_index.html" %}
 
 {% block header %}
-Listado de Vehículos
-{% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_create") %}
-    <a href="{{ url_for('vehiculos.register') }}" class="btn btn-success btn-sm ms-3">Registrar vehículo</a>
-{% endif %}
+Listado de Vehículos 
 {% endblock %}
 
 {% block table_header %}
@@ -13,6 +10,10 @@ Listado de Vehículos
     <th>Modelo</th>
     <th>Marca</th>
     <th>Año</th>
+    <th>Categoría</th>
+    <th>Asientos</th>
+    <th>Precio</th>
+    <th>Sucursal</th>
     <th>Estado</th>
     <th>Acciones</th>
 </tr>
@@ -25,6 +26,10 @@ Listado de Vehículos
     <td>{{ vehiculo.modelo }}</td>
     <td>{{ vehiculo.marca }}</td>
     <td>{{ vehiculo.anio }}</td>
+    <td>{{ vehiculo.categoria }}</td>
+    <td>{{ vehiculo.asientos }}</td>
+    <td>{{ vehiculo.precio }}</td>
+    <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
     <td>{{ "Activo" if not vehiculo.en_mantenimiento else "En mantenimiento" }}</td>
     <td>
         <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info">Ver</a>

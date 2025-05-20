@@ -1,16 +1,17 @@
 {% extends "base_index.html" %}
 
 {% block header %}
-Usuarios
-{% if session.get("user_id") and has_permission(session.get("user_id"), "user_create") %}
-    <a href="{{ url_for('usuarios.register') }}" class="btn btn-success btn-sm ms-3">Registrar usuario</a>
-{% endif %}
+Listado de Usuarios
 {% endblock %}
 
 {% block table_header %}
 <tr>
-    <th>ID</th>
     <th>Email</th>
+    <th>Nombre</th>
+    <th>Apellido</th>
+    <th>DNI</th>
+    <th>Teléfono</th>
+    <th>Fecha de nacimiento</th>
     <th>Rol</th>
     <th>Acciones</th>
 </tr>
@@ -19,8 +20,17 @@ Usuarios
 {% block table_body %}
 {% for user in users %}
 <tr>
-    <td>{{ user.id }}</td>
     <td>{{ user.email }}</td>
+    <td>{{ user.nombre }}</td>
+    <td>{{ user.apellido }}</td>
+    <td>{{ user.dni }}</td>
+    <td>{{ user.telefono }}</td>
+
+    {% if user.fecha_nacimiento %}
+        <td>{{ user.fecha_nacimiento.strftime('%d/%m/%Y') }}</td>
+    {% else %}
+        <td>No disponible</td>
+    {% endif %}
     <td>{{ user.role.name }}</td>
     <td>
         <a href="{{ url_for('usuarios.show', user_id=user.id) }}" class="btn btn-info btn-sm">Ver perfil</a>

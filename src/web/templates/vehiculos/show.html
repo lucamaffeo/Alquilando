@@ -11,6 +11,9 @@
 <p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>
 <p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }}</p>
 <p><strong>Estado:</strong> {{ vehiculo.estado() }}</p>
+<p><strong>Imagen:</strong><br>
+    <img src="https://toyota.com.ar/images/Corolla/Corolla-Exterior-1.jpg" alt="Toyota Corolla" style="max-width:300px; height:auto;">
+</p>
 
 <div>
     {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}

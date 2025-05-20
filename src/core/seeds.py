@@ -27,11 +27,11 @@ def run():
 
     # Crear roles
     admin_role = create_role(name="admin", permissions=[
-        user_index, user_show, user_create, user_update, user_delete,
+        user_index, user_show, user_update, user_delete,
         vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index
     ])
     usuario_role = create_role(name="usuario registrado", permissions=[
-        user_show, user_create, user_update, reserva_index, reserva_show, reserva_delete,
+        user_show, user_update, reserva_index, reserva_show, reserva_delete,
     ])
     empleado_role = create_role(name="empleado", permissions=[
         user_create, vehicle_show, vehicle_index
