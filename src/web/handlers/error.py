@@ -17,13 +17,14 @@ def error_not_found(e):
 
 
 def forbidden(e):
-    error = Error(403, "Forbidden", "You shouldn't be here!")
+    error = Error(403, "No autorizado",
+                  "No puedes estar en esta pagina")
 
     return render_template('error.html', error=error), 403
 
 
 def error_unauthorized(e):
-    error = Error(401, "Unauthorized",
-                  "You are not authorized to view this page.")
+    error = Error(401, "No autorizado",
+                  "No puedes estar en esta pagina")
 
     return render_template('error.html', error=error), 401

@@ -17,7 +17,6 @@ def show(user_id):
     return render_template("users/show.html", user=u)
 
 @bp.route("/register", methods=["GET", "POST"])
-@has_permission("user_create")
 def register():
     if request.method == "POST":
         data = request.form
@@ -27,6 +26,7 @@ def register():
                 password=data["password"],
                 role_id=2,  # Asignar siempre rol usuario (id=2)
                 nombre=data.get("nombre"),
+                dni=data.get("dni"),
                 apellido=data.get("apellido"),
                 telefono=data.get("telefono"),
                 fecha_nacimiento=data.get("fecha_nacimiento"),

@@ -9,7 +9,6 @@ def run():
     # Crear permisos de usuarios
     user_index = create_permission(nombre="user_index")
     user_show = create_permission(nombre="user_show")
-    user_create = create_permission(nombre="user_create")
     user_update = create_permission(nombre="user_update")
     user_delete = create_permission(nombre="user_delete")
 
@@ -34,7 +33,7 @@ def run():
         user_show, user_update, reserva_index, reserva_show, reserva_delete,
     ])
     empleado_role = create_role(name="empleado", permissions=[
-        user_create, vehicle_show, vehicle_index
+    vehicle_show, vehicle_index
     ])
 
     # Crear usuarios

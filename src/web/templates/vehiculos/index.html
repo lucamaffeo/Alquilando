@@ -28,7 +28,7 @@ Listado de Vehículos
     <td>{{ vehiculo.categoria }}</td>
     <td>{{ vehiculo.anio }}</td>
     <td>{{ vehiculo.asientos }}</td>
-    <td>{{ vehiculo.precio }}</td>
+    <td>${{ vehiculo.precio }}</td>
     <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
     <td>{{ "Activo" if not vehiculo.en_mantenimiento else "En mantenimiento" }}</td>
     <td>
