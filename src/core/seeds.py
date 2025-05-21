@@ -86,6 +86,18 @@ def run():
         ubicacion="Av. Corrientes 1234",
     )
 
+    sucursal2 = create_sucursal(
+        nombre ="Sucursal Norte",
+        ubicacion="Av. Libertador 5678",
+    )
+    sucursal3 = create_sucursal(
+        nombre="Sucursal Sur",
+        ubicacion="Av. Rivadavia 91011",
+    )
+    sucursal4 = create_sucursal(
+        nombre="Sucursal Oeste",
+        ubicacion="Av. Cabildo 1213",
+    )
 
 
     #crear vehiculo
@@ -97,9 +109,62 @@ def run():
         patente="ABC123",
         precio=20000,
         sucursal_id=sucursal1.id,
-        categoria="Sedan",        # Agregado
-        asientos=5,               # Agregado
-        en_mantenimiento=False,
+        categoria="Sedan",        
+        asientos=5,               
+    )
+
+    vehiculo2 = create_vehiculo(
+        marca="Ford",
+        modelo="Focus",
+        anio=2019,
+        patente="DEF456",
+        precio=18000,
+        sucursal_id=sucursal2.id,
+        categoria="Sedan",    
+        asientos=5,               
+    )
+    
+    vehiculo3 = create_vehiculo(
+        marca="Chevrolet",
+        modelo="Tracker",
+        anio=2021,
+        patente="GHI789",
+        precio=25000,
+        sucursal_id=sucursal3.id,
+        categoria="SUV",    
+        asientos=5,               
+    )
+
+    vehiculo5 = create_vehiculo(
+        marca="Chevrolet",
+        modelo="Tracker",
+        anio=2021,
+        patente="BSD987",
+        precio=25000,
+        sucursal_id=sucursal3.id,
+        categoria="SUV",    
+        asientos=5,               
+    )
+    vehiculo6 = create_vehiculo(
+        marca="Chevrolet",
+        modelo="Tracker",
+        anio=2021,
+        patente="ASD123",
+        precio=25000,
+        sucursal_id=sucursal3.id,
+        categoria="SUV",    
+        asientos=5,               
+    )
+
+    vehiculo4 = create_vehiculo(
+        marca="Honda",
+        modelo="CR-V",
+        anio=2022,
+        patente="JKL012",
+        precio=30000,
+        sucursal_id=sucursal4.id,
+        categoria="SUV",    
+        asientos=5,             
     )
 
     print("Seed ejecutado correctamente!")

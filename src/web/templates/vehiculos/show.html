@@ -11,19 +11,20 @@
 <p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>
 <p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }}</p>
 <p><strong>Estado:</strong> {{ vehiculo.estado() }}</p>
-<p><strong>Imagen:</strong><br>
-    <img src="https://toyota.com.ar/images/Corolla/Corolla-Exterior-1.jpg" alt="Toyota Corolla" style="max-width:300px; height:auto;">
-</p>
+<p><strong>Imagen:</strong> {{  vehiculo.imagen }}</p>
 
 <div>
     {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}
         <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-primary">Modificar vehículo</a>
+        {% endif %}
+        {% if session.get("user_role") == "empleado" %}
         <form method="POST" action="{{ url_for('vehiculos.cambiar_estado', id=vehiculo.id) }}" style="display:inline;">
             <button type="submit" class="btn btn-warning">
                 {% if vehiculo.en_mantenimiento %}Pasar a Activo{% else %}Pasar a Mantenimiento{% endif %}
             </button>
         </form>
-    {% endif %}
+        {% endif %}
+    
     {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_delete") %}
         <form method="POST" action="{{ url_for('vehiculos.delete', id=vehiculo.id) }}" style="display:inline;">
             <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este vehículo?');">Eliminar</button>
