@@ -1,4 +1,6 @@
 *.pyc
+*.pyo
+*.pyd
 admin/entornoProyecto/
 
 # Byte-compiled / optimized / DLL files
