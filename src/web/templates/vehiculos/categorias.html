@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Vehículos por Categoría</h1>
+<div class="row">
+    {% for categoria, autos in categorias.items() %}
+    <div class="col-md-4 mb-4">
+        <div class="card border-main">
+            <div class="card-header text-center" style="background:#1E2A38; color:#fff;">
+                {{ categoria|capitalize }}
+            </div>
+            {% if categoria|lower == "sedan" %}
+                <img src="{{ url_for('static', filename='images/sedan.png') }}" class="card-img-top" alt="Sedan" style="height:200px;object-fit:cover;">
+            {% elif categoria|lower == "suv" %}
+                <img src="{{ url_for('static', filename='images/suv.png') }}" class="card-img-top" alt="SUV" style="height:200px;object-fit:cover;">
+            {% else %}
+                <img src="{{ url_for('static', filename='images/' ~ categoria|lower ~ '.png') }}" class="card-img-top" alt="{{ categoria }}" style="height:200px;object-fit:cover;">
+            {% endif %}
+            <div class="card-body">
+                <p><strong>Asientos:</strong> {{ autos[0].asientos }}</p>
+                <p><strong>Precio promedio:</strong> $
+                    {{
+                        (autos | map(attribute='precio') | sum) // (autos|length)
+                    }}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

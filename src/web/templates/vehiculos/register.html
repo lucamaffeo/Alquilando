@@ -34,8 +34,15 @@
             <input type="number" class="form-control border-main" name="asientos" value="{{ vehiculo.asientos if is_update else '' }}" required>
         </div>
         <div class="col-md-6 mb-3">
-            <label for="imagen" class="form-label">Imagen:</label>
-            <input type="file" class="form-control border-main" name="imagen" value="{{ vehiculo.imagen if is_update else '' }}">
+            <label for="sucursal_id" class="form-label">Sucursal:</label>
+            <select name="sucursal_id" class="form-select border-main" required>
+                <option value="" disabled {% if not is_update %}selected{% endif %}>Seleccione una sucursal</option>
+                {% for s in sucursales %}
+                    <option value="{{ s.id }}" {% if is_update and vehiculo.sucursal_id == s.id %}selected{% endif %}>
+                        {{ s.nombre }} - {{ s.ubicacion }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
     </div>
     <button type="submit" class="btn btn-main px-4">{% if is_update %}Actualizar{% else %}Registrar Vehículo{% endif %}</button>

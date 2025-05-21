@@ -21,7 +21,7 @@ def login_code():
                     session["user_id"] = user_data.id
                     session["user_role"] = user_data.role.name
                     flash("Inicio de sesión exitoso.", "success")
-                    return redirect(url_for('global.inicio_global'))
+                    return redirect(url_for('usuarios.index'))
             flash("Error interno al autenticar.", "error")
         else:
             flash("El código es erróneo.", "error")

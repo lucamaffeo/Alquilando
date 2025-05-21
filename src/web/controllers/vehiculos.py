@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from src.core.repositories import vehiculo
+from src.core.repositories import vehiculo, sucursal, reserva
 from src.web.helpers.auth import has_permission
+from datetime import datetime, timedelta
 
 bp = Blueprint("vehiculos", __name__, url_prefix="/vehiculos")
 
@@ -21,6 +22,7 @@ def show(id):
 def register():
     vehiculo_id = request.args.get("id")
     v = vehiculo.get_vehiculo_by_id(vehiculo_id) if vehiculo_id else None
+    sucursales = sucursal.list_sucursales()
     if request.method == "POST":
         data = request.form
         try:
@@ -33,8 +35,8 @@ def register():
                     modelo=data["modelo"],
                     precio=data["precio"],
                     anio=data["anio"],
-                    imagen=data["imagen"],
                     asientos=data["asientos"],
+                    sucursal_id=int(data["sucursal_id"]),
                     en_mantenimiento=True if data.get("en_mantenimiento") == "on" else False,
                 )
                 flash("Vehículo actualizado exitosamente.", "success")
@@ -46,15 +48,15 @@ def register():
                     modelo=data["modelo"],
                     precio=data["precio"],
                     anio=data["anio"],
-                    imagen=data["imagen"],
                     asientos=data["asientos"],
+                    sucursal_id=int(data["sucursal_id"]),
                     en_mantenimiento=True if data.get("en_mantenimiento") == "on" else False,
                 )
                 flash("Vehículo creado exitosamente.", "success")
             return redirect(url_for("vehiculos.index"))
         except ValueError as e:
             flash(str(e), "error")
-    return render_template("vehiculos/register.html", vehiculo=v, is_update=bool(v))
+    return render_template("vehiculos/register.html", vehiculo=v, is_update=bool(v), sucursales=sucursales)
 
 @bp.route("/cambiar_estado/<int:id>", methods=["POST"])
 @has_permission("vehicle_update")
@@ -80,4 +82,55 @@ def delete(id):
     except ValueError as e:
         flash(str(e), "error")
     return redirect(url_for("vehiculos.index"))
+
+@bp.route("/disponibles", methods=["POST"])
+def disponibles():
+    fecha_inicio = request.form.get("fecha_inicio")
+    fecha_fin = request.form.get("fecha_fin")
+    sucursal_id = request.form.get("sucursal")
+    if not (fecha_inicio and fecha_fin and sucursal_id):
+        flash("Debe completar todos los campos.", "error")
+        return redirect(url_for("global.inicio_global"))
+    fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+    fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d").date()
+    hoy = datetime.now().date()
+    if fecha_inicio_dt <= hoy:
+        flash("La fecha de inicio debe ser a partir de mañana.", "error")
+        return redirect(url_for("global.inicio_global"))
+    if fecha_fin_dt < fecha_inicio_dt:
+        flash("La fecha fin no puede ser menor a la fecha inicio.", "error")
+        return redirect(url_for("global.inicio_global"))
+    vehiculos_sucursal = vehiculo.list_vehiculos()
+    disponibles = []
+    for v in vehiculos_sucursal:
+        if v.sucursal_id != int(sucursal_id):
+            continue
+        if v.en_mantenimiento:
+            continue
+        reservas = reserva.get_reservas_by_vehiculo(v.id)
+        disponible = True
+        for r in reservas:
+            # Si hay cruce de fechas, no está disponible
+            if not (fecha_fin_dt < r.fecha_inicio or fecha_inicio_dt > r.fecha_fin):
+                disponible = False
+                break
+        if disponible:
+            disponibles.append(v)
+    # Agrupar por categoría
+    categorias = {}
+    for v in disponibles:
+        if v.categoria not in categorias:
+            categorias[v.categoria] = {"asientos": v.asientos, "vehiculos": []}
+        categorias[v.categoria]["vehiculos"].append(v)
+    return render_template("vehiculos/disponibles.html", categorias=categorias, fecha_inicio=fecha_inicio_dt, fecha_fin=fecha_fin_dt)
+
+@bp.route("/categorias")
+def categorias():
+    autos = vehiculo.list_vehiculos()
+    categorias = {}
+    for auto in autos:
+        if auto.categoria not in categorias:
+            categorias[auto.categoria] = {"asientos": auto.asientos, "vehiculos": []}
+        categorias[auto.categoria]["vehiculos"].append(auto)
+    return render_template("vehiculos/categorias.html", categorias=categorias)
 

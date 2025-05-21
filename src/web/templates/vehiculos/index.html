@@ -7,10 +7,10 @@ Listado de Vehículos
 {% block table_header %}
 <tr>
     <th>Patente</th>
-    <th>Modelo</th>
     <th>Marca</th>
-    <th>Año</th>
+    <th>Modelo</th>
     <th>Categoría</th>
+    <th>Año</th>
     <th>Asientos</th>
     <th>Precio</th>
     <th>Sucursal</th>
@@ -23,10 +23,10 @@ Listado de Vehículos
 {% for vehiculo in vehiculos %}
 <tr>
     <td>{{ vehiculo.patente }}</td>
-    <td>{{ vehiculo.modelo }}</td>
     <td>{{ vehiculo.marca }}</td>
-    <td>{{ vehiculo.anio }}</td>
+    <td>{{ vehiculo.modelo }}</td>
     <td>{{ vehiculo.categoria }}</td>
+    <td>{{ vehiculo.anio }}</td>
     <td>{{ vehiculo.asientos }}</td>
     <td>{{ vehiculo.precio }}</td>
     <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>

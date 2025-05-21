@@ -35,3 +35,7 @@ def delete_reserva(reserva_id):
         return True
     return False
 
+def get_reservas_by_vehiculo(vehiculo_id):
+    from src.core.models.reserva import Reserva
+    return Reserva.query.filter_by(vehiculo_id=vehiculo_id).all()
+

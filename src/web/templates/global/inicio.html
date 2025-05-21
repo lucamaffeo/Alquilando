@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Busque una reserva</h1>
-<form method="POST">
+<form action="{{ url_for('vehiculos.disponibles') }}" method="POST">
     <label for="sucursal">Sucursal:</label>
     
     <select name="sucursal" id="sucursal" required>
@@ -14,11 +14,21 @@
 
 
     <label for="fecha_inicio">Fecha Inicio:</label>
-    <input type="date" name="fecha_inicio" id="fecha_inicio" required>
+    <input type="date" name="fecha_inicio" id="fecha_inicio" required min="{{ (now().date() + timedelta(days=1)).isoformat() }}">
 
     <label for="fecha_fin">Fecha Fin:</label>
-    <input type="date" name="fecha_fin" id="fecha_fin" required>
+    <input type="date" name="fecha_fin" id="fecha_fin" required min="{{ (now().date() + timedelta(days=1)).isoformat() }}">
 
     <button type="submit" class="btn btn-info btn-sm">Buscar</button>
 </form>
+<script>
+    // JS para que la fecha fin no pueda ser menor a la fecha inicio
+    document.addEventListener('DOMContentLoaded', function() {
+        var fechaInicio = document.getElementById('fecha_inicio');
+        var fechaFin = document.getElementById('fecha_fin');
+        fechaInicio.addEventListener('change', function() {
+            fechaFin.min = fechaInicio.value;
+        });
+    });
+</script>
 {% endblock %}

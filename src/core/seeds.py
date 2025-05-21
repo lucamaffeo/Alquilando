@@ -79,92 +79,91 @@ def run():
         fecha_nacimiento="2000-01-01",
     )
 
-    #crear sucursal
-
+    # Crear sucursales
     sucursal1 = create_sucursal(
         nombre="Sucursal Centro",
         ubicacion="Av. Corrientes 1234",
     )
-
     sucursal2 = create_sucursal(
-        nombre ="Sucursal Norte",
+        nombre="Sucursal Norte",
         ubicacion="Av. Libertador 5678",
     )
-    sucursal3 = create_sucursal(
-        nombre="Sucursal Sur",
-        ubicacion="Av. Rivadavia 91011",
+
+    # Crear vehículos para ambas sucursales
+    # Sucursal 1
+    create_vehiculo(
+        marca="Toyota", modelo="Corolla", anio=2020, patente="ABC123", precio=20000,
+        sucursal_id=sucursal1.id, categoria="Sedan", asientos=5
     )
-    sucursal4 = create_sucursal(
-        nombre="Sucursal Oeste",
-        ubicacion="Av. Cabildo 1213",
+    create_vehiculo(
+        marca="Ford", modelo="Focus", anio=2019, patente="DEF456", precio=18000,
+        sucursal_id=sucursal1.id, categoria="Sedan", asientos=5
+    )
+    create_vehiculo(
+        marca="Renault", modelo="Fluence", anio=2021, patente="SED111", precio=21000,
+        sucursal_id=sucursal1.id, categoria="Sedan", asientos=5
+    )
+    create_vehiculo(
+        marca="Chevrolet", modelo="Tracker", anio=2021, patente="SUV111", precio=25000,
+        sucursal_id=sucursal1.id, categoria="SUV", asientos=7
+    )
+    create_vehiculo(
+        marca="Honda", modelo="CR-V", anio=2022, patente="SUV222", precio=30000,
+        sucursal_id=sucursal1.id, categoria="SUV", asientos=7
+    )
+    create_vehiculo(
+        marca="Toyota", modelo="SW4", anio=2023, patente="SUV333", precio=35000,
+        sucursal_id=sucursal1.id, categoria="SUV", asientos=7
+    )
+    create_vehiculo(
+        marca="Volkswagen", modelo="Amarok", anio=2022, patente="PKP111", precio=35000,
+        sucursal_id=sucursal1.id, categoria="Pickup", asientos=5
+    )
+    create_vehiculo(
+        marca="Ford", modelo="Ranger", anio=2021, patente="PKP222", precio=34000,
+        sucursal_id=sucursal1.id, categoria="Pickup", asientos=5
+    )
+    create_vehiculo(
+        marca="Toyota", modelo="Hilux", anio=2023, patente="PKP333", precio=36000,
+        sucursal_id=sucursal1.id, categoria="Pickup", asientos=5
     )
 
-
-    #crear vehiculo
-
-    vehiculo1 = create_vehiculo(
-        marca="Toyota",
-        modelo="Corolla",
-        anio=2020,
-        patente="ABC123",
-        precio=20000,
-        sucursal_id=sucursal1.id,
-        categoria="Sedan",        
-        asientos=5,               
+    # Sucursal 2
+    create_vehiculo(
+        marca="Toyota", modelo="Corolla", anio=2020, patente="ABC456", precio=20000,
+        sucursal_id=sucursal2.id, categoria="Sedan", asientos=5
     )
-
-    vehiculo2 = create_vehiculo(
-        marca="Ford",
-        modelo="Focus",
-        anio=2019,
-        patente="DEF456",
-        precio=18000,
-        sucursal_id=sucursal2.id,
-        categoria="Sedan",    
-        asientos=5,               
+    create_vehiculo(
+        marca="Ford", modelo="Focus", anio=2019, patente="DEF789", precio=18000,
+        sucursal_id=sucursal2.id, categoria="Sedan", asientos=5
     )
-    
-    vehiculo3 = create_vehiculo(
-        marca="Chevrolet",
-        modelo="Tracker",
-        anio=2021,
-        patente="GHI789",
-        precio=25000,
-        sucursal_id=sucursal3.id,
-        categoria="SUV",    
-        asientos=5,               
+    create_vehiculo(
+        marca="Renault", modelo="Fluence", anio=2021, patente="SED222", precio=21000,
+        sucursal_id=sucursal2.id, categoria="Sedan", asientos=5
     )
-
-    vehiculo5 = create_vehiculo(
-        marca="Chevrolet",
-        modelo="Tracker",
-        anio=2021,
-        patente="BSD987",
-        precio=25000,
-        sucursal_id=sucursal3.id,
-        categoria="SUV",    
-        asientos=5,               
+    create_vehiculo(
+        marca="Chevrolet", modelo="Tracker", anio=2021, patente="SUV444", precio=25000,
+        sucursal_id=sucursal2.id, categoria="SUV", asientos=7
     )
-    vehiculo6 = create_vehiculo(
-        marca="Chevrolet",
-        modelo="Tracker",
-        anio=2021,
-        patente="ASD123",
-        precio=25000,
-        sucursal_id=sucursal3.id,
-        categoria="SUV",    
-        asientos=5,               
+    create_vehiculo(
+        marca="Honda", modelo="CR-V", anio=2022, patente="SUV555", precio=30000,
+        sucursal_id=sucursal2.id, categoria="SUV", asientos=7
     )
-
-    vehiculo4 = create_vehiculo(
-        marca="Honda",
-        modelo="CR-V",
-        anio=2022,
-        patente="JKL012",
-        precio=30000,
-        sucursal_id=sucursal4.id,
-        categoria="SUV",    
-        asientos=5,             
+    create_vehiculo(
+        marca="Toyota", modelo="SW4", anio=2023, patente="SUV666", precio=35000,
+        sucursal_id=sucursal2.id, categoria="SUV", asientos=7
+    )
+    create_vehiculo(
+        marca="Volkswagen", modelo="Amarok", anio=2022, patente="PKP444", precio=35000,
+        sucursal_id=sucursal2.id, categoria="Pickup", asientos=5
+    )
+    create_vehiculo(
+        marca="Ford", modelo="Ranger", anio=2021, patente="PKP555", precio=34000,
+        sucursal_id=sucursal2.id, categoria="Pickup", asientos=5
+    )
+    create_vehiculo(
+        marca="Toyota", modelo="Hilux", anio=2023, patente="PKP666", precio=36000,
+        sucursal_id=sucursal2.id, categoria="Pickup", asientos=5
     )
 
     print("Seed ejecutado correctamente!")

@@ -11,7 +11,6 @@
 <p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>
 <p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }}</p>
 <p><strong>Estado:</strong> {{ vehiculo.estado() }}</p>
-<p><strong>Imagen:</strong> {{  vehiculo.imagen }}</p>
 
 <div>
     {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}
