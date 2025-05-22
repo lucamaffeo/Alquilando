@@ -133,3 +133,9 @@ def categorias():
         categorias[auto.categoria]["vehiculos"].append(auto)
     return render_template("vehiculos/categorias.html", categorias=categorias)
 
+@bp.route("/show_reserva/<int:id>")
+def show_reserva(id):
+    v = vehiculo.get_vehiculo_by_id(id)
+    return render_template("vehiculos/show_reserva.html", vehiculo=v)
+
+

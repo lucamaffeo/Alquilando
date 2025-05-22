@@ -5,34 +5,37 @@
 <div class="row justify-content-center">
     {% set dias = (fecha_fin - fecha_inicio).days + 1 %}
     {% for categoria, datos in categorias.items() %}
-    <div class="col-md-4 mb-4 d-flex align-items-stretch">
-        <div class="card border-main w-100">
-            <div class="card-header text-center" style="background:#1E2A38; color:#fff;">
-                {{ categoria|capitalize }}
-            </div>
-            <div class="d-flex justify-content-center align-items-center" style="height:210px;">
-                {% if categoria|lower == "sedan" %}
-                    <img src="{{ url_for('static', filename='images/sedan.png') }}" class="card-img-top" alt="Sedan" style="height:200px; width:auto; object-fit:contain;">
-                {% elif categoria|lower == "suv" %}
-                    <img src="{{ url_for('static', filename='images/suv.png') }}" class="card-img-top" alt="SUV" style="height:200px; width:auto; object-fit:contain;">
-                {% elif categoria|lower == "pickup" %}
-                    <img src="{{ url_for('static', filename='images/pickup.png') }}" class="card-img-top" alt="Pickup" style="height:200px; width:auto; object-fit:contain;">
-                {% else %}
-                    <img src="{{ url_for('static', filename='images/' ~ categoria|lower ~ '.png') }}" class="card-img-top" alt="{{ categoria }}" style="height:200px; width:auto; object-fit:contain;">
-                {% endif %}
-            </div>
-            <div class="card-body text-center">
-                <p><strong>Asientos:</strong> {{ datos.asientos }}</p>
-                <p><strong>Categoría:</strong> {{ categoria|capitalize }}</p>
-                {% set precio_promedio = (datos.vehiculos | map(attribute='precio') | sum) // (datos.vehiculos|length) %}
-                <div class="d-flex justify-content-center my-3">
-                    <span class="btn btn-main btn-lg" style="font-size:2rem; pointer-events:none;">
-                        ${{ precio_promedio * dias }} / {{ dias }} día{% if dias > 1 %}s{% endif %}
-                    </span>
+        {% set vehiculo_azar = datos.vehiculos|random %}
+        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+            <div class="card border-main w-100">
+                <div class="card-header text-center" style="background:#1E2A38; color:#fff;">
+                    {{ categoria|capitalize }}
+                </div>
+                <div class="d-flex justify-content-center align-items-center" style="height:210px;">
+                    {% if categoria|lower == "sedan" %}
+                        <img src="{{ url_for('static', filename='images/sedan.png') }}" class="card-img-top" alt="Sedan" style="height:200px; width:auto; object-fit:contain;">
+                    {% elif categoria|lower == "suv" %}
+                        <img src="{{ url_for('static', filename='images/suv.png') }}" class="card-img-top" alt="SUV" style="height:200px; width:auto; object-fit:contain;">
+                    {% elif categoria|lower == "pickup" %}
+                        <img src="{{ url_for('static', filename='images/pickup.png') }}" class="card-img-top" alt="Pickup" style="height:200px; width:auto; object-fit:contain;">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/' ~ categoria|lower ~ '.png') }}" class="card-img-top" alt="{{ categoria }}" style="height:200px; width:auto; object-fit:contain;">
+                    {% endif %}
+                </div>
+                <div class="card-body text-center">
+                    <p><strong>Marca:</strong> {{ vehiculo_azar.marca }}</p>
+                    <p><strong>Modelo:</strong> {{ vehiculo_azar.modelo }}</p>
+                    <p><strong>Asientos:</strong> {{ vehiculo_azar.asientos }}</p>
+                    {% set precio_promedio = (datos.vehiculos | map(attribute='precio') | sum) // (datos.vehiculos|length) %}
+                    <div class="d-flex justify-content-center my-3">
+                        <span class="btn btn-main btn-lg" style="font-size:2rem; pointer-events:none;">
+                            ${{ precio_promedio * dias }} / {{ dias }} día{% if dias > 1 %}s{% endif %}
+                        </span>
+                    </div>
+                    <a href="{{ url_for('vehiculos.show_reserva', id=vehiculo_azar.id) }}" class="btn btn-info mt-2">Ver detalle</a>
                 </div>
             </div>
         </div>
-    </div>
     {% else %}
     <div class="col-12">
         <div class="alert alert-warning">No hay vehículos disponibles para la búsqueda.</div>
@@ -40,6 +43,6 @@
     {% endfor %}
 </div>
 <p class="text-center mt-3 text-muted" style="font-size:0.95rem;">
-    * La reserva corresponde a un vehículo de la categoría seleccionada (marca y modelo pueden variar).
+    * La reserva corresponde a un vehículo de la categoría seleccionada (solo la patente puede variar).
 </p>
 {% endblock %}
