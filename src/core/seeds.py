@@ -11,6 +11,8 @@ def run():
     user_show = create_permission(nombre="user_show")
     user_update = create_permission(nombre="user_update")
     user_delete = create_permission(nombre="user_delete")
+    user_create_presencial = create_permission(nombre="user_create_presencial")
+    
 
     # Crear permisos de vehículos
     vehicle_index = create_permission(nombre="vehicle_index")
@@ -18,6 +20,7 @@ def run():
     vehicle_create = create_permission(nombre="vehicle_create")
     vehicle_update = create_permission(nombre="vehicle_update")
     vehicle_delete = create_permission(nombre="vehicle_delete")
+    vehicle_cambiar_estado = create_permission(nombre="vehicle_cambiar_estado")
 
     #crear permisos reservas
     reserva_index = create_permission(nombre="reserva_index")
@@ -33,7 +36,7 @@ def run():
         user_show, user_update, reserva_index, reserva_show, reserva_delete,
     ])
     empleado_role = create_role(name="empleado", permissions=[
-    vehicle_show, vehicle_index
+    vehicle_show, vehicle_index, vehicle_cambiar_estado, user_update, user_create_presencial,
     ])
 
     # Crear usuarios

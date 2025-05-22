@@ -29,7 +29,6 @@ def register():
             if v:
                 vehiculo.update_vehiculo(
                     v.id,
-                    patente=data["patente"],
                     categoria=data["categoria"],
                     marca=data["marca"],
                     modelo=data["modelo"],
@@ -59,7 +58,7 @@ def register():
     return render_template("vehiculos/register.html", vehiculo=v, is_update=bool(v), sucursales=sucursales)
 
 @bp.route("/cambiar_estado/<int:id>", methods=["POST"])
-@has_permission("vehicle_update")
+@has_permission("vehicle_cambiar_estado")
 def cambiar_estado(id):
     v = vehiculo.get_vehiculo_by_id(id)
     if not v:
