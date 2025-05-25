@@ -62,3 +62,17 @@ def pago():
         fecha_fin=fecha_fin,
         precio_total=precio_total
     )
+
+@bp.route("/mis-reservas")
+@has_permission("reserva_index")
+def mis_reservas():
+    user_id = session.get("user_id")
+    user_role = session.get("user_role")
+    if not user_id or user_role != "usuario registrado":
+        flash("No tienes permiso para ver esta sección.", "error")
+        return redirect(url_for("global.inicio_global"))
+    reservas = list_reservas_by_user(user_id)
+    if not reservas:
+        flash("No tienes reservas activas.", "info")
+        return render_template("reservas/index.html", reservas=reservas)
+    return render_template("reservas/index.html", reservas=reservas)
