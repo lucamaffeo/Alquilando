@@ -2,24 +2,44 @@
 
 {% block header %}Mis Reservas{% endblock %}
 
-{% block table_header %}
-<tr>
-    <th>ID</th>
-    <th>Vehículo</th>
-    <th>Fecha Inicio</th>
-    <th>Fecha Fin</th>
-    <th>Estado</th>
-</tr>
+{% block table_body %}
+<div class="row">
+    {% if reservas|length == 0 %}
+        <div class="col-12">
+            <div class="alert alert-info text-center mt-5 p-4 rounded shadow-sm">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                No tienes reservas disponibles.
+            </div>
+        </div>
+    {% else %}
+        {% for reserva in reservas %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #1E2A38; color: #ffffff;">
+                    <span>Reserva #{{ reserva.id }}</span>
+                    <span class="badge bg-light text-dark">{{ reserva.estado }}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title text-dark">
+                        <i class="bi bi-car-front-fill me-2"></i>{{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo }}
+                    </h5>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li><i class="bi bi-calendar-event me-2"></i><strong>Inicio:</strong> {{ reserva.fecha_inicio }}</li>
+                        <li><i class="bi bi-calendar-check me-2"></i><strong>Fin:</strong> {{ reserva.fecha_fin }}</li>
+                    </ul>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-outline-danger btn-sm" disabled>
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" disabled>
+                            <i class="bi bi-star me-1"></i>Calificar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
 {% endblock %}
 
-{% block table_body %}
-{% for reserva in reservas %}
-<tr>
-    <td>{{ reserva.id }}</td>
-    <td>{{ reserva.vehiculo.modelo }} ({{ reserva.vehiculo.patente }})</td>
-    <td>{{ reserva.fecha_inicio }}</td>
-    <td>{{ reserva.fecha_fin }}</td>
-    <td>{{ reserva.estado }}</td>
-</tr>
-{% endfor %}
-{% endblock %}

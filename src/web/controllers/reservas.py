@@ -73,6 +73,5 @@ def mis_reservas():
         return redirect(url_for("global.inicio_global"))
     reservas = list_reservas_by_user(user_id)
     if not reservas:
-        flash("No tienes reservas activas.", "info")
         return render_template("reservas/index.html", reservas=reservas)
     return render_template("reservas/index.html", reservas=reservas)
