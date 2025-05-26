@@ -3,6 +3,7 @@ from src.core.repositories.reserva import create_reserva, list_reservas_by_user
 from src.core.repositories import vehiculo
 from src.web.helpers.auth import has_permission
 from datetime import datetime
+from resources.TARJETAS_VALIDAS import tarjetas_credito, tarjetas_debito
 
 bp = Blueprint("reservas", __name__, url_prefix="/reservas")
 
@@ -29,6 +30,7 @@ def delete(id):
 
 @bp.route("/pago", methods=["GET", "POST"])
 def pago():
+    encontre = False
     if not session.get("user_id"):
         flash("Debes iniciar sesión o registrarte para reservar.", "error")
         return redirect(url_for("usuarios.register"))
@@ -52,9 +54,50 @@ def pago():
         except Exception:
             precio_total = v.precio
     if request.method == "POST":
-        # Aquí iría la lógica de pago y creación de reserva
-        flash("Pago realizado y reserva confirmada.", "success")
-        return redirect(url_for("reservas.index"))
+        datos_tarjeta = request.form
+        tipo_tarjeta = datos_tarjeta.get("tipo_tarjeta")
+        numero_tarjeta = datos_tarjeta.get("tarjeta")
+        if tipo_tarjeta == "credito":
+            for tarjeta in tarjetas_credito:
+                if tarjeta["numero"] == numero_tarjeta:
+                    print("aaaaaaaaaaaa")
+                    encontre = True
+                    if tarjeta["titular"].lower() != datos_tarjeta.get("nombre").lower():
+                        flash("El titular de la tarjeta no coincide.", "error")
+                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                    if tarjeta["vencimiento"] < datetime.now().strftime("%m/%y"):
+                        flash("La tarjeta de crédito ha expirado.", "error")
+                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                    if tarjeta["codigo_seguridad"] != datos_tarjeta.get("cvv"):
+                        flash("Codigo de seguridad incorrecto .", "error")
+                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                    if tarjeta["saldo"] < precio_total:
+                        flash("La tarjeta no posee credito disponible.", "error")
+                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                    break
+        if tipo_tarjeta == "debito":       
+            for tarjeta in tarjetas_debito:
+                if tarjeta["numero"] == numero_tarjeta:
+                    encontre = True
+                    if tarjeta["titular"].lower() != datos_tarjeta.get("nombre").lower():
+                        flash("El titular de la tarjeta no coincide.", "error")
+                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                    if tarjeta["vencimiento"] < datetime.now().strftime("%m/%y"):
+                        flash("La tarjeta de débito ha expirado.", "error")
+                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                    if tarjeta["codigo_seguridad"] != datos_tarjeta.get("cvv"):
+                        flash("Codigo de seguridad incorrecto .", "error")
+                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                    if tarjeta["saldo"] < precio_total:
+                        flash("La tarjeta de debito no posee saldo suficiente.", "error")
+                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                    break
+        if encontre==False:
+            flash("Hubo un error por código de tarjeta inexistente", "error")
+            return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+        else:
+            flash("Pago realizado y reserva confirmada.", "success")
+        #return redirect(url_for("reservas.index"))
     return render_template(
         "reservas/pago.html",
         vehiculo=v,

@@ -2,7 +2,6 @@ from src.core.database import db
 from src.core.models.reserva import Reserva
 
 
-
 def create_reserva(**kwargs):
     """
     Crea una nueva reserva.
