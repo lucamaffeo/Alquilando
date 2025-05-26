@@ -30,8 +30,8 @@ def delete(id):
 @bp.route("/pago", methods=["GET", "POST"])
 def pago():
     if not session.get("user_id"):
-        flash("Debes iniciar sesión o registrarte para reservar.", "error")
-        return redirect(url_for("usuarios.register"))
+        flash("Debes iniciar sesión para reservar.", "error")
+        return redirect(url_for("usuarios.login"))
     if request.method == "POST":
         vehiculo_id = request.form.get("vehiculo_id")
         fecha_inicio = request.form.get("fecha_inicio")

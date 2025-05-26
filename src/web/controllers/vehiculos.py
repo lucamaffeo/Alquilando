@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from src.core.repositories import vehiculo, sucursal, reserva
 from src.web.helpers.auth import has_permission
 from datetime import datetime, timedelta
+import random
+from src.core.models.modelo import Modelo
 
 bp = Blueprint("vehiculos", __name__, url_prefix="/vehiculos")
 
@@ -23,39 +25,42 @@ def register():
     vehiculo_id = request.args.get("id")
     v = vehiculo.get_vehiculo_by_id(vehiculo_id) if vehiculo_id else None
     sucursales = sucursal.list_sucursales()
+    modelos = Modelo.query.all()
     if request.method == "POST":
         data = request.form
         try:
             if v:
                 vehiculo.update_vehiculo(
                     v.id,
-                    categoria=data["categoria"],
+                    modelo_id=int(data["modelo_id"]),
                     marca=data["marca"],
-                    modelo=data["modelo"],
+                    categoria=data["categoria"],
+                    asientos=data["asientos"],
                     precio=data["precio"],
                     anio=data["anio"],
-                    asientos=data["asientos"],
                     sucursal_id=int(data["sucursal_id"]),
+                    imagen=data.get("imagen"),
                     en_mantenimiento=True if data.get("en_mantenimiento") == "on" else False,
                 )
                 flash("Vehículo actualizado exitosamente.", "success")
             else:
                 vehiculo.create_vehiculo(
                     patente=data["patente"],
-                    categoria=data["categoria"],
+                    modelo_id=int(data["modelo_id"]),
                     marca=data["marca"],
-                    modelo=data["modelo"],
+                    categoria=data["categoria"],
+                    asientos=data["asientos"],
                     precio=data["precio"],
                     anio=data["anio"],
-                    asientos=data["asientos"],
                     sucursal_id=int(data["sucursal_id"]),
+                    imagen=data.get("imagen"),
                     en_mantenimiento=True if data.get("en_mantenimiento") == "on" else False,
                 )
                 flash("Vehículo creado exitosamente.", "success")
             return redirect(url_for("vehiculos.index"))
         except ValueError as e:
             flash(str(e), "error")
-    return render_template("vehiculos/register.html", vehiculo=v, is_update=bool(v), sucursales=sucursales)
+    return render_template("vehiculos/register.html", vehiculo=v, is_update=bool(v), sucursales=sucursales, modelos=modelos)
 
 @bp.route("/cambiar_estado/<int:id>", methods=["POST"])
 @has_permission("vehicle_cambiar_estado")
@@ -115,13 +120,27 @@ def disponibles():
                 break
         if disponible:
             disponibles.append(v)
-    # Agrupar por categoría
-    categorias = {}
+    # Agrupar por modelo (string)
+    modelos = {}
     for v in disponibles:
-        if v.categoria not in categorias:
-            categorias[v.categoria] = {"asientos": v.asientos, "vehiculos": []}
-        categorias[v.categoria]["vehiculos"].append(v)
-    return render_template("vehiculos/disponibles.html", categorias=categorias, fecha_inicio=fecha_inicio_dt, fecha_fin=fecha_fin_dt)
+        key = v.modelo
+        if key not in modelos:
+            modelos[key] = {"vehiculos": []}
+        modelos[key]["vehiculos"].append(v)
+    # Elegir uno al azar por modelo
+    modelos_azar = []
+    for key, datos in modelos.items():
+        vehiculo_azar = random.choice(datos["vehiculos"])
+        modelos_azar.append({
+            "modelo": vehiculo_azar.modelo,
+            "vehiculo": vehiculo_azar,
+            "precio": vehiculo_azar.precio,
+            "marca": vehiculo_azar.marca,
+            "categoria": vehiculo_azar.categoria,
+            "asientos": vehiculo_azar.asientos,
+            "imagen": vehiculo_azar.imagen
+        })
+    return render_template("vehiculos/disponibles.html", modelos=modelos_azar, fecha_inicio=fecha_inicio_dt, fecha_fin=fecha_fin_dt)
 
 @bp.route("/categorias")
 def categorias():
