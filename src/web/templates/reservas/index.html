@@ -2,24 +2,42 @@
 
 {% block header %}Mis Reservas{% endblock %}
 
-{% block table_header %}
-<tr>
-    <th>ID</th>
-    <th>Vehículo</th>
-    <th>Fecha Inicio</th>
-    <th>Fecha Fin</th>
-    <th>Estado</th>
-</tr>
-{% endblock %}
-
 {% block table_body %}
-{% for reserva in reservas %}
-<tr>
-    <td>{{ reserva.id }}</td>
-    <td>{{ reserva.vehiculo.modelo }} ({{ reserva.vehiculo.patente }})</td>
-    <td>{{ reserva.fecha_inicio }}</td>
-    <td>{{ reserva.fecha_fin }}</td>
-    <td>{{ reserva.estado }}</td>
-</tr>
-{% endfor %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        {% if reservas|length == 0 %}
+            <div class="alert alert-info text-center mt-5 p-4 rounded shadow-sm">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                No tienes reservas disponibles.
+            </div>
+        {% else %}
+            <ul class="list-group mt-4 shadow-sm">
+                {% for reserva in reservas %}
+                <li class="list-group-item py-4 px-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap">
+                        <div>
+                            <h5 class="mb-2">{{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo }}</h5>
+                            <p class="mb-1"><i class="bi bi-calendar-event me-1"></i><strong>Inicio:</strong> {{ reserva.fecha_inicio }}</p>
+                            <p class="mb-1"><i class="bi bi-calendar-check me-1"></i><strong>Fin:</strong> {{ reserva.fecha_fin }}</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge" style="background-color: #1E2A38; color: #ffffff;">
+                                <i class="bi bi-info-circle me-1"></i>{{ reserva.estado | capitalize }}
+                            </span>
+                            <div class="mt-3 d-flex gap-2 justify-content-end">
+                                <button class="btn btn-outline-danger btn-sm" disabled>
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm" disabled>
+                                    <i class="bi bi-star me-1"></i>Calificar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

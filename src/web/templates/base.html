@@ -107,6 +107,10 @@
                         {% if has_permission(session.get("user_id"), "vehicle_create") %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.register') }}"><strong>Registrar vehículo</strong></a></li>
                         {% endif %}
+                        {% if has_permission(session.get("user_id"), "reserva_index") %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}"><strong>Mis Reservas</strong></a></li>
+                        {% endif %}
+
 
                         {% if has_permission(session.get("user_id"), "user_create") %}
                         <a href="{{ url_for('usuarios.register') }}" class="nav-link"><Strong>Registrar usuario</Strong></a>
