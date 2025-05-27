@@ -1,0 +1,25 @@
+{% extends "base_show.html" %}
+
+{% block header %}Vehículo: {{ vehiculo.marca }} {{ vehiculo.modelo }} {% endblock %}
+
+{% block details %}
+
+<p><strong>Categoría:</strong> {{ vehiculo.categoria }}</p>
+<p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>   
+<p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</p>
+
+{% if vehiculo.imagen %}
+    <div class="mb-3">
+        <img src="{{ url_for('static', filename='images/' ~ vehiculo.imagen) }}" alt="Imagen del vehículo" style="max-width:300px;max-height:200px;object-fit:contain;">
+    </div>
+{% endif %}
+
+{% if request.args.get('precio_total') %}
+    <p><strong>Precio total:</strong> ${{ request.args.get('precio_total') }}</p>
+{% endif %}
+
+<div>
+    <a href="{{ url_for('reservas.pago', vehiculo_id=vehiculo.id, fecha_inicio=request.args.get('fecha_inicio'), fecha_fin=request.args.get('fecha_fin')) }}"
+        class="btn btn-success mt-2">Reservar</a>
+</div>
+{% endblock %}

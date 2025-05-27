@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Pago de Reserva</h2>
+<form method="POST" action="">
+    <input type="hidden" name="vehiculo_id" value="{{ vehiculo.id }}">
+    <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+    <input type="hidden" name="fecha_fin" value="{{ fecha_fin }}">
+    <p><strong>Vehículo:</strong> {{ vehiculo.marca }} {{ vehiculo.modelo }} ({{ vehiculo.categoria }})</p>
+
+    <p><strong>Fecha inicio:</strong> {{ fecha_inicio }}</p>
+    <p><strong>Fecha fin:</strong> {{ fecha_fin }}</p>
+   
+    <div class="mb-3">
+        <label for="tipo_tarjeta" class="form-label">Tipo de tarjeta</label>
+        <select class="form-select" id="tipo_tarjeta" name="tipo_tarjeta" required>
+            <option value="" disabled selected>Seleccione tipo</option>
+            <option value="debito">Débito</option>
+            <option value="credito">Crédito</option>
+        </select>
+    </div>
+    <div class="mb-3" id="cuotas-group" style="display:none;">
+        <label for="cuotas" class="form-label">Cuotas</label>
+        <select class="form-select" id="cuotas" name="cuotas">
+            <option value="3">3 cuotas</option>
+            <option value="6">6 cuotas</option>
+            <option value="12">12 cuotas</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="tarjeta" class="form-label">Número de tarjeta</label>
+        <input type="text" class="form-control" id="tarjeta" name="tarjeta" required>
+    </div>
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Titular de la tarjeta</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" required>
+    </div>
+    <div class="mb-3">
+        <label for="vencimiento" class="form-label">Vencimiento</label>
+        <input type="text" class="form-control" id="vencimiento" name="vencimiento" placeholder="MM/AA" required>
+    </div>
+    <div class="mb-3">
+        <label for="cvv" class="form-label">Codigo de seguridad</label>
+        <input type="text" class="form-control" id="cvv" name="cvv" required>
+    </div>
+    <div class="d-flex justify-content-between align-items-center">
+        <button type="submit" class="btn btn-success">Pagar y Reservar</button>
+        <span class="fw-bold fs-5 ms-3">Total: ${{ precio_total }}</span>
+    </div>
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var tipoTarjeta = document.getElementById('tipo_tarjeta');
+        var cuotasGroup = document.getElementById('cuotas-group');
+        tipoTarjeta.addEventListener('change', function() {
+            if (tipoTarjeta.value === 'credito') {
+                cuotasGroup.style.display = 'block';
+            } else {
+                cuotasGroup.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

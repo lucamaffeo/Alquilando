@@ -10,8 +10,8 @@ class Error:
 
 
 def error_not_found(e):
-    error = Error(404, "Not Found",
-                  "The Requested URL was not found on the server.")
+    error = Error(404, "Pagina no encontrada",
+                  "La pagina que buscas no existe o ha sido eliminada")
 
     return render_template('error.html', error=error), 404
 
@@ -25,6 +25,6 @@ def forbidden(e):
 
 def error_unauthorized(e):
     error = Error(401, "No autorizado",
-                  "No puedes estar en esta pagina")
+                  "Tienes que tener una sesion iniciada para ingresar a esta pagina")
 
     return render_template('error.html', error=error), 401

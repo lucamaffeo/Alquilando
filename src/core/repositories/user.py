@@ -40,7 +40,7 @@ def create_user(**kwargs):
             if edad < 18:
                 raise ValueError("Debes ser mayor de 18 años para registrarte.")
         except Exception:
-            raise ValueError("Fecha de nacimiento inválida. Formato esperado: YYYY-MM-DD.")
+            raise ValueError("Debes ser mayor de 18 años para registrarte.")
 
     if 'password' in kwargs:
         kwargs['password'] = generate_password_hash(kwargs['password'])
@@ -55,8 +55,13 @@ def update_user(user_id, **kwargs):
     if not user:
         return False
 
-    if 'password' in kwargs and kwargs['password']:
-        kwargs['password'] = generate_password_hash(kwargs['password'])
+    # Solo actualizar la contraseña si se ingresa una nueva y no es vacía
+    password = kwargs.pop('password', None)
+    if password is not None and password != "":
+        if len(password) < 6:
+            raise ValueError("La contraseña debe tener al menos 6 caracteres.")
+        user.password = generate_password_hash(password)
+    # Si password es None o vacío, no modificar el campo
 
     for key, value in kwargs.items():
         setattr(user, key, value)

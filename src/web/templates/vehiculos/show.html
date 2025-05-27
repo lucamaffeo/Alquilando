@@ -16,7 +16,7 @@
     {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}
         <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-primary">Modificar vehículo</a>
         {% endif %}
-        {% if session.get("user_role") == "empleado" %}
+        {% if has_permission(session.get("user_id"), "vehicle_cambiar_estado") %}
         <form method="POST" action="{{ url_for('vehiculos.cambiar_estado', id=vehiculo.id) }}" style="display:inline;">
             <button type="submit" class="btn btn-warning">
                 {% if vehiculo.en_mantenimiento %}Pasar a Activo{% else %}Pasar a Mantenimiento{% endif %}

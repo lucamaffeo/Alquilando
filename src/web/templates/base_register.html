@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{% block title %}Registro{% endblock %}</h1>
+
 <form method="POST" enctype="multipart/form-data">
     {% block form_fields %}{% endblock %}
     <button type="submit">{% block submit_button %}Registrar{% endblock %}</button>

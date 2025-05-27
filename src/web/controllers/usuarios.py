@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+import random
+import string
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from src.core.repositories import user, rol
 from werkzeug.security import check_password_hash  # Agregar esta importación
 from src.web.helpers.auth import has_permission
 from flask_mail import Mail, Message
 from src.web.helpers.extensions import mail
-import random
 
 bp = Blueprint("usuarios", __name__, url_prefix="/users")
 
@@ -21,6 +23,7 @@ def show(user_id):
 
 @bp.route("/register", methods=["GET", "POST"])
 def register():
+    user_obj = None
     if request.method == "POST":
         data = request.form
         try:
@@ -38,7 +41,9 @@ def register():
             return redirect(url_for("usuarios.login"))
         except ValueError as e:
             flash(str(e), "error")
-    return render_template("users/register.html")
+            # Si hay error, mantener los datos ingresados
+            user_obj = type("UserForm", (), data.to_dict())()
+    return render_template("users/register.html", user=user_obj, is_update=False)
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -91,6 +96,33 @@ def delete(user_id):
         flash("No se pudo eliminar el usuario.", "error")
     return redirect(url_for("usuarios.index"))
 
+@bp.route("/register/presencial", methods=["GET", "POST"])
+@has_permission("user_create_presencial")
+def register_presencial():
+    user_obj = None
+    if request.method == "POST":
+        data = request.form
+        password = generar_password_aleatoria()
+        try:
+            user.create_user(
+                email=data["email"],
+                password=password,
+                role_id=2,  # Siempre usuario registrado
+                nombre=data.get("nombre"),
+                dni=data.get("dni"),
+                apellido=data.get("apellido"),
+                telefono=data.get("telefono"),
+                fecha_nacimiento=data.get("fecha_nacimiento"),
+            )
+            enviar_mail(data["email"], password)
+            flash("Usuario registrado exitosamente. Se envió la contraseña al email.", "success")
+            return redirect(url_for("vehiculos.index"))
+        except ValueError as e:
+            flash(str(e), "error")
+            # Si hay error, mantener los datos ingresados
+            user_obj = type("UserForm", (), data.to_dict())()
+    return render_template("users/register_presencial.html", user=user_obj, is_update=False)
+
 @bp.route("/update/<int:user_id>", methods=["GET", "POST"])
 @has_permission("user_update")
 def update(user_id):
@@ -102,15 +134,16 @@ def update(user_id):
     if request.method == "POST":
         data = request.form
         try:
+            password = data["password"] if data.get("password") else None
+            if password == "":
+                password = None
             user.update_user(
                 user_id,
                 nombre=data.get("nombre"),
                 apellido=data.get("apellido"),
                 telefono=data.get("telefono"),
-                fecha_nacimiento=data.get("fecha_nacimiento"),
-                dni=data.get("dni"),
                 # Solo actualizar contraseña si se ingresa una nueva
-                password=data["password"] if data.get("password") else None,
+                password=password,
                 # Permitir cambiar el rol solo si el usuario es admin
                 role_id=int(data.get("role_id")) if session.get("user_role") == "admin" and data.get("role_id") else u.role_id,
             )

@@ -107,14 +107,22 @@
                         {% if has_permission(session.get("user_id"), "vehicle_create") %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.register') }}"><strong>Registrar vehículo</strong></a></li>
                         {% endif %}
+                        
+
 
                         {% if has_permission(session.get("user_id"), "user_create") %}
                         <a href="{{ url_for('usuarios.register') }}" class="nav-link"><Strong>Registrar usuario</Strong></a>
+                        {% endif %}
+                        {% if has_permission(session.get("user_id"), "user_create_presencial") %}
+                        <a href="{{ url_for('usuarios.register_presencial') }}" class="nav-link"><Strong>Registrar usuario presencial</Strong></a>
                         {% endif %}
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if session.get("user_id") %}
+                        {% if session.get("user_role") == "usuario registrado" %} 
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">Ver mis reservas</a></li>
+                        {% endif %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a></li>
                     {% else %}
