@@ -56,7 +56,8 @@ def login():
                 session["pending_admin_email"] = user_data.email  # Guardar email temporalmente
                 code = str(random.randint(100000, 999999))
                 session["2fa_code"] = code
-                session["username"] = user_data.nombre
+                session["temp_user_id"] = user_data.id
+                session["temp_user_role"] = user_data.role.name
                 msg = Message(
                     "Tu código 2FA",
                     sender=current_app.config["MAIL_USERNAME"],
