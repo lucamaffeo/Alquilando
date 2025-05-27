@@ -11,7 +11,7 @@ def login_code():
         code = request.form["code"]
         if code == session.get("2fa_code"):
             session.pop("2fa_code", None)
-            flash("✅ Sesión iniciada como {session.get('username')}")
+            flash("✅ Sesión iniciada como " + session.get('username'))
         else: flash("Código incorrecto")
         return redirect(url_for("global.inicio_global"))
     return render_template("users/login-code.html")  # Renderiza la plantilla de login-code
