@@ -60,7 +60,6 @@ def pago():
         if tipo_tarjeta == "credito":
             for tarjeta in tarjetas_credito:
                 if tarjeta["numero"] == numero_tarjeta:
-                    print("aaaaaaaaaaaa")
                     encontre = True
                     if tarjeta["titular"].lower() != datos_tarjeta.get("nombre").lower():
                         flash("El titular de la tarjeta no coincide.", "error")
@@ -92,12 +91,18 @@ def pago():
                         flash("La tarjeta de debito no posee saldo suficiente.", "error")
                         return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
                     break
-        if encontre==False:
+        if not encontre:
             flash("Hubo un error por código de tarjeta inexistente", "error")
             return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-        else:
-            flash("Pago realizado y reserva confirmada.", "success")
-        #return redirect(url_for("reservas.index"))
+        # Si todo OK, crear la reserva y redirigir a mis reservas
+        create_reserva(
+            vehiculo_id=vehiculo_id,
+            user_id=session.get("user_id"),
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin,
+        )
+        flash("Pago realizado y reserva confirmada.", "success")
+        return redirect(url_for("reservas.mis_reservas"))
     return render_template(
         "reservas/pago.html",
         vehiculo=v,
