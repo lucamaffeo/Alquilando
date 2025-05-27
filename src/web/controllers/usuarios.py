@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from src.core.repositories import user, rol
 from werkzeug.security import check_password_hash  # Agregar esta importación
 from src.web.helpers.auth import has_permission
+from flask_mail import Mail, Message
+from src.web.helpers.extensions import mail
+import random
 
 bp = Blueprint("usuarios", __name__, url_prefix="/users")
 
@@ -46,6 +49,16 @@ def login():
             # Redirigir según el rol
             if user_data.role.name == "admin":
                 session["pending_admin_email"] = user_data.email  # Guardar email temporalmente
+                code = str(random.randint(100000, 999999))
+                session["2fa_code"] = code
+                session["username"] = user_data.nombre
+                msg = Message(
+                    "Tu código 2FA",
+                    sender=current_app.config["MAIL_USERNAME"],
+                    recipients=[user_data.email]
+                )
+                msg.body = f"Tu código es: {code}"
+                mail.send(msg)
                 flash("Ingrese el código de autenticación.", "info")
                 return redirect(url_for("auth.login_code"))
             elif user_data.role.name == "empleado":
