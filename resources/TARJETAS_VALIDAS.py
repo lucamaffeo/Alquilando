@@ -16,6 +16,7 @@ tarjetas_credito = [
     }
 ]
 
+
 tarjetas_debito = [
     {
         "numero": "789",
