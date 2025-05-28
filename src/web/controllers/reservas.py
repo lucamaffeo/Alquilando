@@ -4,6 +4,7 @@ from src.core.repositories import vehiculo
 from src.web.helpers.auth import has_permission
 from datetime import datetime
 from resources.TARJETAS_VALIDAS import tarjetas_credito, tarjetas_debito
+import random  
 
 bp = Blueprint("reservas", __name__, url_prefix="/reservas")
 
@@ -54,6 +55,10 @@ def pago():
         except Exception:
             precio_total = v.precio
     if request.method == "POST":
+        # Simular fallo de conexión (10% de probabilidad)
+        if random.random() < 0.1:
+            flash("Error de conexión al procesar el pago. Por favor, intente nuevamente.", "error")
+            return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
         datos_tarjeta = request.form
         tipo_tarjeta = datos_tarjeta.get("tipo_tarjeta")
         numero_tarjeta = datos_tarjeta.get("tarjeta")
