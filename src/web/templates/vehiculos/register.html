@@ -7,11 +7,11 @@
     <div class="row mb-3">
         <div class="col-md-6 mb-3">
             <label for="patente" class="form-label">Patente:</label>
-            <input type="text" class="form-control border-main" name="patente" value="{{ vehiculo.patente if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
+            <input type="text" class="form-control border-main" placeholder="Ingrese la patente sin espacios" minlength="6" maxlength="7" name="patente" value="{{ vehiculo.patente if is_update else '' }}" {% if is_update %}disabled{% endif %} required>
         </div>
         <div class="col-md-6 mb-3">
             <label for="modelo" class="form-label">Modelo:</label>
-            <input type="text" class="form-control border-main" name="modelo" value="{{ vehiculo.modelo if is_update else '' }}" required>
+            <input type="text" class="form-control border-main" name="modelo" value="{{ vehiculo.modelo_nombre() if is_update else '' }}" required>
         </div>
         <div class="col-md-6 mb-3">
             <label for="marca" class="form-label">Marca:</label>
@@ -31,7 +31,7 @@
         </div>
         <div class="col-md-3 mb-3">
             <label for="asientos" class="form-label">Asientos:</label>
-            <input type="number" class="form-control border-main" name="asientos" value="{{ vehiculo.asientos if is_update else '' }}" required>
+            <input type="number" class="form-control border-main" max="13" min="2" name="asientos" value="{{ vehiculo.asientos if is_update else '' }}" required>
         </div>
         <div class="col-md-6 mb-3">
             <label for="imagen" class="form-label">Imagen:</label>
@@ -49,6 +49,6 @@
             </select>
         </div>
     </div>
-    <button type="submit" class="btn btn-main px-4">{% if is_update %}Actualizar{% else %}Registrar Vehículo{% endif %}</button>
+    <button type="submit" class="btn btn-main px-4">{% if is_update %}Actualizar{% else %}Guardar{% endif %}</button>
 </form>
 {% endblock %}

@@ -3,31 +3,38 @@
 {% block header %}Vehículo: {{ vehiculo.patente }}{% endblock %}
 
 {% block details %}
-<p><strong>Patente:</strong> {{ vehiculo.patente }}</p>
-<p><strong>Modelo:</strong> {{ vehiculo.modelo }}</p>
-<p><strong>Marca:</strong> {{ vehiculo.marca }}</p>
-<p><strong>Año:</strong> {{ vehiculo.anio }}</p>
-<p><strong>Categoría:</strong> {{ vehiculo.categoria }}</p>
-<p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>
-<p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }}</p>
-<p><strong>Estado:</strong> {{ vehiculo.estado() }}</p>
-
-<div>
-    {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}
-        <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-primary">Modificar vehículo</a>
-        {% endif %}
-        {% if has_permission(session.get("user_id"), "vehicle_cambiar_estado") %}
-        <form method="POST" action="{{ url_for('vehiculos.cambiar_estado', id=vehiculo.id) }}" style="display:inline;">
-            <button type="submit" class="btn btn-warning">
-                {% if vehiculo.en_mantenimiento %}Pasar a Activo{% else %}Pasar a Mantenimiento{% endif %}
-            </button>
-        </form>
-        {% endif %}
-    
-    {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_delete") %}
-        <form method="POST" action="{{ url_for('vehiculos.delete', id=vehiculo.id) }}" style="display:inline;">
-            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este vehículo?');">Eliminar</button>
-        </form>
+<div class="d-flex align-items-start">
+    <div class="flex-grow-1">
+        <p><strong>Patente:</strong> {{ vehiculo.patente }}</p>
+        <p><strong>Modelo:</strong> {{ vehiculo.modelo_nombre() }}</p>
+        <p><strong>Marca:</strong> {{ vehiculo.marca }}</p>
+        <p><strong>Año:</strong> {{ vehiculo.anio }}</p>
+        <p><strong>Categoría:</strong> {{ vehiculo.categoria }}</p>
+        <p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>
+        <p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }}</p>
+        <p><strong>Estado:</strong> {{ vehiculo.estado() }}</p>
+        <div>
+            {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}
+                <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-primary">Modificar vehículo</a>
+            {% endif %}
+            {% if has_permission(session.get("user_id"), "vehicle_cambiar_estado") %}
+                <form method="POST" action="{{ url_for('vehiculos.cambiar_estado', id=vehiculo.id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-warning">
+                        {% if vehiculo.en_mantenimiento %}Pasar a Activo{% else %}Pasar a Mantenimiento{% endif %}
+                    </button>
+                </form>
+            {% endif %}
+            {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_delete") %}
+                <form method="POST" action="{{ url_for('vehiculos.delete', id=vehiculo.id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este vehículo?');">Eliminar</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    {% if vehiculo.imagen %}
+        <div class="ms-4">
+            <img src="{{ url_for('static', filename='images/' ~ (vehiculo.imagen or 'default.png')) }}" alt="Imagen del vehículo" style="max-width:500px;max-height:350px;object-fit:contain;">
+        </div>
     {% endif %}
 </div>
 {% endblock %}

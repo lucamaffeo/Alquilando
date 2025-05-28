@@ -4,6 +4,8 @@ from src.web.helpers.auth import has_permission
 from datetime import datetime, timedelta
 import random
 from src.core.models.modelo import Modelo
+import os
+from werkzeug.utils import secure_filename
 
 bp = Blueprint("vehiculos", __name__, url_prefix="/vehiculos")
 
@@ -25,42 +27,62 @@ def register():
     vehiculo_id = request.args.get("id")
     v = vehiculo.get_vehiculo_by_id(vehiculo_id) if vehiculo_id else None
     sucursales = sucursal.list_sucursales()
-    modelos = Modelo.query.all()
     if request.method == "POST":
         data = request.form
+        modelo_nombre = data["modelo"].strip()
+        from src.core.models.modelo import Modelo
+        from src.core.database import db
+        modelo_obj = Modelo.query.filter_by(nombre=modelo_nombre).first()
+        if not modelo_obj:
+            modelo_obj = Modelo(nombre=modelo_nombre)
+            db.session.add(modelo_obj)
+            db.session.commit()
+        modelo_id = modelo_obj.id
+        # Manejo de imagen
+        imagen_file = request.files.get("imagen")
+        imagen_nombre = None
+        if imagen_file and imagen_file.filename:
+            from werkzeug.utils import secure_filename
+            import os
+            imagen_nombre = secure_filename(imagen_file.filename)
+            ruta = os.path.join("static", "images", imagen_nombre)
+            imagen_file.save(ruta)
+        elif v:
+            imagen_nombre = v.imagen  # Mantener la imagen anterior si no se sube una nueva
+
         try:
             if v:
                 vehiculo.update_vehiculo(
                     v.id,
-                    modelo_id=int(data["modelo_id"]),
+                    modelo_id=modelo_id,
                     marca=data["marca"],
                     categoria=data["categoria"],
                     asientos=data["asientos"],
                     precio=data["precio"],
                     anio=data["anio"],
                     sucursal_id=int(data["sucursal_id"]),
-                    imagen=data.get("imagen"),
+                    imagen=imagen_nombre,
                     en_mantenimiento=True if data.get("en_mantenimiento") == "on" else False,
                 )
                 flash("Vehículo actualizado exitosamente.", "success")
             else:
                 vehiculo.create_vehiculo(
                     patente=data["patente"],
-                    modelo_id=int(data["modelo_id"]),
+                    modelo_id=modelo_id,
                     marca=data["marca"],
                     categoria=data["categoria"],
                     asientos=data["asientos"],
                     precio=data["precio"],
                     anio=data["anio"],
                     sucursal_id=int(data["sucursal_id"]),
-                    imagen=data.get("imagen"),
+                    imagen=imagen_nombre,
                     en_mantenimiento=True if data.get("en_mantenimiento") == "on" else False,
                 )
                 flash("Vehículo creado exitosamente.", "success")
             return redirect(url_for("vehiculos.index"))
         except ValueError as e:
             flash(str(e), "error")
-    return render_template("vehiculos/register.html", vehiculo=v, is_update=bool(v), sucursales=sucursales, modelos=modelos)
+    return render_template("vehiculos/register.html", vehiculo=v, is_update=bool(v), sucursales=sucursales)
 
 @bp.route("/cambiar_estado/<int:id>", methods=["POST"])
 @has_permission("vehicle_cambiar_estado")
@@ -81,7 +103,7 @@ def cambiar_estado(id):
 @has_permission("vehicle_delete")
 def delete(id):
     try:
-        vehiculo.delete_vehiculo(id)
+        vehiculo.delete_vehiculo(id)    
         flash("Vehículo eliminado exitosamente.", "success")
     except ValueError as e:
         flash(str(e), "error")

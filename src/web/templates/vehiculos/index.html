@@ -24,7 +24,7 @@ Listado de Vehículos
 <tr>
     <td>{{ vehiculo.patente }}</td>
     <td>{{ vehiculo.marca }}</td>
-    <td>{{ vehiculo.modelo }}</td>
+    <td>{{ vehiculo.modelo_nombre() }}</td>
     <td>{{ vehiculo.categoria }}</td>
     <td>{{ vehiculo.anio }}</td>
     <td>{{ vehiculo.asientos }}</td>
@@ -32,7 +32,7 @@ Listado de Vehículos
     <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
     <td>{{ "Activo" if not vehiculo.en_mantenimiento else "En mantenimiento" }}</td>
     <td>
-        <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info">Ver</a>
+        <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info">Ver detalle</a>
         
     </td>
 </tr>

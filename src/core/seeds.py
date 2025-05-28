@@ -102,49 +102,58 @@ def run():
         ubicacion="Av. Libertador 5678",
     )
 
+    # Crear modelos (si no existen)
+    from src.core.models.modelo import Modelo
+    def get_or_create_modelo(nombre):
+        modelo = Modelo.query.filter_by(nombre=nombre).first()
+        if not modelo:
+            modelo = Modelo(nombre=nombre)
+            db.session.add(modelo)
+            db.session.commit()
+        return modelo
+
     # Crear vehículos para ambas sucursales
     # Sucursal 1
     create_vehiculo(
-        patente="ABC123", modelo="Corolla", marca="Toyota", categoria="Sedan", asientos=5, precio=20000, anio=2020, sucursal_id=sucursal1.id, imagen="Toyota_Corolla.png"
-    )
-    
-    create_vehiculo(
-        patente="DEF456", modelo="Focus", marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal1.id, imagen="Ford_Focus.png"
+        patente="ABC123", modelo_id=get_or_create_modelo("Corolla").id, marca="Toyota", categoria="Sedan", asientos=5, precio=20000, anio=2020, sucursal_id=sucursal1.id, imagen="Toyota_Corolla.png"
     )
     create_vehiculo(
-        patente="SED111", modelo="Fluence", marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal1.id, imagen="Renault_Fluence.png"
+        patente="DEF456", modelo_id=get_or_create_modelo("Focus").id, marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal1.id, imagen="Ford_Focus.png"
     )
     create_vehiculo(
-        patente="DSA242", modelo="Focus", marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal1.id, imagen="Ford_Focus.png"
+        patente="SED111", modelo_id=get_or_create_modelo("Fluence").id, marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal1.id, imagen="Renault_Fluence.png"
     )
     create_vehiculo(
-        patente="PKL205", modelo="Fluence", marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal1.id, imagen="Renault_Fluence.png"
+        patente="DSA242", modelo_id=get_or_create_modelo("Focus").id, marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal1.id, imagen="Ford_Focus.png"
+    )
+    create_vehiculo(
+        patente="PKL205", modelo_id=get_or_create_modelo("Fluence").id, marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal1.id, imagen="Renault_Fluence.png"
     )
 
     # Sucursal 2
     create_vehiculo(
-        patente="ABC456", modelo="Corolla", marca="Toyota", categoria="Sedan", asientos=5, precio=20000, anio=2020, sucursal_id=sucursal2.id, imagen="Toyota_Corolla.png"
+        patente="ABC456", modelo_id=get_or_create_modelo("Corolla").id, marca="Toyota", categoria="Sedan", asientos=5, precio=20000, anio=2020, sucursal_id=sucursal2.id, imagen="Toyota_Corolla.png"
     )
     create_vehiculo(
-        patente="DEF789", modelo="Focus", marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal2.id, imagen="Ford_Focus.png"
+        patente="DEF789", modelo_id=get_or_create_modelo("Focus").id, marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal2.id, imagen="Ford_Focus.png"
     )
     create_vehiculo(
-        patente="SED222", modelo="Fluence", marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal2.id, imagen="Renault_Fluence.png"
+        patente="SED222", modelo_id=get_or_create_modelo("Fluence").id, marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal2.id, imagen="Renault_Fluence.png"
     )
     create_vehiculo(
-        patente="SUV555", modelo="CR-V", marca="Honda", categoria="SUV", asientos=7, precio=30000, anio=2022, sucursal_id=sucursal2.id, imagen="Honda_CRV.jpg"
+        patente="SUV555", modelo_id=get_or_create_modelo("CR-V").id, marca="Honda", categoria="SUV", asientos=7, precio=30000, anio=2022, sucursal_id=sucursal2.id, imagen="Honda_CRV.jpg"
     )
     create_vehiculo(
-        patente="SUV666", modelo="SW4", marca="Toyota", categoria="SUV", asientos=7, precio=35000, anio=2023, sucursal_id=sucursal2.id, imagen="Toyota_Sw4.jpg"
+        patente="SUV666", modelo_id=get_or_create_modelo("SW4").id, marca="Toyota", categoria="SUV", asientos=7, precio=35000, anio=2023, sucursal_id=sucursal2.id, imagen="Toyota_Sw4.jpg"
     )
     create_vehiculo(
-        patente="PKP444", modelo="Amarok", marca="Volkswagen", categoria="Pickup", asientos=5, precio=35000, anio=2022, sucursal_id=sucursal2.id, imagen="Volkswagen_Amarok.png"
+        patente="PKP444", modelo_id=get_or_create_modelo("Amarok").id, marca="Volkswagen", categoria="Pickup", asientos=5, precio=35000, anio=2022, sucursal_id=sucursal2.id, imagen="Volkswagen_Amarok.png"
     )
     create_vehiculo(
-        patente="PKP555", modelo="Ranger", marca="Ford", categoria="Pickup", asientos=5, precio=34000, anio=2021, sucursal_id=sucursal2.id, imagen="Ford_Ranger.png"
+        patente="PKP555", modelo_id=get_or_create_modelo("Ranger").id, marca="Ford", categoria="Pickup", asientos=5, precio=34000, anio=2021, sucursal_id=sucursal2.id, imagen="Ford_Ranger.png"
     )
     create_vehiculo(
-        patente="PKP666", modelo="Hilux", marca="Toyota", categoria="Pickup", asientos=5, precio=36000, anio=2023, sucursal_id=sucursal2.id, imagen="Toyota_Hillux.png"
+        patente="PKP666", modelo_id=get_or_create_modelo("Hilux").id, marca="Toyota", categoria="Pickup", asientos=5, precio=36000, anio=2023, sucursal_id=sucursal2.id, imagen="Toyota_Hillux.png"
     )
    
     # Crear una reserva de ejemplo
