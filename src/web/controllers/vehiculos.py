@@ -145,7 +145,7 @@ def disponibles():
     # Agrupar por modelo (string)
     modelos = {}
     for v in disponibles:
-        key = v.modelo
+        key = v.modelo_id
         if key not in modelos:
             modelos[key] = {"vehiculos": []}
         modelos[key]["vehiculos"].append(v)
@@ -154,7 +154,7 @@ def disponibles():
     for key, datos in modelos.items():
         vehiculo_azar = random.choice(datos["vehiculos"])
         modelos_azar.append({
-            "modelo": vehiculo_azar.modelo,
+            "modelo": vehiculo_azar.modelo_id,
             "vehiculo": vehiculo_azar,
             "precio": vehiculo_azar.precio,
             "marca": vehiculo_azar.marca,
