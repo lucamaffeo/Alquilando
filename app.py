@@ -10,7 +10,7 @@ app.config.update(
     MAIL_PORT=587,
     MAIL_USE_TLS=True,
     MAIL_USERNAME='diamondcodedev@gmail.com',
-    MAIL_PASSWORD='dywt tizx ywps iwlp',
+    MAIL_PASSWORD='dywt tizx ywps iwlp', #contra del mail: admin123 (creo xd)
 )
 
 mail.init_app(app)
