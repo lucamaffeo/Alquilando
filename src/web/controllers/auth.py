@@ -5,24 +5,17 @@ from src.core.models import user as User  # Assuming you have a User model
 
 auth_bp = Blueprint('auth', __name__)
 
-
-
 @auth_bp.route('/login-code', methods=['GET', 'POST'])
 def login_code():
-    if request.method == 'POST':
-        code = request.form.get('code')
-        if code == '1234':
-            # Obtener email temporal y buscar usuario
-            email = session.pop("pending_admin_email", None)
-            if email:
-                from src.core.repositories import user as user_repo
-                user_data = user_repo.find_user_by_email(email)
-                if user_data:
-                    session["user_id"] = user_data.id
-                    session["user_role"] = user_data.role.name
-                    flash("Inicio de sesión exitoso.", "success")
-                    return redirect(url_for('usuarios.index'))
-            flash("Error interno al autenticar.", "error")
-        else:
-            flash("El código es erróneo.", "error")
+    if request.method == "POST":
+        code = request.form["code"]
+        if code == session.get("2fa_code"):
+            session["user_id"] = session.get("temp_user_id")
+            session["user_role"] = session.get("temp_user_role")
+            session.pop("2fa_code", None)
+            session.pop("temp_user_id", None)
+            session.pop("temp_user_role", None)
+            flash("Inicio de sesión exitoso.", "success")
+        else: flash("Código incorrecto", "error"); return redirect(url_for("auth.login_code"))
+        return redirect(url_for("global.inicio_global"))
     return render_template("users/login-code.html")  # Renderiza la plantilla de login-code

@@ -1,18 +1,12 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 import random
 import string
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from src.core.repositories import user, rol
 from werkzeug.security import check_password_hash  # Agregar esta importación
 from src.web.helpers.auth import has_permission
-
-def generar_password_aleatoria(longitud=8):
-    chars = string.ascii_letters + string.digits
-    return ''.join(random.choices(chars, k=longitud))
-
-def enviar_mail(destinatario, password):
-    # Aquí deberías integrar tu sistema real de envío de mails.
-    # Por ahora solo un print para simular.
-    print(f"Enviar mail a {destinatario} con contraseña: {password}")
+from flask_mail import Mail, Message
+from src.web.helpers.extensions import mail
 
 bp = Blueprint("usuarios", __name__, url_prefix="/users")
 
@@ -60,6 +54,17 @@ def login():
             # Redirigir según el rol
             if user_data.role.name == "admin":
                 session["pending_admin_email"] = user_data.email  # Guardar email temporalmente
+                code = str(random.randint(100000, 999999))
+                session["2fa_code"] = code
+                session["temp_user_id"] = user_data.id
+                session["temp_user_role"] = user_data.role.name
+                msg = Message(
+                    "Tu código 2FA",
+                    sender=current_app.config["MAIL_USERNAME"],
+                    recipients=[user_data.email]
+                )
+                msg.body = f"Tu código es: {code}"
+                mail.send(msg)
                 flash("Ingrese el código de autenticación.", "info")
                 return redirect(url_for("auth.login_code"))
             elif user_data.role.name == "empleado":
