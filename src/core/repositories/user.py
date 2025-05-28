@@ -24,6 +24,9 @@ def create_user(**kwargs):
     if 'email' in kwargs and User.query.filter_by(email=kwargs['email']).first():
         raise ValueError("El email ya está registrado.")
 
+    if 'dni' in kwargs and User.query.filter_by(dni=kwargs['dni']).first():
+        raise ValueError("El DNI ya está registrado.")
+    
     # Validación de contraseña
     if 'password' in kwargs and len(kwargs['password']) < 6:
         raise ValueError("La contraseña debe tener al menos 6 caracteres.")

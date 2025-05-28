@@ -58,7 +58,7 @@ def run():
         role_id=1,
         apellido="Helfer",
         telefono="123456789",
-        dni="12345678",
+        dni="44444444",
         fecha_nacimiento="2001-01-01",
     )
     empleado = create_user(
@@ -68,7 +68,7 @@ def run():
         role_id=3,
         apellido="Proia",
         telefono="123456789",
-        dni="12345678",
+        dni="55555555",
         fecha_nacimiento="2000-01-01",
     )
     usuario_registrado = create_user(
@@ -78,7 +78,7 @@ def run():
         role_id=2,
         apellido="Di placido",
         telefono="123456789",
-        dni="12345678",
+        dni="22222222",
         fecha_nacimiento="2000-01-01",
     )
     usuario_registrado2 = create_user(
@@ -88,7 +88,7 @@ def run():
         role_id=2,
         apellido="Helfer",
         telefono="123456789",
-        dni="12345678",
+        dni="33333333",
         fecha_nacimiento="2000-01-01",
     )
 
