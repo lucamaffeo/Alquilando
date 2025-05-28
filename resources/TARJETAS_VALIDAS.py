@@ -5,14 +5,14 @@ tarjetas_credito = [
         "codigo_seguridad": "2233",
         "titular": "alejandro proia",
         "vencimiento": "12/25",
-        "saldo": 50000
+        "saldo": 500000
     },
     {
         "numero": "456",
         "codigo_seguridad": "3344",
         "titular": "maria lopez",
         "vencimiento": "12/25",
-        "saldo": 30000
+        "saldo": 300000
     }
 ]
 
@@ -23,13 +23,21 @@ tarjetas_debito = [
         "codigo_seguridad": "1122",
         "titular": "carlos perez",
         "vencimiento": "12/25",
-        "saldo": 20000
+        "saldo": 200000
     },
     {
         "numero": "321",
         "codigo_seguridad": "5566",
         "titular": "lucia martinez",
         "vencimiento": "12/25",
-        "saldo": 15000
+        "saldo": 150000
+    }
+    ,
+    {
+        "numero": "3214",
+        "codigo_seguridad": "5566",
+        "titular": "lucia martinez",
+        "vencimiento": "12/25",
+        "saldo": 1500000
     }
 ]
