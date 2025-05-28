@@ -27,6 +27,10 @@ def create_user(**kwargs):
     if 'dni' in kwargs and User.query.filter_by(dni=kwargs['dni']).first():
         raise ValueError("El DNI ya está registrado.")
     
+    #valida q el dni tenga entre 7 y 8 caracteres
+    if 'dni' in kwargs and (len(kwargs['dni']) < 7 or len(kwargs['dni']) > 8):
+        raise ValueError("El DNI debe tener entre 7 y 8 caracteres.")
+    
     # Validación de contraseña
     if 'password' in kwargs and len(kwargs['password']) < 6:
         raise ValueError("La contraseña debe tener al menos 6 caracteres.")

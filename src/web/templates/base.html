@@ -121,7 +121,7 @@
                 <ul class="navbar-nav">
                     {% if session.get("user_id") %}
                         {% if session.get("user_role") == "usuario registrado" %} 
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">Ver mis reservas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">Ver Mis Reservas</a></li>
                         {% endif %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a></li>

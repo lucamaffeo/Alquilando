@@ -50,6 +50,9 @@ def login():
     if request.method == "POST":
         data = request.form
         user_data = user.find_user_by_email(data["email"])
+        if not user_data:
+            flash("Usuario no registrado.", "error")
+            return redirect(url_for("usuarios.login"))
         if user_data and check_password_hash(user_data.password, data["password"]):
             # Redirigir según el rol
             if user_data.role.name == "admin":
@@ -77,7 +80,7 @@ def login():
                 session["user_role"] = user_data.role.name
                 flash("Inicio de sesión exitoso.", "success")
                 return redirect(url_for("global.inicio_global"))
-        flash("Credenciales inválidas.", "error")
+        flash("Contraseña invalida.", "error")
     return render_template("users/login.html")
 
 

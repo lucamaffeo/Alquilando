@@ -16,6 +16,6 @@ def login_code():
             session.pop("temp_user_id", None)
             session.pop("temp_user_role", None)
             flash("Inicio de sesión exitoso.", "success")
-        else: flash("Código incorrecto", "error"); return redirect(url_for("auth.login_code"))
-        return redirect(url_for("global.inicio_global"))
+        else: flash("El codigo ingresado es incorrecto", "error"); return redirect(url_for("auth.login_code"))
+        return redirect(url_for("usuarios.index"))  # Redirige al index de usuarios después del login exitoso
     return render_template("users/login-code.html")  # Renderiza la plantilla de login-code

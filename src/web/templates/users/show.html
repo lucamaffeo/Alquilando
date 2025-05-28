@@ -5,7 +5,7 @@
 {% block details %}
 <p><strong>Email:</strong> {{ user.email }}</p>
 
-<p><strong>Rol:</strong> {{ user.role.name }}</p>
+
 <p><strong>DNI:</strong>{{ user.dni }}</p>
 <p><strong>Teléfono:</strong> {{ user.telefono }}</p>
 <p><strong>Fecha de nacimiento:</strong> {{ user.fecha_nacimiento }}</p>
@@ -14,8 +14,5 @@
 
 <div>
     <a href="{{ url_for('usuarios.update', user_id=user.id) }}" class="btn btn-primary">Actualizar perfil</a>
-    <form method="POST" action="{{ url_for('usuarios.delete', user_id=user.id) }}" style="display:inline;">
-        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</button>
-    </form>
 </div>
 {% endblock %}
