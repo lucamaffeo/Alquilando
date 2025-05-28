@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
 from src.core.repositories.reserva import create_reserva, list_reservas_by_user
-from src.core.repositories import vehiculo
+from src.core.repositories import vehiculo, user
 from src.web.helpers.auth import has_permission
 from datetime import datetime
 from resources.TARJETAS_VALIDAS import tarjetas_credito, tarjetas_debito
-import random  
+from src.web.helpers.extensions import mail
+from flask_mail import Mail, Message
+import random
 
 bp = Blueprint("reservas", __name__, url_prefix="/reservas")
 
@@ -29,7 +31,7 @@ def delete(id):
     flash("Reserva eliminada exitosamente.", "success")
     return redirect(url_for("reservas.index"))
 
-@bp.route("/pago", methods=["GET", "POST"])
+@bp.route("/pago", methods=["GET", "POST"]) #TODO:agregar comprobacion de disponibilidad, y chequear que yendo una pagina atras no se rompa la dispo
 def pago():
     encontre = False
     if not session.get("user_id"):
@@ -107,6 +109,8 @@ def pago():
             fecha_fin=fecha_fin,
         )
         flash("Pago realizado y reserva confirmada.", "success")
+        user_data = session.get
+        sendConfirmationEmail(v, fecha_inicio, fecha_fin, precio_total)
         return redirect(url_for("reservas.mis_reservas"))
     return render_template(
         "reservas/pago.html",
@@ -128,3 +132,19 @@ def mis_reservas():
     if not reservas:
         return render_template("reservas/index.html", reservas=reservas)
     return render_template("reservas/index.html", reservas=reservas)
+
+
+def sendConfirmationEmail(v, fecha_inicio, fecha_fin, precio):
+    user_data = user.get_user_by_id(session.get("user_id"))
+    msg = Message(
+        "Reserva Confirmada",
+        sender=current_app.config["MAIL_USERNAME"],
+        recipients=[user_data.email]
+    )
+    msg.body = f"""Vehículo: {v.marca} {v.modelo} {v.anio}\n
+Fecha de inicio: {fecha_inicio}\n
+Fecha de devolución: {fecha_fin}\n
+Precio: ${precio}\n
+\n
+Gracias por elegirnos!"""
+    mail.send(msg)

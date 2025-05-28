@@ -56,7 +56,7 @@ def login():
         if user_data and check_password_hash(user_data.password, data["password"]):
             # Redirigir según el rol
             if user_data.role.name == "admin":
-                session["pending_admin_email"] = user_data.email  # Guardar email temporalmente
+                session["pending_admin_email"] = user_data.email  #TODO: probar si esta linea esta demas
                 code = str(random.randint(100000, 999999))
                 session["2fa_code"] = code
                 session["temp_user_id"] = user_data.id
