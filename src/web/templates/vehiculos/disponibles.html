@@ -87,16 +87,16 @@
       {% for item in modelos %}
         <div class="col-12 col-md-6 col-lg-4 d-flex">
           <div class="card w-100 border-secondary">
-            <div class="card-header text-center bg-dark text-white">
-              {{ item.modelo }}
+            <div class="card-header text-center bg-dark text-white" style="font-size: 1.5rem; padding: 1.25rem 0;">
+              <strong>{{ item.marca }}</strong>
+              <Strong>{{ item.modelo_nombre }}</Strong>
             </div>
             <div class="d-flex justify-content-center align-items-center" style="height:210px;">
               <img src="{{ url_for('static', filename='images/' ~ (item.imagen or 'default.png')) }}"
-                   class="card-img-top" alt="{{ item.modelo }}"
+                   class="card-img-top" alt="{{ item.modelo_nombre }}"
                    style="height:200px; width:auto; object-fit:contain;">
             </div>
             <div class="card-body text-center">
-              <p><strong>Marca:</strong> {{ item.marca }}</p>
               <p><strong>Categoría:</strong> {{ item.categoria }}</p>
               <p><strong>Asientos:</strong> {{ item.asientos }}</p>
               <div class="my-3">
@@ -108,7 +108,7 @@
                                   id=item.vehiculo.id,
                                   fecha_inicio=fecha_inicio,
                                   fecha_fin=fecha_fin,
-                                  precio_total=(item.precio * dias)/dias) }}"
+                                  precio_total=(item.precio * dias)) }}"
                  class="btn btn-info">
                 Ver detalle
               </a>

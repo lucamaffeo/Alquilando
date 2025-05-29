@@ -1,25 +1,29 @@
 {% extends "base_show.html" %}
 
-{% block header %}Vehículo: {{ vehiculo.marca }} {{ vehiculo.modelo }} {% endblock %}
+{% block header %}Vehículo: {{ vehiculo.marca }} {{ vehiculo.modelo_nombre() if vehiculo.modelo_nombre else vehiculo.modelo }}{% endblock %}
 
 {% block details %}
-
-<p><strong>Categoría:</strong> {{ vehiculo.categoria }}</p>
-<p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>   
-<p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</p>
-
-{% if vehiculo.imagen %}
-    <div class="mb-3">
-        <img src="{{ url_for('static', filename='images/' ~ vehiculo.imagen) }}" alt="Imagen del vehículo" style="max-width:300px;max-height:200px;object-fit:contain;">
+<div class="d-flex align-items-start">
+    <div class="flex-grow-1">
+        <p><strong>Categoría:</strong> {{ vehiculo.categoria }}</p>
+        <p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>
+        <p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</p>
+        {% if precio_total and dias %}
+            <p><strong>Fecha inicio:</strong> {{ fecha_inicio }}</p>
+            <p><strong>Fecha fin:</strong> {{ fecha_fin }}</p>
+            <p><strong>Precio total:</strong> ${{ precio_total }}</p>
+        {% else %}
+            <p><strong>Precio:</strong> ${{ vehiculo.precio }}</p>
+        {% endif %}
+        <div>
+            <a href="{{ url_for('reservas.pago', vehiculo_id=vehiculo.id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin) }}"
+                class="btn btn-success mt-2">Reservar</a>
+        </div>
     </div>
-{% endif %}
-
-{% if request.args.get('precio_total') %}
-    <p><strong>Precio total:</strong> ${{ request.args.get('precio_total') }}</p>
-{% endif %}
-
-<div>
-    <a href="{{ url_for('reservas.pago', vehiculo_id=vehiculo.id, fecha_inicio=request.args.get('fecha_inicio'), fecha_fin=request.args.get('fecha_fin')) }}"
-        class="btn btn-success mt-2">Reservar</a>
+    {% if vehiculo.imagen %}
+        <div class="ms-4">
+            <img src="{{ url_for('static', filename='images/' ~ vehiculo.imagen) }}" alt="Imagen del vehículo" style="max-width:500px;max-height:350px;object-fit:contain;">
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

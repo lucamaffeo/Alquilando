@@ -170,8 +170,17 @@ def disponibles():
     modelos_azar = []
     for key, datos in modelos.items():
         vehiculo_azar = random.choice(datos["vehiculos"])
+        # Obtener el nombre del modelo
+        modelo_nombre = ""
+        try:
+            modelo_obj = Modelo.query.get(vehiculo_azar.modelo_id)
+            if modelo_obj:
+                modelo_nombre = modelo_obj.nombre
+        except Exception:
+            modelo_nombre = str(vehiculo_azar.modelo_id)
         modelos_azar.append({
             "modelo": vehiculo_azar.modelo_id,
+            "modelo_nombre": modelo_nombre,
             "vehiculo": vehiculo_azar,
             "precio": vehiculo_azar.precio,
             "marca": vehiculo_azar.marca,
@@ -202,6 +211,31 @@ def categorias():
 @bp.route("/show_reserva/<int:id>")
 def show_reserva(id):
     v = vehiculo.get_vehiculo_by_id(id)
-    return render_template("vehiculos/show_reserva.html", vehiculo=v)
+    from flask import request
+    fecha_inicio = request.args.get("fecha_inicio")
+    fecha_fin = request.args.get("fecha_fin")
+    precio_total = None
+    precio_por_dia = None
+    dias = None
+    if fecha_inicio and fecha_fin and v:
+        from datetime import datetime
+        try:
+            fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+            fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d").date()
+            dias = (fecha_fin_dt - fecha_inicio_dt).days + 1
+            precio_total = int(v.precio) * dias
+            precio_por_dia = int(v.precio)
+        except Exception:
+            precio_total = v.precio
+            precio_por_dia = v.precio
+    return render_template(
+        "vehiculos/show_reserva.html",
+        vehiculo=v,
+        precio_total=precio_total,
+        precio_por_dia=precio_por_dia,
+        dias=dias,
+        fecha_inicio=fecha_inicio,
+        fecha_fin=fecha_fin
+    )
 
 
