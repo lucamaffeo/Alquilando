@@ -6,7 +6,7 @@
     <input type="hidden" name="vehiculo_id" value="{{ vehiculo.id }}">
     <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
     <input type="hidden" name="fecha_fin" value="{{ fecha_fin }}">
-    <p><strong>Vehículo:</strong> {{ vehiculo.marca }} {{ vehiculo.modelo }} ({{ vehiculo.categoria }})</p>
+    <p><strong>Vehículo:</strong> {{ vehiculo.marca }} {{ vehiculo.modelo_nombre() }} ({{ vehiculo.categoria }})</p>
 
     <p><strong>Fecha inicio:</strong> {{ fecha_inicio }}</p>
     <p><strong>Fecha fin:</strong> {{ fecha_fin }}</p>

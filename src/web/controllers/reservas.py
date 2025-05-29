@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
+from src.core.repositories import reserva
 from src.core.repositories.reserva import create_reserva, list_reservas_by_user, show_reserva
 from src.core.database import db
 from src.core.repositories import vehiculo, user
@@ -57,6 +58,22 @@ def pago():
             precio_total = int(v.precio) * dias
         except Exception:
             precio_total = v.precio
+
+    # --- Validación de disponibilidad antes de mostrar el formulario de pago o crear la reserva ---
+    disponible = True
+    if v and fecha_inicio and fecha_fin:
+        reservas = reserva.get_reservas_by_vehiculo(v.id)
+        for r in reservas:
+            if r.estado != "activa":
+                continue
+            # Si hay cruce de fechas, no está disponible
+            if not (fecha_fin_dt < r.fecha_inicio or fecha_inicio_dt > r.fecha_fin):
+                disponible = False
+                break
+    if not disponible:
+        flash("El vehículo ya fue reservado para esas fechas. Por favor, elija otro vehículo o fechas.", "error")
+        return redirect(url_for("global.inicio_global"))
+
     if request.method == "POST":
         # Simular fallo de conexión (10% de probabilidad)
         if random.random() < 0.1:
@@ -120,6 +137,14 @@ def pago():
         if not encontre:
             flash("Hubo un error por código de tarjeta inexistente", "error")
             return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+        # --- Validación de disponibilidad justo antes de crear la reserva (por si hubo concurrencia) ---
+        reservas = reserva.get_reservas_by_vehiculo(v.id)
+        for r in reservas:
+            if r.estado != "activa":
+                continue
+            if not (fecha_fin_dt < r.fecha_inicio or fecha_inicio_dt > r.fecha_fin):
+                flash("El vehículo ya fue reservado para esas fechas. Por favor, elija otro vehículo o fechas.", "error")
+                return redirect(url_for("global.inicio_global"))
         # Si todo OK, crear la reserva y redirigir a mis reservas
         create_reserva(
             vehiculo_id=vehiculo_id,
