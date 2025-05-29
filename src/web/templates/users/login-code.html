@@ -4,7 +4,7 @@
 <h1>Verificar código</h1>
 <form action="{{ url_for('auth.login_code') }}" method="POST">
     <label for="code">Código:</label>
-    <input type="text" name="code" required>
+    <input type="text" name="code" maxlength="6" minlength="6" required>
     <button type="submit">Verificar</button>
 </form>
 {% endblock %}
