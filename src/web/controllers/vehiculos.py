@@ -111,7 +111,6 @@ def delete(id):
 
 @bp.route("/disponibles", methods=["POST"])
 def disponibles():
-    
     fecha_inicio = request.form.get("fecha_inicio")
     fecha_fin = request.form.get("fecha_fin")
     sucursal_id = request.form.get("sucursal")
@@ -160,7 +159,6 @@ def disponibles():
         if filtro_categoria and v.categoria != filtro_categoria:
             continue
         filtrados.append(v)
-    # Agrupar por modelo (string)
     # Agrupar por modelo (después de aplicar filtros)
     modelos = {}
     for v in filtrados:
