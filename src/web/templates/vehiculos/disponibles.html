@@ -1,39 +1,126 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="mb-4 text-center">Vehículos disponibles del {{ fecha_inicio }} al {{ fecha_fin }}</h2>
-<div class="row justify-content-center">
-    {% set dias = (fecha_fin - fecha_inicio).days + 1 %}
-    {% for item in modelos %}
-    <div class="col-md-4 mb-4 d-flex align-items-stretch">
-        <div class="card border-main w-100">
-            <div class="card-header text-center" style="background:#1E2A38; color:#fff;">
-                {{ item.modelo }}
+  <h2 class="mb-4 text-center">
+    Vehículos disponibles del {{ fecha_inicio }} al {{ fecha_fin }}
+  </h2>
+
+  <!-- Botones de filtro -->
+  <div class="d-flex justify-content-center gap-2 mb-4">
+    <button class="btn btn-primary" id="btn-categoria" type="button">Filtrar por categoría</button>
+    <button class="btn btn-primary" id="btn-asientos" type="button">Filtrar por asientos</button>
+    <button class="btn btn-primary" id="btn-marca" type="button">Filtrar por marca</button>
+  </div>
+  <div class="text-center mb-4">
+  <form method="POST" action="{{ url_for('vehiculos.disponibles') }}" class="d-inline-block">
+    <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+    <input type="hidden" name="fecha_fin" value="{{ fecha_fin }}">
+    <input type="hidden" name="sucursal" value="{{ request.form.get('sucursal') }}">
+    <button class="btn btn-secondary" type="submit">Limpiar filtros</button>
+  </form>
+</div>
+
+  
+
+  <div id="filtro-categoria" class="text-center mb-4" style="display: none;">
+    <form method="POST" action="{{ url_for('vehiculos.disponibles') }}" class="d-inline-block">
+      <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+      <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
+      <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
+      <select name="categoria" class="form-select d-inline-block w-auto">
+        <option value="Sedan">Sedán</option>
+        <option value="SUV">SUV</option>
+        <option value="Hatchback">Hatchback</option>
+        <option value="Familiar">Familiar</option>
+        <option value="Cupe">Cupé</option>
+      </select>
+      <button class="btn btn-success" type="submit">Aplicar</button>
+    </form>
+  </div>
+
+  <div id="filtro-asientos" class="text-center mb-4" style="display: none;">
+    <form method="POST" action="{{ url_for('vehiculos.disponibles') }}" class="d-inline-block">
+      <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+      <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
+      <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
+      <select name="asientos" class="form-select d-inline-block w-auto">
+        <option value="2">2</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="7">7</option>
+      </select>
+      <button class="btn btn-success" type="submit">Aplicar</button>
+    </form>
+  </div>
+
+  <div id="filtro-marca" class="text-center mb-4" style="display: none;">
+    <form method="POST" action="{{ url_for('vehiculos.disponibles') }}" class="d-inline-block">
+      <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+      <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
+      <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
+      <select name="marca" class="form-select d-inline-block w-auto">
+        <option value="Toyota">Toyota</option>
+        <option value="Chevrolet">Chevrolet</option>
+        <option value="Ford">Ford</option>
+        <option value="Volkswagen">Volkswagen</option>
+      </select>
+      <button class="btn btn-success" type="submit">Aplicar</button>
+    </form>
+  </div>
+
+  <script>
+    function mostrarFiltro(id) {
+      ["filtro-categoria","filtro-asientos","filtro-marca"].forEach(f => {
+        document.getElementById(f).style.display = (f === id) ? "block" : "none";
+      });
+    }
+    document.getElementById("btn-categoria").onclick = () => mostrarFiltro("filtro-categoria");
+    document.getElementById("btn-asientos").onclick   = () => mostrarFiltro("filtro-asientos");
+    document.getElementById("btn-marca").onclick      = () => mostrarFiltro("filtro-marca");
+  </script>
+
+  <!-- Grilla de vehículos -->
+  {% set dias = (fecha_fin - fecha_inicio).days + 1 %}
+  {% if modelos %}
+    <div class="row g-4">
+      {% for item in modelos %}
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <div class="card w-100 border-secondary">
+            <div class="card-header text-center bg-dark text-white">
+              {{ item.modelo }}
             </div>
             <div class="d-flex justify-content-center align-items-center" style="height:210px;">
-                <img src="{{ url_for('static', filename='images/' ~ (item.imagen or 'default.png')) }}" class="card-img-top" alt="{{ item.modelo }}" style="height:200px; width:auto; object-fit:contain;">
+              <img src="{{ url_for('static', filename='images/' ~ (item.imagen or 'default.png')) }}"
+                   class="card-img-top" alt="{{ item.modelo }}"
+                   style="height:200px; width:auto; object-fit:contain;">
             </div>
             <div class="card-body text-center">
-                <p><strong>Marca:</strong> {{ item.marca }}</p>
-                <p><strong>Modelo:</strong> {{ item.modelo }}</p>
-                <p><strong>Categoría:</strong> {{ item.categoria }}</p>
-                <p><strong>Asientos:</strong> {{ item.asientos }}</p>
-                <div class="d-flex justify-content-center my-3">
-                    <span class="btn btn-main btn-lg" style="font-size:2rem; pointer-events:none;">
-                        ${{ item.precio * dias }} / {{ dias }} día{% if dias > 1 %}s{% endif %}
-                    </span>
-                </div>
-                <a href="{{ url_for('vehiculos.show_reserva', id=item.vehiculo.id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin, precio_total=(item.precio * dias)/dias) }}" class="btn btn-info mt-2">Ver detalle</a>
+              <p><strong>Marca:</strong> {{ item.marca }}</p>
+              <p><strong>Categoría:</strong> {{ item.categoria }}</p>
+              <p><strong>Asientos:</strong> {{ item.asientos }}</p>
+              <div class="my-3">
+                <span class="btn btn-outline-primary btn-lg" style="pointer-events:none;">
+                  ${{ (item.precio * dias)|round(2) }} / {{ dias }} día{% if dias > 1 %}s{% endif %}
+                </span>
+              </div>
+              <a href="{{ url_for('vehiculos.show_reserva',
+                                  id=item.vehiculo.id,
+                                  fecha_inicio=fecha_inicio,
+                                  fecha_fin=fecha_fin,
+                                  precio_total=(item.precio * dias)/dias) }}"
+                 class="btn btn-info">
+                Ver detalle
+              </a>
             </div>
+          </div>
         </div>
+      {% endfor %}
     </div>
-    {% else %}
-    <div class="col-12">
-        <div class="alert alert-warning">No hay vehículos disponibles para la búsqueda.</div>
-    </div>
-    {% endfor %}
-</div>
-<p class="text-center mt-3 text-muted" style="font-size:0.95rem;">
+  {% else %}
+    <div class="alert alert-warning text-center">No hay vehículos disponibles para la búsqueda.</div>
+  {% endif %}
+
+  <p class="text-center text-muted mt-4" style="font-size:0.9rem;">
     * La reserva corresponde a un vehículo del modelo seleccionado (solo la patente puede variar).
-</p>
+  </p>
 {% endblock %}

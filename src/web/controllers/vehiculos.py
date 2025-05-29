@@ -111,6 +111,7 @@ def delete(id):
 
 @bp.route("/disponibles", methods=["POST"])
 def disponibles():
+    
     fecha_inicio = request.form.get("fecha_inicio")
     fecha_fin = request.form.get("fecha_fin")
     sucursal_id = request.form.get("sucursal")
@@ -145,9 +146,24 @@ def disponibles():
                 break
         if disponible:
             disponibles.append(v)
-    # Agrupar por modelo (string)
-    modelos = {}
+      # Filtros opcionales
+    filtro_marca = request.form.get("marca")
+    filtro_asientos = request.form.get("asientos")
+    filtro_categoria = request.form.get("categoria")
+     # 🔎 Aplicar los filtros opcionales
+    filtrados = []
     for v in disponibles:
+        if filtro_marca and v.marca != filtro_marca:
+            continue
+        if filtro_asientos and str(v.asientos) != filtro_asientos:
+            continue
+        if filtro_categoria and v.categoria != filtro_categoria:
+            continue
+        filtrados.append(v)
+    # Agrupar por modelo (string)
+    # Agrupar por modelo (después de aplicar filtros)
+    modelos = {}
+    for v in filtrados:
         key = v.modelo_id
         if key not in modelos:
             modelos[key] = {"vehiculos": []}
@@ -165,7 +181,15 @@ def disponibles():
             "asientos": vehiculo_azar.asientos,
             "imagen": vehiculo_azar.imagen
         })
-    return render_template("vehiculos/disponibles.html", modelos=modelos_azar, fecha_inicio=fecha_inicio_dt, fecha_fin=fecha_fin_dt)
+    return render_template(
+        "vehiculos/disponibles.html",
+        modelos=modelos_azar,
+        fecha_inicio=fecha_inicio_dt,
+        fecha_fin=fecha_fin_dt,
+        filtro_marca=filtro_marca,
+        filtro_asientos=filtro_asientos,
+        filtro_categoria=filtro_categoria
+    )
 
 @bp.route("/categorias")
 def categorias():
