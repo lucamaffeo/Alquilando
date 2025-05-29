@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
-from src.core.repositories.reserva import create_reserva, list_reservas_by_user
+from src.core.repositories.reserva import create_reserva, list_reservas_by_user, show_reserva
+from src.core.database import db
 from src.core.repositories import vehiculo, user
 from src.web.helpers.auth import has_permission
 from datetime import datetime
@@ -132,6 +133,23 @@ def mis_reservas():
     if not reservas:
         return render_template("reservas/index.html", reservas=reservas)
     return render_template("reservas/index.html", reservas=reservas)
+
+@bp.route("/cancelar/<int:reserva_id>", methods=["POST"])
+@has_permission("reserva_delete")
+def cancelar_reserva(reserva_id):
+    user_id = session.get("user_id")
+    user_role = session.get("user_role")
+    reserva = show_reserva(reserva_id)
+    if not reserva or reserva.user_id != user_id or user_role != "usuario registrado":
+        flash("No tienes permiso para cancelar esta reserva.", "error")
+        return redirect(url_for("reservas.mis_reservas"))
+    if reserva.estado == "cancelada":
+        flash("La reserva ya fue cancelada.", "info")
+        return redirect(url_for("reservas.mis_reservas"))
+    reserva.estado = "cancelada"
+    db.session.commit()
+    flash("Reserva cancelada exitosamente.", "success")
+    return redirect(url_for("reservas.mis_reservas"))
 
 
 def sendConfirmationEmail(v, fecha_inicio, fecha_fin, precio):

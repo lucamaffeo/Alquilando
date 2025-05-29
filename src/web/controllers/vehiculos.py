@@ -136,6 +136,9 @@ def disponibles():
         reservas = reserva.get_reservas_by_vehiculo(v.id)
         disponible = True
         for r in reservas:
+            # Solo considerar reservas activas
+            if r.estado != "activa":
+                continue
             # Si hay cruce de fechas, no está disponible
             if not (fecha_fin_dt < r.fecha_inicio or fecha_inicio_dt > r.fecha_fin):
                 disponible = False
