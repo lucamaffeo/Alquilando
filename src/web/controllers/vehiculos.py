@@ -12,8 +12,15 @@ bp = Blueprint("vehiculos", __name__, url_prefix="/vehiculos")
 @bp.route("/")
 @has_permission("vehicle_index")
 def index():
-    vehiculos_list = vehiculo.list_vehiculos()
-    return render_template("vehiculos/index.html", vehiculos=vehiculos_list)
+    patente = request.args.get("patente", "").strip()
+    mensaje = None
+    if patente:
+        vehiculos_list = vehiculo.list_vehiculos(patente=patente)
+        if not vehiculos_list:
+            mensaje = f"No existe un vehículo con la patente '{patente}'."
+    else:
+        vehiculos_list = vehiculo.list_vehiculos()
+    return render_template("vehiculos/index.html", vehiculos=vehiculos_list, patente=patente, mensaje=mensaje)
 
 @bp.route("/<int:id>")
 @has_permission("vehicle_show")

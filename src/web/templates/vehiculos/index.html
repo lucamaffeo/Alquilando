@@ -1,7 +1,20 @@
 {% extends "base_index.html" %}
 
-{% block header %}
-Listado de Vehículos 
+{% block extra_content %}
+<h2 class="mb-4 text-center">Listado de Vehículos</h2>
+<div class="row mb-3">
+    <div class="col-md-8 mx-auto">
+        <form method="GET" action="{{ url_for('vehiculos.index') }}">
+            <div class="input-group">
+                <input type="text" name="patente" class="form-control" placeholder="Buscar vehículo por patente" value="{{ patente or '' }}">
+                <button class="btn btn-info btn-sm" type="submit">Buscar</button>
+            </div>
+        </form>
+        {% if mensaje %}
+            <div class="alert alert-warning mt-2">{{ mensaje }}</div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
 
 {% block table_header %}
@@ -32,8 +45,7 @@ Listado de Vehículos
     <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
     <td>{{ "Activo" if not vehiculo.en_mantenimiento else "En mantenimiento" }}</td>
     <td>
-        <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info">Ver detalle</a>
-        
+        <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info btn-sm">Ver detalle</a>
     </td>
 </tr>
 {% endfor %}
