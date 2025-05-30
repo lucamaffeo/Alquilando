@@ -113,9 +113,12 @@
                         {% if has_permission(session.get("user_id"), "user_create") %}
                         <a href="{{ url_for('usuarios.register') }}" class="nav-link"><Strong>Registrar usuario</Strong></a>
                         {% endif %}
+                        <!--
                         {% if has_permission(session.get("user_id"), "user_create_presencial") %}
                         <a href="{{ url_for('usuarios.register_presencial') }}" class="nav-link"><Strong>Registrar usuario presencial</Strong></a>
                         {% endif %}
+                        -->
+                    {% else %}
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
