@@ -1,4 +1,3 @@
-"Hola"
 **usuario registrado**
 mail: user@user.com
 password: 123456
