@@ -138,6 +138,7 @@
                     {% if session.get("user_id") %}
                         {% if session.get("user_role") == "usuario registrado" %} 
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">Ver Mis Reservas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.historial_reservas') }}">Historial de reservas</a></li>
                         {% endif %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a></li>

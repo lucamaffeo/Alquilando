@@ -172,10 +172,19 @@ def mis_reservas():
     if not user_id or user_role != "usuario registrado":
         flash("No tienes permiso para ver esta sección.", "error")
         return redirect(url_for("global.inicio_global"))
-    reservas = list_reservas_by_user(user_id)
-    if not reservas:
-        return render_template("reservas/index.html", reservas=reservas)
+    reservas = [r for r in reserva.list_reservas_by_user(user_id) if r.estado == "activa"]
     return render_template("reservas/index.html", reservas=reservas)
+
+@bp.route("/historial-reservas")
+@has_permission("reserva_index")
+def historial_reservas():
+    user_id = session.get("user_id")
+    user_role = session.get("user_role")
+    if not user_id or user_role != "usuario registrado":
+        flash("No tienes permiso para ver esta sección.", "error")
+        return redirect(url_for("global.inicio_global"))
+    reservas = [r for r in reserva.list_reservas_by_user(user_id) if r.estado in ("finalizada", "cancelada")]
+    return render_template("reservas/historial.html", reservas=reservas)
 
 @bp.route("/cancelar/<int:reserva_id>", methods=["POST"])
 @has_permission("reserva_delete")
