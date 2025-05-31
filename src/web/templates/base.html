@@ -120,9 +120,6 @@
                         {% if has_permission(session.get("user_id"), "vehicle_create") %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.register') }}"><strong>Registrar vehículo</strong></a></li>
                         {% endif %}
-                        
-
-
                         {% if has_permission(session.get("user_id"), "user_create") %}
                         <a href="{{ url_for('usuarios.register') }}" class="nav-link"><Strong>Registrar usuario</Strong></a>
                         {% endif %}
@@ -136,15 +133,16 @@
                 </ul>
                 <ul class="navbar-nav">
                     {% if session.get("user_id") %}
-                        {% if session.get("user_role") == "usuario registrado" %} 
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">Ver Mis Reservas</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.historial_reservas') }}">Historial de reservas</a></li>
-                        {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a></li>
+                    {% if session.get("user_role") == "usuario registrado" %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">Ver Mis Reservas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.historial_reservas') }}">Historial de reservas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('global.inicio_global') }}">Inicio</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.login') }}">Iniciar Sesión</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.register') }}">Registrarse</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.login') }}">Iniciar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.register') }}">Registrarse</a></li>
                     {% endif %}
                 </ul>
             </div>
