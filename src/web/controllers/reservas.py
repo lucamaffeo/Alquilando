@@ -198,23 +198,68 @@ def cancelar_reserva(reserva_id):
     if reserva.estado == "cancelada":
         flash("La reserva ya fue cancelada.", "info")
         return redirect(url_for("reservas.mis_reservas"))
+
+    # Calcular monto a reembolsar según la política de cancelación
+    vehiculo = reserva.vehiculo
+    modelo = vehiculo.modelo_rel
+    politica = modelo.politica_cancelacion if modelo and modelo.politica_cancelacion else "Sin reembolso"
+    dias = (reserva.fecha_fin - reserva.fecha_inicio).days + 1 if reserva.fecha_inicio and reserva.fecha_fin else 1
+    total = vehiculo.precio * dias
+
+    if politica == "100% de reembolso":
+        reembolso = total
+    elif politica == "20% de reembolso":
+        reembolso = total * 0.2
+    else:
+        reembolso = 0
+
+    # Cambiar estado
     reserva.estado = "cancelada"
     db.session.commit()
-    flash("Reserva cancelada exitosamente.", "success")
+
+    # Enviar mail informativo
+    sendCancelationEmail(reserva, total, reembolso, politica)
+
+    flash(f"Reserva cancelada exitosamente. Se enviará un mail con el detalle del reembolso.", "success")
     return redirect(url_for("reservas.mis_reservas"))
 
 
 def sendConfirmationEmail(v, fecha_inicio, fecha_fin, precio):
     user_data = user.get_user_by_id(session.get("user_id"))
+    modelo = v.modelo_rel.nombre if v.modelo_rel else "Desconocido"
     msg = Message(
         "Reserva Confirmada",
         sender=current_app.config["MAIL_USERNAME"],
         recipients=[user_data.email]
     )
-    msg.body = f"""Vehículo: {v.marca} {v.modelo_id} {v.anio}\n
+    msg.body = f"""Reserva confirmada!
+    
+Vehículo: {v.marca} {modelo} {v.anio}\n
 Fecha de inicio: {fecha_inicio}\n
 Fecha de devolución: {fecha_fin}\n
 Precio: ${precio}\n
 \n
 Gracias por elegirnos!"""
+    mail.send(msg)
+
+def sendCancelationEmail(reserva, total, reembolso, politica):
+    user_data = reserva.user
+    vehiculo = reserva.vehiculo
+    modelo = vehiculo.modelo_rel
+    msg = Message(
+        "Cancelación de Reserva",
+        sender=current_app.config["MAIL_USERNAME"],
+        recipients=[user_data.email]
+    )
+    msg.body = f"""Tu reserva ha sido cancelada.
+
+Vehículo: {vehiculo.marca} {modelo.nombre if modelo else ''} {vehiculo.anio}
+Fecha de inicio: {reserva.fecha_inicio}
+Fecha de devolución: {reserva.fecha_fin}
+Precio total: ${total}
+Política de Cancelación: {politica}
+Monto a reembolsar: ${reembolso:.2f}
+
+Gracias por elegirnos.
+"""
     mail.send(msg)
