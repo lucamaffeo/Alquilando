@@ -12,6 +12,9 @@
         <p><strong>Categoría:</strong> {{ vehiculo.categoria }}</p>
         <p><strong>Asientos:</strong> {{ vehiculo.asientos }}</p>
         <p><strong>Sucursal:</strong> {{ vehiculo.sucursal.nombre }}</p>
+        <p><strong>Política de Cancelación:</strong>
+            {{ vehiculo.modelo_rel.politica_cancelacion if vehiculo.modelo_rel and vehiculo.modelo_rel.politica_cancelacion else "Sin reembolso" }}
+        </p>
         <p><strong>Estado:</strong> {{ vehiculo.estado() }}</p>
         <div><!--
             {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}

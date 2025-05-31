@@ -37,11 +37,16 @@ def register():
     if request.method == "POST":
         data = request.form
         modelo_nombre = data["modelo"].strip()
+        politica_cancelacion = data.get("politica_cancelacion", "Sin reembolso")
+        # Validar política de cancelación
+        if politica_cancelacion not in ["100% de reembolso", "20% de reembolso", "Sin reembolso"]:
+            flash("Política de cancelación inválida.", "error")
+            return render_template("vehiculos/register.html", vehiculo=v, is_update=bool(v), sucursales=sucursales)
         from src.core.models.modelo import Modelo
         from src.core.database import db
-        modelo_obj = Modelo.query.filter_by(nombre=modelo_nombre).first()
+        modelo_obj = Modelo.query.filter_by(nombre=modelo_nombre, politica_cancelacion=politica_cancelacion).first()
         if not modelo_obj:
-            modelo_obj = Modelo(nombre=modelo_nombre)
+            modelo_obj = Modelo(nombre=modelo_nombre, politica_cancelacion=politica_cancelacion)
             db.session.add(modelo_obj)
             db.session.commit()
         modelo_id = modelo_obj.id
