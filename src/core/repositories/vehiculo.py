@@ -76,3 +76,21 @@ def list_vehiculos(aptos=False):
     if aptos:
         query = query.filter_by(en_mantenimiento=False)
     return query.all()
+
+def list_marcas():
+    """
+    Lista todas las marcas de vehículos.
+    """
+    return db.session.query(Vehiculo.marca).distinct().all()
+
+def list_categorias():
+    """
+    Lista todas las categorías de vehículos.
+    """
+    return db.session.query(Vehiculo.categoria).distinct().all()
+
+def list_asientos():
+    """
+    Lista todas las configuraciones de asientos de vehículos.
+    """
+    return db.session.query(Vehiculo.asientos).distinct().all()

@@ -28,11 +28,10 @@
       <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
       <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
       <select name="categoria" class="form-select d-inline-block w-auto">
-        <option value="Sedan">Sedán</option>
-        <option value="SUV">SUV</option>
-        <option value="Hatchback">Hatchback</option>
-        <option value="Familiar">Familiar</option>
-        <option value="Cupe">Cupé</option>
+        <option value="">Seleccione una categoría</option>
+        {% for c in categoria_vehiculos %}
+          <option value="{{ c.categoria }}">{{ c.categoria }}</option>
+        {% endfor %}
       </select>
       <button class="btn btn-success" type="submit">Aplicar</button>
     </form>
@@ -44,10 +43,10 @@
       <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
       <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
       <select name="asientos" class="form-select d-inline-block w-auto">
-        <option value="2">2</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="7">7</option>
+        <option value="">Seleccione cantidad de asientos</option>
+            {% for a in asientos_vehiculos %}
+            <option value="{{ a.asientos }}">{{ a.asientos }} Asientos</option>
+            {% endfor %}
       </select>
       <button class="btn btn-success" type="submit">Aplicar</button>
     </form>
@@ -59,11 +58,10 @@
       <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
       <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
       <select name="marca" class="form-select d-inline-block w-auto">
-        <option value="Toyota">Toyota</option>
-        <option value="Chevrolet">Chevrolet</option>
-        <option value="Ford">Ford</option>
-        <option value="Volkswagen">Volkswagen</option>
-        <option value="Renault">Renault</option>
+          <option value="">Seleccione una marca</option>
+                    {% for m in marca_vehiculos %}
+                    <option value="{{ m.marca }}">{{ m.marca }}</option>
+                    {% endfor %}
       </select>
       <button class="btn btn-success" type="submit">Aplicar</button>
     </form>

@@ -127,6 +127,9 @@ def disponibles():
         flash("La fecha fin no puede ser menor a la fecha inicio.", "error")
         return redirect(url_for("global.inicio_global"))
     vehiculos_sucursal = vehiculo.list_vehiculos()
+    marca_vehiculos=vehiculo.list_marcas()
+    categoria_vehiculos = vehiculo.list_categorias()
+    asientos_vehiculos = vehiculo.list_asientos()
     disponibles = []
     for v in vehiculos_sucursal:
         if v.sucursal_id != int(sucursal_id):
@@ -195,7 +198,10 @@ def disponibles():
         fecha_fin=fecha_fin_dt,
         filtro_marca=filtro_marca,
         filtro_asientos=filtro_asientos,
-        filtro_categoria=filtro_categoria
+        filtro_categoria=filtro_categoria,
+        marca_vehiculos=marca_vehiculos,
+        categoria_vehiculos=categoria_vehiculos,
+        asientos_vehiculos=asientos_vehiculos
     )
 
 @bp.route("/categorias")
