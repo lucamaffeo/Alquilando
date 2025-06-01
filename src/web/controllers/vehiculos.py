@@ -203,9 +203,15 @@ def disponibles():
             "asientos": vehiculo_azar.asientos,
             "imagen": vehiculo_azar.imagen
         })
+    orden = request.form.get("orden", "asc")
+    # Ordeno la tabla segun los datos obtenidos
+    if orden == "asc":
+        modelos_ordenados = sorted(modelos_azar, key=lambda x: x["vehiculo"].precio)
+    else:
+        modelos_ordenados = sorted(modelos_azar, key=lambda x: x["vehiculo"].precio, reverse=True)
     return render_template(
         "vehiculos/disponibles.html",
-        modelos=modelos_azar,
+        modelos=modelos_ordenados,
         fecha_inicio=fecha_inicio_dt,
         fecha_fin=fecha_fin_dt,
         filtro_marca=filtro_marca,

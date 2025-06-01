@@ -67,6 +67,32 @@
     </form>
   </div>
 
+  <!-- Formulario de ordenamiento -->
+<div class="text-center mb-4">
+  <form method="POST" action="{{ url_for('vehiculos.disponibles') }}" class="d-inline-block">
+    <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+    <input type="hidden" name="fecha_fin" value="{{ fecha_fin }}">
+    <input type="hidden" name="sucursal" value="{{ request.form.get('sucursal') }}">
+    {% if request.form.get('categoria') %}
+      <input type="hidden" name="categoria" value="{{ request.form.get('categoria') }}">
+    {% endif %}
+    {% if request.form.get('asientos') %}
+      <input type="hidden" name="asientos" value="{{ request.form.get('asientos') }}">
+    {% endif %}
+    {% if request.form.get('marca') %}
+      <input type="hidden" name="marca" value="{{ request.form.get('marca') }}">
+    {% endif %}
+
+    <label for="orden" class="me-2">Ordenar precios por:</label>
+    <select name="orden" id="orden" class="me-3 d-inline-block w-auto">
+      <option value="asc" {% if request.form.get('orden') == 'asc' %}selected{% endif %}>Menor a mayor</option>
+      <option value="desc" {% if request.form.get('orden') == 'desc' %}selected{% endif %}>Mayor a menor</option>
+    </select>
+    <button class="btn btn-primary" type="submit">Ordenar</button>
+  </form>
+</div>
+
+  
   <script>
     function mostrarFiltro(id) {
       ["filtro-categoria","filtro-asientos","filtro-marca"].forEach(f => {
