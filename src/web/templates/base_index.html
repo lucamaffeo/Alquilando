@@ -18,15 +18,15 @@
     </nav>
     <main>
         {% block content %}
-        <h1>{% block header %}Listado{% endblock %}</h1>
-        <table>
-            <thead>
-                {% block table_header %}{% endblock %}
-            </thead>
-            <tbody>
-                {% block table_body %}{% endblock %}
-            </tbody>
-        </table>
+            {% block extra_content %}{% endblock %}
+            <table class="table table-bordered text-center" style="background-color: #e3f2fd;">
+                <thead>
+                    {% block table_header %}{% endblock %}
+                </thead>
+                <tbody>
+                    {% block table_body %}{% endblock %}
+                </tbody>
+            </table>
         {% endblock %}
     </main>
 </body>

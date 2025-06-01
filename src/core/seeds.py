@@ -61,6 +61,16 @@ def run():
         dni="77777777",
         fecha_nacimiento="2000-01-01",
     )
+    admin4 = create_user(
+        nombre="admin4",
+        email="guillehelfer@gmail.com",
+        password="admin123",  # Cambiado a 8 caracteres
+        role_id=1,
+        apellido="Helfer",
+        telefono="123346568",
+        dni="45034325",
+        fecha_nacimiento="2000-01-01",
+    )
     admin2 = create_user(
         nombre="admin2",
         email="diamondcodedev@gmail.com",
@@ -124,10 +134,11 @@ def run():
 
     # Crear modelos (si no existen)
     from src.core.models.modelo import Modelo
-    def get_or_create_modelo(nombre):
-        modelo = Modelo.query.filter_by(nombre=nombre).first()
+
+    def get_or_create_modelo(nombre, politica_cancelacion):
+        modelo = Modelo.query.filter_by(nombre=nombre, politica_cancelacion=politica_cancelacion).first()
         if not modelo:
-            modelo = Modelo(nombre=nombre)
+            modelo = Modelo(nombre=nombre, politica_cancelacion=politica_cancelacion)
             db.session.add(modelo)
             db.session.commit()
         return modelo
@@ -135,45 +146,149 @@ def run():
     # Crear vehículos para ambas sucursales
     # Sucursal 1
     create_vehiculo(
-        patente="ABC123", modelo_id=get_or_create_modelo("Corolla").id, marca="Toyota", categoria="Sedan", asientos=5, precio=20000, anio=2020, sucursal_id=sucursal1.id, imagen="Toyota_Corolla.png"
+        patente="ABC123",
+        modelo_id=get_or_create_modelo("Corolla", "100% de reembolso").id,
+        marca="Toyota",
+        categoria="Sedan",
+        asientos=5,
+        precio=20000,
+        anio=2020,
+        sucursal_id=sucursal1.id,
+        imagen="Toyota_Corolla.png"
     )
     create_vehiculo(
-        patente="DEF456", modelo_id=get_or_create_modelo("Focus").id, marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal1.id, imagen="Ford_Focus.png"
+        patente="DEF456",
+        modelo_id=get_or_create_modelo("Focus", "20% de reembolso").id,
+        marca="Ford",
+        categoria="Sedan",
+        asientos=5,
+        precio=18000,
+        anio=2019,
+        sucursal_id=sucursal1.id,
+        imagen="Ford_Focus.png"
     )
     create_vehiculo(
-        patente="SED111", modelo_id=get_or_create_modelo("Fluence").id, marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal1.id, imagen="Renault_Fluence.png"
+        patente="SED111",
+        modelo_id=get_or_create_modelo("Fluence", "Sin reembolso").id,
+        marca="Renault",
+        categoria="Sedan",
+        asientos=5,
+        precio=21000,
+        anio=2021,
+        sucursal_id=sucursal1.id,
+        imagen="Renault_Fluence.png"
     )
     create_vehiculo(
-        patente="DSA242", modelo_id=get_or_create_modelo("Focus").id, marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal1.id, imagen="Ford_Focus.png"
+        patente="DSA242",
+        modelo_id=get_or_create_modelo("Focus", "20% de reembolso").id,
+        marca="Ford",
+        categoria="Sedan",
+        asientos=5,
+        precio=18000,
+        anio=2019,
+        sucursal_id=sucursal1.id,
+        imagen="Ford_Focus.png"
     )
     create_vehiculo(
-        patente="PKL205", modelo_id=get_or_create_modelo("Fluence").id, marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal1.id, imagen="Renault_Fluence.png"
+        patente="PKL205",
+        modelo_id=get_or_create_modelo("Fluence", "Sin reembolso").id,
+        marca="Renault",
+        categoria="Sedan",
+        asientos=5,
+        precio=21000,
+        anio=2021,
+        sucursal_id=sucursal1.id,
+        imagen="Renault_Fluence.png"
     )
 
     # Sucursal 2
     create_vehiculo(
-        patente="ABC456", modelo_id=get_or_create_modelo("Corolla").id, marca="Toyota", categoria="Sedan", asientos=5, precio=20000, anio=2020, sucursal_id=sucursal2.id, imagen="Toyota_Corolla.png"
+        patente="ABC456",
+        modelo_id=get_or_create_modelo("Corolla", "100% de reembolso").id,
+        marca="Toyota",
+        categoria="Sedan",
+        asientos=5,
+        precio=20000,
+        anio=2020,
+        sucursal_id=sucursal2.id,
+        imagen="Toyota_Corolla.png"
     )
     create_vehiculo(
-        patente="DEF789", modelo_id=get_or_create_modelo("Focus").id, marca="Ford", categoria="Sedan", asientos=5, precio=18000, anio=2019, sucursal_id=sucursal2.id, imagen="Ford_Focus.png"
+        patente="DEF789",
+        modelo_id=get_or_create_modelo("Focus", "20% de reembolso").id,
+        marca="Ford",
+        categoria="Sedan",
+        asientos=5,
+        precio=18000,
+        anio=2019,
+        sucursal_id=sucursal2.id,
+        imagen="Ford_Focus.png"
     )
     create_vehiculo(
-        patente="SED222", modelo_id=get_or_create_modelo("Fluence").id, marca="Renault", categoria="Sedan", asientos=5, precio=21000, anio=2021, sucursal_id=sucursal2.id, imagen="Renault_Fluence.png"
+        patente="SED222",
+        modelo_id=get_or_create_modelo("Fluence", "Sin reembolso").id,
+        marca="Renault",
+        categoria="Sedan",
+        asientos=5,
+        precio=21000,
+        anio=2021,
+        sucursal_id=sucursal2.id,
+        imagen="Renault_Fluence.png"
     )
     create_vehiculo(
-        patente="SUV555", modelo_id=get_or_create_modelo("CR-V").id, marca="Honda", categoria="SUV", asientos=7, precio=30000, anio=2022, sucursal_id=sucursal2.id, imagen="Honda_CRV.jpg"
+        patente="SUV555",
+        modelo_id=get_or_create_modelo("CR-V", "100% de reembolso").id,
+        marca="Honda",
+        categoria="SUV",
+        asientos=7,
+        precio=30000,
+        anio=2022,
+        sucursal_id=sucursal2.id,
+        imagen="Honda_CRV.jpg"
     )
     create_vehiculo(
-        patente="SUV666", modelo_id=get_or_create_modelo("SW4").id, marca="Toyota", categoria="SUV", asientos=7, precio=35000, anio=2023, sucursal_id=sucursal2.id, imagen="Toyota_Sw4.jpg"
+        patente="SUV666",
+        modelo_id=get_or_create_modelo("SW4", "20% de reembolso").id,
+        marca="Toyota",
+        categoria="SUV",
+        asientos=7,
+        precio=35000,
+        anio=2023,
+        sucursal_id=sucursal2.id,
+        imagen="Toyota_Sw4.jpg"
     )
     create_vehiculo(
-        patente="PKP444", modelo_id=get_or_create_modelo("Amarok").id, marca="Volkswagen", categoria="Pickup", asientos=5, precio=35000, anio=2022, sucursal_id=sucursal2.id, imagen="Volkswagen_Amarok.png"
+        patente="PKP444",
+        modelo_id=get_or_create_modelo("Amarok", "Sin reembolso").id,
+        marca="Volkswagen",
+        categoria="Pickup",
+        asientos=5,
+        precio=35000,
+        anio=2022,
+        sucursal_id=sucursal2.id,
+        imagen="Volkswagen_Amarok.png"
     )
     create_vehiculo(
-        patente="PKP555", modelo_id=get_or_create_modelo("Ranger").id, marca="Ford", categoria="Pickup", asientos=5, precio=34000, anio=2021, sucursal_id=sucursal2.id, imagen="Ford_Ranger.png"
+        patente="PKP555",
+        modelo_id=get_or_create_modelo("Ranger", "20% de reembolso").id,
+        marca="Ford",
+        categoria="Pickup",
+        asientos=5,
+        precio=34000,
+        anio=2021,
+        sucursal_id=sucursal2.id,
+        imagen="Ford_Ranger.png"
     )
     create_vehiculo(
-        patente="PKP666", modelo_id=get_or_create_modelo("Hilux").id, marca="Toyota", categoria="Pickup", asientos=5, precio=36000, anio=2023, sucursal_id=sucursal2.id, imagen="Toyota_Hillux.png"
+        patente="PKP666",
+        modelo_id=get_or_create_modelo("Hilux", "100% de reembolso").id,
+        marca="Toyota",
+        categoria="Pickup",
+        asientos=5,
+        precio=36000,
+        anio=2023,
+        sucursal_id=sucursal2.id,
+        imagen="Toyota_Hillux.png"
     )
    
     # Crear una reserva de ejemplo

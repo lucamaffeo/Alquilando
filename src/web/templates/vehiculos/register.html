@@ -48,6 +48,23 @@
                 {% endfor %}
             </select>
         </div>
+        <div class="col-md-6 mb-3">
+            <label for="politica_cancelacion" class="form-label">Política de Cancelación:</label>
+            <select class="form-select border-main" name="politica_cancelacion">
+                <option value="100% de reembolso"
+                    {% if is_update and vehiculo.modelo_rel and vehiculo.modelo_rel.politica_cancelacion == "100% de reembolso" %}selected{% endif %}>
+                    100% de reembolso
+                </option>
+                <option value="20% de reembolso"
+                    {% if is_update and vehiculo.modelo_rel and vehiculo.modelo_rel.politica_cancelacion == "20% de reembolso" %}selected{% endif %}>
+                    20% de reembolso
+                </option>
+                <option value="Sin reembolso"
+                    {% if is_update and (vehiculo.modelo_rel is none or vehiculo.modelo_rel.politica_cancelacion == "Sin reembolso") %}selected{% endif %}>
+                    Sin reembolso
+                </option>
+            </select>
+        </div>
     </div>
     <button type="submit" class="btn btn-main px-4">{% if is_update %}Actualizar{% else %}Guardar{% endif %}</button>
 </form>

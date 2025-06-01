@@ -26,7 +26,9 @@
             color: #fff !important;
         }
         nav.navbar .nav-link.active, nav.navbar .nav-link:hover {
-            color: #ffc107 !important;
+            color: black !important;
+            text-decoration: underline;
+            
         }
         .flashes {
             list-style: none;
@@ -58,8 +60,19 @@
             background: transparent !important;
         }
         .btn.btn-outline-main:hover {
-            background: #1E2A38 !important;
+            background: #0e151d !important;
             color: #fff !important;
+        }
+        /* --- HOVER PARA TODOS LOS BOTONES PERSONALIZADOS --- */
+        .btn-main:hover,
+        .btn.btn-primary:hover,
+        .btn.btn-success:hover,
+        .btn.btn-info:hover,
+        .btn.btn-warning:hover,
+        .btn.btn-danger:hover {
+            background-color: #11171c !important;
+            color: #fff !important;
+            border-color: #11171c !important;
         }
 
         /* Bordes de tablas y cuadros */
@@ -97,37 +110,46 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if not session.get("user_id") %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('global.inicio_global') }}"><strong>Inicio</strong></a></li>
+
+                    {% endif %}
                     {% if session.get("user_id") %}
+                        
+                        {% if session.get("user_role") == "usuario registrado" %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('global.inicio_global') }}"><strong>Inicio</strong></a></li>
+                        {% endif %}
                         {% if has_permission(session.get("user_id"), "vehicle_index") %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.index') }}"><strong>Vehículos</strong></a></li>
                         {% endif %}
-                        {%  if has_permission(session.get("user_id"), "user_index") %}
+                        {% if has_permission(session.get("user_id"), "user_index") %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.index') }}"><strong>Usuarios</strong></a></li>
                         {% endif %}
                         {% if has_permission(session.get("user_id"), "vehicle_create") %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.register') }}"><strong>Registrar vehículo</strong></a></li>
                         {% endif %}
-                        
-
-
                         {% if has_permission(session.get("user_id"), "user_create") %}
                         <a href="{{ url_for('usuarios.register') }}" class="nav-link"><Strong>Registrar usuario</Strong></a>
                         {% endif %}
+                        <!--
                         {% if has_permission(session.get("user_id"), "user_create_presencial") %}
                         <a href="{{ url_for('usuarios.register_presencial') }}" class="nav-link"><Strong>Registrar usuario presencial</Strong></a>
                         {% endif %}
+                        -->
+                    {% else %}
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if session.get("user_id") %}
-                        {% if session.get("user_role") == "usuario registrado" %} 
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">Ver Mis Reservas</a></li>
-                        {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a></li>
+                    {% if session.get("user_role") == "usuario registrado" %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">Ver Mis Reservas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.historial_reservas') }}">Historial de reservas</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.logout') }}">Cerrar Sesión</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.login') }}">Iniciar Sesión</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.register') }}">Registrarse</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.login') }}">Iniciar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.register') }}">Registrarse</a></li>
                     {% endif %}
                 </ul>
             </div>

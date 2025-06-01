@@ -1,6 +1,6 @@
 {% extends "base_index.html" %}
 
-{% block header %}Mis Reservas{% endblock %}
+{% block header %}Historial de Reservas{% endblock %}
 
 {% block table_body %}
 <div class="row justify-content-center">
@@ -8,7 +8,7 @@
         {% if reservas|length == 0 %}
             <div class="alert alert-info text-center mt-5 p-4 rounded shadow-sm">
                 <i class="bi bi-info-circle-fill me-2"></i>
-                No tienes reservas disponibles.
+                No tienes reservas finalizadas o canceladas.
             </div>
         {% else %}
             <ul class="list-group mt-4 shadow-sm">
@@ -30,25 +30,9 @@
                             </p>
                         </div>
                         <div class="text-end">
-                            <span class="badge" style="background-color: #1E2A38; color: #ffffff;">
+                            <span class="badge" style="background-color: #888; color: #ffffff;">
                                 <i class="bi bi-info-circle me-1"></i>{{ reserva.estado | capitalize }}
                             </span>
-                            <div class="mt-3 d-flex gap-2 justify-content-end">
-                                {% if reserva.estado == "activa" %}
-                                <form method="POST" action="{{ url_for('reservas.cancelar_reserva', reserva_id=reserva.id) }}" style="display:inline;">
-                                    
-                                <button class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas cancelar esta reserva?');">
-                                    <i class="bi bi-x-circle me-1"></i>Cancelar Reserva
-                                </button>
-                                </form>
-                                {% elif reserva.estado == "finalizada" %}
-                                {% endif %}
-                                <!--
-                                <button class="btn btn-main btn-sm" disabled>
-                                    <i class="bi bi-star me-1"></i>Calificar
-                                </button>
-                                -->
-                            </div>
                         </div>
                     </div>
                 </li>

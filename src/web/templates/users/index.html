@@ -1,7 +1,7 @@
 {% extends "base_index.html" %}
 
-{% block header %}
-Listado de Usuarios
+{% block extra_content %}
+<h2 class="mb-4 text-center">Listado de Usuarios</h2>
 {% endblock %}
 
 {% block table_header %}
@@ -25,7 +25,6 @@ Listado de Usuarios
     <td>{{ user.apellido }}</td>
     <td>{{ user.dni }}</td>
     <td>{{ user.telefono }}</td>
-
     {% if user.fecha_nacimiento %}
         <td>{{ user.fecha_nacimiento.strftime('%d/%m/%Y') }}</td>
     {% else %}

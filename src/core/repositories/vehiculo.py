@@ -68,13 +68,15 @@ def delete_vehiculo(vehiculo_id):
         return True
     return False
 
-def list_vehiculos(aptos=False):
+def list_vehiculos(aptos=False, patente=None):
     """
-    Lista todos los vehículos, con opción de filtrar solo los aptos.
+    Lista todos los vehículos, con opción de filtrar solo los aptos o por patente.
     """
     query = db.session.query(Vehiculo)
     if aptos:
         query = query.filter_by(en_mantenimiento=False)
+    if patente:
+        query = query.filter(Vehiculo.patente.ilike(f"%{patente}%"))
     return query.all()
 
 def list_marcas():
