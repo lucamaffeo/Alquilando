@@ -2,18 +2,25 @@
 
 {% block extra_content %}
 <h2 class="mb-4 text-center">Listado de Vehículos</h2>
-<div class="row mb-3">
+<div class="row mb-3 align-items-center">
     <div class="col-md-8 mx-auto">
         <form method="GET" action="{{ url_for('vehiculos.index') }}">
             <div class="input-group">
-                <input type="text" name="patente" class="form-control" placeholder="Buscar vehículo por patente" value="{{ patente or '' }}">
-                <button class="btn btn-info btn-sm" type="submit"> <i class="bi bi-search"></i> Buscar</button>
+                <input type="text" name="patente" class="form-control" placeholder="Buscar vehículo por patente" value="{{ patente or '' }}" disabled>
+                <button class="btn btn-info btn-sm disabled" type="submit"> <i class="bi bi-search"></i> Buscar</button>
             </div>
         </form>
         {% if mensaje %}
             <div class="alert alert-warning mt-2">{{ mensaje }}</div>
         {% endif %}
     </div>
+    {% if has_permission(session.get("user_id"), "vehicle_create") %}
+    <div class="col-md-4 text-end mt-2 mt-md-0">
+        <a class="btn btn-success" href="{{ url_for('vehiculos.register') }}">
+            <i class="bi bi-plus-circle"></i> Registrar vehículo
+        </a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 

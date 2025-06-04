@@ -16,19 +16,19 @@
             {{ vehiculo.modelo_rel.politica_cancelacion if vehiculo.modelo_rel and vehiculo.modelo_rel.politica_cancelacion else "Sin reembolso" }}
         </p>
         <p><strong>Estado:</strong> {{ vehiculo.estado() }}</p>
-        <div><!--
+        <div>
             {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}
-                <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-primary">Modificar vehículo</a>
+                <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-primary disabled" >Modificar vehículo</a>
             {% endif %}
             
             {% if has_permission(session.get("user_id"), "vehicle_cambiar_estado") %}
                 <form method="POST" action="{{ url_for('vehiculos.cambiar_estado', id=vehiculo.id) }}" style="display:inline;">
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-warning disabled">
                         {% if vehiculo.en_mantenimiento %}Pasar a Activo{% else %}Pasar a Mantenimiento{% endif %}
                     </button>
                 </form>
             {% endif %}
-            -->
+            
             {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_delete") %}
                 <form method="POST" action="{{ url_for('vehiculos.delete', id=vehiculo.id) }}" style="display:inline;">
                     <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este vehículo?');">Eliminar</button>

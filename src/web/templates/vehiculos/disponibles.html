@@ -28,7 +28,7 @@
       <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
       <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
       <select name="categoria" class="form-select d-inline-block w-auto">
-        <option value="">Seleccione una categoría</option>
+        
         {% for c in categoria_vehiculos %}
           <option value="{{ c.categoria }}">{{ c.categoria }}</option>
         {% endfor %}
@@ -43,7 +43,7 @@
       <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
       <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
       <select name="asientos" class="form-select d-inline-block w-auto">
-        <option value="">Seleccione cantidad de asientos</option>
+        
             {% for a in asientos_vehiculos %}
             <option value="{{ a.asientos }}">{{ a.asientos }} Asientos</option>
             {% endfor %}
@@ -58,7 +58,7 @@
       <input type="hidden" name="fecha_fin"     value="{{ fecha_fin }}">
       <input type="hidden" name="sucursal"       value="{{ request.form.get('sucursal') }}">
       <select name="marca" class="form-select d-inline-block w-auto">
-          <option value="">Seleccione una marca</option>
+          
                     {% for m in marca_vehiculos %}
                     <option value="{{ m.marca }}">{{ m.marca }}</option>
                     {% endfor %}

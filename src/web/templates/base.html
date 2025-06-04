@@ -180,9 +180,7 @@
                         {% if has_permission(session.get("user_id"), "sucursal_index") %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('sucursales.index') }}"><i class="bi bi-building"></i>Sucursales</a></li>
                         {% endif %}
-                        {% if has_permission(session.get("user_id"), "vehicle_create") %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.register') }}"><i class="bi bi-plus-circle"></i>Registrar vehículo</a></li>
-                        {% endif %}
+                        
                         {% if has_permission(session.get("user_id"), "user_create") %}
                         <a href="{{ url_for('usuarios.register') }}" class="nav-link"><i class="bi bi-person-plus"></i>Registrar usuario</a>
                         {% endif %}
