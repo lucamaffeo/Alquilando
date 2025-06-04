@@ -12,9 +12,22 @@ import random
 
 bp = Blueprint("reservas", __name__, url_prefix="/reservas")
 
+def actualizar_reservas_finalizadas(user_id):
+    from src.core.models.reserva import Reserva
+    hoy = datetime.now().date()
+    reservas_activas = Reserva.query.filter_by(user_id=user_id, estado="activa").all()
+    for r in reservas_activas:
+        if r.fecha_fin and r.fecha_fin < hoy:
+            r.estado = "finalizada"
+    from src.core.database import db
+    db.session.commit()
+
 @bp.route("/")
 @has_permission("reserva_index")
 def index():
+    user_id = session.get("user_id")
+    if user_id:
+        actualizar_reservas_finalizadas(user_id)
     reservas = list_reservas_by_user()
     return render_template("reservas/index.html", reservas=reservas)
 
@@ -172,6 +185,7 @@ def mis_reservas():
     if not user_id or user_role != "usuario registrado":
         flash("No tienes permiso para ver esta sección.", "error")
         return redirect(url_for("global.inicio_global"))
+    actualizar_reservas_finalizadas(user_id)
     reservas = [r for r in reserva.list_reservas_by_user(user_id) if r.estado == "activa"]
     return render_template("reservas/index.html", reservas=reservas)
 
@@ -183,6 +197,7 @@ def historial_reservas():
     if not user_id or user_role != "usuario registrado":
         flash("No tienes permiso para ver esta sección.", "error")
         return redirect(url_for("global.inicio_global"))
+    actualizar_reservas_finalizadas(user_id)
     reservas = [r for r in reserva.list_reservas_by_user(user_id) if r.estado in ("finalizada", "cancelada")]
     return render_template("reservas/historial.html", reservas=reservas)
 

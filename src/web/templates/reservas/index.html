@@ -5,6 +5,11 @@
 {% block table_body %}
 <div class="row justify-content-center">
     <div class="col-lg-10">
+        <div class="mb-4 d-flex justify-content-center">
+            <a href="{{ url_for('reservas.historial_reservas') }}" class="btn btn-info px-4 py-2" style="font-size:1.1rem;">
+                <i class="bi bi-clock-history me-1"></i>Historial de reservas
+            </a>
+        </div>
         {% if reservas|length == 0 %}
             <div class="alert alert-info text-center mt-5 p-4 rounded shadow-sm">
                 <i class="bi bi-info-circle-fill me-2"></i>

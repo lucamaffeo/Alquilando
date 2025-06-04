@@ -173,8 +173,8 @@ def run():
         marca="Renault",
         categoria="Sedan",
         asientos=5,
-        precio=21000,
-        anio=2021,
+        precio=19000,
+        anio=2019,
         sucursal_id=sucursal1.id,
         imagen="Renault_Fluence.png"
     )

@@ -84,7 +84,7 @@
     {% endif %}
 
     <label for="orden" class="me-2">Ordenar precios por:</label>
-    <select name="orden" id="orden" class="me-3 d-inline-block w-auto">
+    <select name="orden" id="orden" class="form-select d-inline-block w-auto">
       <option value="asc" {% if request.form.get('orden') == 'asc' %}selected{% endif %}>Menor a mayor</option>
       <option value="desc" {% if request.form.get('orden') == 'desc' %}selected{% endif %}>Mayor a menor</option>
     </select>
@@ -125,14 +125,14 @@
               <p><strong>Asientos:</strong> {{ item.asientos }}</p>
               <div class="my-3">
                 <span class="btn btn-outline-primary btn-lg" style="pointer-events:none;">
-                  ${{ (item.precio * dias)|round(2) }} / {{ dias }} día{% if dias > 1 %}s{% endif %}
+                  ${{ item.precio_total|round(2) }} / {{ dias }} día{% if dias > 1 %}s{% endif %}
                 </span>
               </div>
               <a href="{{ url_for('vehiculos.show_reserva',
                                   id=item.vehiculo.id,
                                   fecha_inicio=fecha_inicio,
                                   fecha_fin=fecha_fin,
-                                  precio_total=(item.precio * dias)) }}"
+                                  precio_total=item.precio_total) }}"
                  class="btn btn-info">
                 Ver detalle
               </a>
@@ -146,6 +146,8 @@
   {% endif %}
 
   <p class="text-center text-muted mt-4" style="font-size:0.9rem;">
+    * Los precios incluyen IVA y corresponden al total por el período seleccionado.<br>
+    * Los precios dependen del año y el estado del vehículo.  <br>
     * La reserva corresponde a un vehículo del modelo seleccionado (solo la patente puede variar).
   </p>
 {% endblock %}

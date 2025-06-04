@@ -174,41 +174,44 @@ def disponibles():
         if filtro_categoria and v.categoria != filtro_categoria:
             continue
         filtrados.append(v)
-    # Agrupar por modelo (después de aplicar filtros)
+    # Agrupar por modelo y precio total (después de aplicar filtros)
+    dias = (fecha_fin_dt - fecha_inicio_dt).days + 1
     modelos = {}
     for v in filtrados:
-        key = v.modelo_id
+        precio_total = int(v.precio) * dias
+        key = (v.modelo_id, precio_total)
         if key not in modelos:
             modelos[key] = {"vehiculos": []}
         modelos[key]["vehiculos"].append(v)
-    # Elegir uno al azar por modelo
+    # Elegir uno al azar por cada grupo (modelo, precio)
     modelos_azar = []
     for key, datos in modelos.items():
         vehiculo_azar = random.choice(datos["vehiculos"])
-        # Obtener el nombre del modelo
+        modelo_id, precio_total = key
         modelo_nombre = ""
         try:
-            modelo_obj = Modelo.query.get(vehiculo_azar.modelo_id)
+            modelo_obj = Modelo.query.get(modelo_id)
             if modelo_obj:
                 modelo_nombre = modelo_obj.nombre
         except Exception:
-            modelo_nombre = str(vehiculo_azar.modelo_id)
+            modelo_nombre = str(modelo_id)
         modelos_azar.append({
-            "modelo": vehiculo_azar.modelo_id,
+            "modelo": modelo_id,
             "modelo_nombre": modelo_nombre,
             "vehiculo": vehiculo_azar,
             "precio": vehiculo_azar.precio,
+            "precio_total": precio_total,
             "marca": vehiculo_azar.marca,
             "categoria": vehiculo_azar.categoria,
             "asientos": vehiculo_azar.asientos,
             "imagen": vehiculo_azar.imagen
         })
     orden = request.form.get("orden", "asc")
-    # Ordeno la tabla segun los datos obtenidos
+    # Ordenar por precio total
     if orden == "asc":
-        modelos_ordenados = sorted(modelos_azar, key=lambda x: x["vehiculo"].precio)
+        modelos_ordenados = sorted(modelos_azar, key=lambda x: x["precio_total"])
     else:
-        modelos_ordenados = sorted(modelos_azar, key=lambda x: x["vehiculo"].precio, reverse=True)
+        modelos_ordenados = sorted(modelos_azar, key=lambda x: x["precio_total"], reverse=True)
     return render_template(
         "vehiculos/disponibles.html",
         modelos=modelos_ordenados,
