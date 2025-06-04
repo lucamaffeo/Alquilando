@@ -14,6 +14,10 @@ def run():
     user_delete = create_permission(nombre="user_delete")
     user_create_presencial = create_permission(nombre="user_create_presencial")
     
+    # Permisos de sucursal
+    sucursal_index = create_permission(nombre="sucursal_index")
+    sucursal_show = create_permission(nombre="sucursal_show")
+    sucursal_create = create_permission(nombre="sucursal_create")
 
     # Crear permisos de vehículos
     vehicle_index = create_permission(nombre="vehicle_index")
@@ -31,7 +35,8 @@ def run():
     # Crear roles
     admin_role = create_role(name="admin", permissions=[
         user_index, user_show, user_update, user_delete,
-        vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index
+        vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index,
+        sucursal_index, sucursal_show, sucursal_create
     ])
     usuario_role = create_role(name="usuario registrado", permissions=[
         user_show, user_update, reserva_index, reserva_show, reserva_delete,

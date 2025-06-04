@@ -17,6 +17,9 @@ def create_sucursal(**kwargs):
     """
     Crea una nueva sucursal.
     """
+    nombre = kwargs.get("nombre")
+    if nombre and Sucursal.query.filter_by(nombre=nombre).first():
+        raise ValueError("Ya existe una sucursal con ese nombre.")
     sucursal = Sucursal(**kwargs)
     db.session.add(sucursal)
     db.session.commit()

@@ -1,0 +1,8 @@
+{% extends "base_show.html" %}
+{% block header %}Sucursal: {{ sucursal.nombre }}{% endblock %}
+
+{% block details %}
+<p><strong>Nombre:</strong> {{ sucursal.nombre }}</p>
+<p><strong>Ubicación:</strong> {{ sucursal.ubicacion }}</p>
+
+{% endblock %}

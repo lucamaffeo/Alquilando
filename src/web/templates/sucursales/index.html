@@ -2,24 +2,28 @@
 
 {% block header %}Listado de Sucursales{% endblock %}
 
+{% block extra_content %}
+    {% if session.get("user_role") == "admin" %}
+        <div class="mb-3 text-end">
+            <a href="{{ url_for('sucursales.register') }}" class="btn btn-main">
+                <i class="bi bi-plus-circle"></i> Registrar sucursal
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block table_header %}
 <tr>
-    <th>ID</th>
     <th>Nombre</th>
     <th>Ubicación</th>
-    <th>Acciones</th>
 </tr>
 {% endblock %}
 
 {% block table_body %}
 {% for sucursal in sucursales %}
 <tr>
-    <td>{{ sucursal.id }}</td>
     <td>{{ sucursal.nombre }}</td>
     <td>{{ sucursal.ubicacion }}</td>
-    <td>
-        <a href="{{ url_for('sucursales.show', id=sucursal.id) }}" class="btn btn-info">Ver</a>
-    </td>
 </tr>
 {% endfor %}
 {% endblock %}
