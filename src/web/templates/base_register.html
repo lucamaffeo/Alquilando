@@ -1,9 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<form method="POST" enctype="multipart/form-data">
-    {% block form_fields %}{% endblock %}
-    <button type="submit">{% block submit_button %}Registrar{% endblock %}</button>
-</form>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="w-100" style="max-width: 1000px;">
+        <form method="POST" enctype="multipart/form-data" class="p-4 rounded border border-main shadow-sm bg-white mx-auto">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10">
+                    {% block form_fields %}{% endblock %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-main px-4">{% block submit_button %}Registrar{% endblock %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

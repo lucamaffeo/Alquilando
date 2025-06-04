@@ -1,34 +1,46 @@
 {% extends "base_register.html" %}
 
 {% block content %}
-<h1 class="mb-4">Registro Usuario Presencial</h1>
-<form method="POST" enctype="multipart/form-data" class="p-4 rounded border border-main shadow-sm" style="background:#fff; max-width:700px;">
-    <div class="row mb-3">
-        <div class="col-md-6 mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input type="email" class="form-control border-main" name="email" value="{{ user.email if user else '' }}" required>
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento:</label>
-            <input type="date" class="form-control border-main" name="fecha_nacimiento" value="{{ user.fecha_nacimiento if user else '' }}" required>
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="nombre" class="form-label">Nombre:</label>
-            <input type="text" class="form-control border-main" name="nombre" value="{{ user.nombre if user else '' }}" required>
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="apellido" class="form-label">Apellido:</label>
-            <input type="text" class="form-control border-main" name="apellido" value="{{ user.apellido if user else '' }}" required>
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="dni" class="form-label">DNI:</label>
-            <input type="text" class="form-control border-main" name="dni" value="{{ user.dni if user else '' }}" required>
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="telefono" class="form-label">Teléfono (opcional):</label>
-            <input type="tel" class="form-control border-main" name="telefono" value="{{ user.telefono if user else '' }}">
-        </div>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="w-100" style="max-width: 1000px;">
+        <h1 class="mb-4 text-center titulo-principal">Registro Usuario Presencial</h1>
+        <form method="POST" enctype="multipart/form-data" class="p-4 rounded border border-main shadow-sm bg-white mx-auto">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10">
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" class="form-control border-main" name="email" value="{{ user.email if user else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento:</label>
+                            <input type="date" class="form-control border-main" name="fecha_nacimiento" value="{{ user.fecha_nacimiento if user else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="nombre" class="form-label">Nombre:</label>
+                            <input type="text" class="form-control border-main" name="nombre" value="{{ user.nombre if user else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="apellido" class="form-label">Apellido:</label>
+                            <input type="text" class="form-control border-main" name="apellido" value="{{ user.apellido if user else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dni" class="form-label">DNI:</label>
+                            <input type="text" class="form-control border-main" name="dni" value="{{ user.dni if user else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="telefono" class="form-label">Teléfono (opcional):</label>
+                            <input type="tel" class="form-control border-main" name="telefono" value="{{ user.telefono if user else '' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-main px-4">Registrar Usuario</button>
+                </div>
+            </div>
+        </form>
     </div>
-    <button type="submit" class="btn btn-main px-4">Registrar Usuario</button>
-</form>
+</div>
 {% endblock %}

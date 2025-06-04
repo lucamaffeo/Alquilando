@@ -7,7 +7,7 @@
         <form method="GET" action="{{ url_for('vehiculos.index') }}">
             <div class="input-group">
                 <input type="text" name="patente" class="form-control" placeholder="Buscar vehículo por patente" value="{{ patente or '' }}">
-                <button class="btn btn-info btn-sm" type="submit">Buscar</button>
+                <button class="btn btn-info btn-sm" type="submit"> <i class="bi bi-search"></i> Buscar</button>
             </div>
         </form>
         {% if mensaje %}
@@ -45,7 +45,7 @@
     <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
     <td>{{ "Activo" if not vehiculo.en_mantenimiento else "En mantenimiento" }}</td>
     <td>
-        <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info btn-sm">Ver detalle</a>
+        <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info btn-sm"><i class="bi bi-car-front"></i> Ver detalle</a>
     </td>
 </tr>
 {% endfor %}
