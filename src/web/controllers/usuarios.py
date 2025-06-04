@@ -7,6 +7,7 @@ from werkzeug.security import check_password_hash  # Agregar esta importación
 from src.web.helpers.auth import has_permission
 from flask_mail import Mail, Message
 from src.web.helpers.extensions import mail
+from datetime import datetime
 
 bp = Blueprint("usuarios", __name__, url_prefix="/users")
 
@@ -56,9 +57,7 @@ def login():
         if user_data and check_password_hash(user_data.password, data["password"]):
             # Redirigir según el rol
             if user_data.role.name == "admin":
-                session["pending_admin_email"] = user_data.email  #TODO: probar si esta linea esta demas
                 code = str(random.randint(100000, 999999))
-                session["2fa_code"] = code
                 session["temp_user_id"] = user_data.id
                 session["temp_user_role"] = user_data.role.name
                 msg = Message(
@@ -68,6 +67,8 @@ def login():
                 )
                 msg.body = f"Tu código es: {code}"
                 mail.send(msg)
+                session["2fa_code"] = code
+                session["2fa_code_time"] = datetime.utcnow().isoformat()
                 flash("Ingrese el código de autenticación.", "info")
                 return redirect(url_for("auth.login_code"))
             elif user_data.role.name == "empleado":
