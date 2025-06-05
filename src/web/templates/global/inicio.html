@@ -15,10 +15,10 @@
         </div>
         <div>
             <label for="fecha_inicio" class="form-label" style="font-weight:600;">Fecha Inicio:</label>
-            <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control border-main" required min="{{ (now().date() + timedelta(days=1)).isoformat() }}">
+            <input min="2025-01-01" max="2030-12-31" type="date" name="fecha_inicio" id="fecha_inicio" class="form-control border-main" required min="{{ (now().date() + timedelta(days=1)).isoformat() }}">
         </div>
         <div>
-            <label for="fecha_fin" class="form-label" style="font-weight:600;">Fecha Fin:</label>
+            <label min="2025-01-01" max="2030-12-31" for="fecha_fin" class="form-label" style="font-weight:600;">Fecha Fin:</label>
             <input type="date" name="fecha_fin" id="fecha_fin" class="form-control border-main" required min="{{ (now().date() + timedelta(days=1)).isoformat() }}">
         </div>
         <div class="text-center mt-2">
