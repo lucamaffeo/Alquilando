@@ -56,14 +56,11 @@ def update_estado_vehiculo(vehiculo_id, en_mantenimiento):
 
 def delete_vehiculo(vehiculo_id):
     """
-    Elimina un vehiculo de la base de datos.
-
-    :param vehiculo_id: ID del vehiculo a eliminar.
-    :return: True si se eliminó el vehiculo, False si no existía.
+    Da de baja lógica a un vehiculo: lo marca como inhabilitado.
     """
     vehiculo = get_vehiculo_by_id(vehiculo_id)
     if vehiculo:
-        db.session.delete(vehiculo)
+        vehiculo.inhabilitado = True
         db.session.commit()
         return True
     return False
@@ -71,8 +68,9 @@ def delete_vehiculo(vehiculo_id):
 def list_vehiculos(aptos=False, patente=None):
     """
     Lista todos los vehículos, con opción de filtrar solo los aptos o por patente.
+    Excluye los inhabilitados.
     """
-    query = db.session.query(Vehiculo)
+    query = db.session.query(Vehiculo).filter_by(inhabilitado=False)
     if aptos:
         query = query.filter_by(en_mantenimiento=False)
     if patente:

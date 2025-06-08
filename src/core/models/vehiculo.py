@@ -14,7 +14,8 @@ class Vehiculo(db.Model):
     anio = db.Column(db.Integer, nullable=False)
     sucursal_id = db.Column(db.Integer, db.ForeignKey('sucursales.id'), nullable=False)
     en_mantenimiento = db.Column(db.Boolean, default=False, nullable=False)
-    imagen = db.Column(db.String(255), nullable=True) 
+    imagen = db.Column(db.String(255), nullable=True)
+    inhabilitado = db.Column(db.Boolean, default=False, nullable=False)  # Eliminación lógica
 
     modelo_rel = db.relationship("Modelo", backref="vehiculos")
 
@@ -22,4 +23,6 @@ class Vehiculo(db.Model):
         return self.modelo_rel.nombre if self.modelo_rel else ""
 
     def estado(self):
+        if self.inhabilitado:
+            return "Inhabilitado"
         return "En mantenimiento" if self.en_mantenimiento else "Activo"

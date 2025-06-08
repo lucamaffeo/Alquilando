@@ -115,8 +115,11 @@ def cambiar_estado(id):
 @has_permission("vehicle_delete")
 def delete(id):
     try:
-        vehiculo.delete_vehiculo(id)    
-        flash("Vehículo eliminado exitosamente.", "success")
+        eliminado = vehiculo.delete_vehiculo(id)
+        if eliminado:
+            flash("El vehículo fue dado de baja (inhabilitado) y ya no estará disponible para reservas.", "success")
+        else:
+            flash("No se pudo dar de baja el vehículo.", "error")
     except ValueError as e:
         flash(str(e), "error")
     return redirect(url_for("vehiculos.index"))
