@@ -12,22 +12,6 @@
     <p><strong>Fecha fin:</strong> {{ fecha_fin }}</p>
 
     <div class="mb-3">
-        <label for="tipo_tarjeta" class="form-label">Tipo de tarjeta</label>
-        <select class="form-select" id="tipo_tarjeta" name="tipo_tarjeta" required>
-            <option value="" disabled selected>Seleccione tipo</option>
-            <option value="debito">Débito</option>
-            <option value="credito">Crédito</option>
-        </select>
-    </div>
-    <div class="mb-3" id="cuotas-group" style="display:none;">
-        <label for="cuotas" class="form-label">Cuotas</label>
-        <select class="form-select" id="cuotas" name="cuotas">
-            <option value="3">3 cuotas</option>
-            <option value="6">6 cuotas</option>
-            <option value="12">12 cuotas</option>
-        </select>
-    </div>
-    <div class="mb-3">
         <label for="tarjeta" class="form-label">Número de tarjeta</label>
         <input type="text" class="form-control" id="tarjeta" name="tarjeta" required>
     </div>
@@ -47,18 +31,7 @@
         <button type="submit" class="btn btn-success">Pagar</button>
         <span class="fw-bold fs-5 ms-3">Total: ${{ precio_total }}</span>
     </div>
+    <p class="text-center text-muted mt-4" style="font-size:0.9rem;">
+     * La tarjeta con la que va a pagar puede ser credito o debito</p>
 </form>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var tipoTarjeta = document.getElementById('tipo_tarjeta');
-        var cuotasGroup = document.getElementById('cuotas-group');
-        tipoTarjeta.addEventListener('change', function () {
-            if (tipoTarjeta.value === 'credito') {
-                cuotasGroup.style.display = 'block';
-            } else {
-                cuotasGroup.style.display = 'none';
-            }
-        });
-    });
-</script>
 {% endblock %}

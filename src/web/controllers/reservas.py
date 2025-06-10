@@ -89,62 +89,33 @@ def pago():
 
     if request.method == "POST":
         datos_tarjeta = request.form
-        tipo_tarjeta = datos_tarjeta.get("tipo_tarjeta")
         numero_tarjeta = datos_tarjeta.get("tarjeta")
-        if tipo_tarjeta == "credito":
-            for tarjeta in tarjetas_credito:
-                if tarjeta["numero"] == numero_tarjeta:
-                    encontre = True
-                    if tarjeta["titular"].lower() != datos_tarjeta.get("nombre").lower():
-                        flash("El titular de la tarjeta no coincide.", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    # Validar vencimiento ingresado
-                    if datos_tarjeta.get("vencimiento") != tarjeta["vencimiento"]:
-                        flash("El vencimiento ingresado no coincide con el de la tarjeta.", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    # Verificar si la tarjeta está vencida
-                    mes_v, anio_v = tarjeta["vencimiento"].split("/")
-                    mes_v = int(mes_v)
-                    anio_v = int(anio_v) + 2000 if len(anio_v) == 2 else int(anio_v)
-                    hoy = datetime.now()
-                    if anio_v < hoy.year or (anio_v == hoy.year and mes_v < hoy.month):
-                        flash("La tarjeta de crédito ha expirado.", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    if tarjeta["codigo_seguridad"] != datos_tarjeta.get("cvv"):
-                        flash("Codigo de seguridad incorrecto .", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    if tarjeta["saldo"] < precio_total:
-                        flash("La tarjeta no posee credito disponible.", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    break
-        if tipo_tarjeta == "debito":       
-            for tarjeta in tarjetas_debito:
-                if tarjeta["numero"] == numero_tarjeta:
-                    encontre = True
-                    if tarjeta["titular"].lower() != datos_tarjeta.get("nombre").lower():
-                        flash("El titular de la tarjeta no coincide.", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    # Validar vencimiento ingresado
-                    if datos_tarjeta.get("vencimiento") != tarjeta["vencimiento"]:
-                        flash("El vencimiento ingresado no coincide con el de la tarjeta.", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    # Verificar si la tarjeta está vencida
-                    mes_v, anio_v = tarjeta["vencimiento"].split("/")
-                    mes_v = int(mes_v)
-                    anio_v = int(anio_v) + 2000 if len(anio_v) == 2 else int(anio_v)
-                    hoy = datetime.now()
-                    if anio_v < hoy.year or (anio_v == hoy.year and mes_v < hoy.month):
-                        flash("La tarjeta de débito ha expirado.", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    if tarjeta["codigo_seguridad"] != datos_tarjeta.get("cvv"):
-                        flash("Codigo de seguridad incorrecto .", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    if tarjeta["saldo"] < precio_total:
-                        flash("La tarjeta de debito no posee saldo suficiente.", "error")
-                        return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
-                    break
+        # Buscar en ambas listas de tarjetas
+        for tarjeta in tarjetas_credito + tarjetas_debito:
+            if tarjeta["numero"] == numero_tarjeta:
+                encontre = True
+                if tarjeta["titular"].lower() != datos_tarjeta.get("nombre").lower():
+                    flash("El titular de la tarjeta no coincide.", "error")
+                    return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                if datos_tarjeta.get("vencimiento") != tarjeta["vencimiento"]:
+                    flash("El vencimiento ingresado no coincide con el de la tarjeta.", "error")
+                    return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                mes_v, anio_v = tarjeta["vencimiento"].split("/")
+                mes_v = int(mes_v)
+                anio_v = int(anio_v) + 2000 if len(anio_v) == 2 else int(anio_v)
+                hoy = datetime.now()
+                if anio_v < hoy.year or (anio_v == hoy.year and mes_v < hoy.month):
+                    flash("La tarjeta ha expirado.", "error")
+                    return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                if tarjeta["codigo_seguridad"] != datos_tarjeta.get("cvv"):
+                    flash("Codigo de seguridad incorrecto.", "error")
+                    return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                if tarjeta["saldo"] < precio_total:
+                    flash("La tarjeta no posee saldo suficiente.", "error")
+                    return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+                break
         if not encontre:
-            flash("Hubo un error por código de tarjeta inexistente", "error")
+            flash("Hubo un error por numero de tarjeta inexistente", "error")
             return redirect(url_for("reservas.pago", vehiculo_id=vehiculo_id, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
         # --- Validación de disponibilidad justo antes de crear la reserva (por si hubo concurrencia) ---
         reservas = reserva.get_reservas_by_vehiculo(v.id)

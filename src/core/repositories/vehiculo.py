@@ -8,6 +8,12 @@ def create_vehiculo(**kwargs):
     :param kwargs: Argumentos para crear un nuevo vehiculo.
     :return: El vehiculo creado.
     """
+    # Validar que la patente no exista (no inhabilitada)
+    patente = kwargs.get("patente")
+    if patente:
+        existe = db.session.query(Vehiculo).filter_by(patente=patente, inhabilitado=False).first()
+        if existe:
+            raise ValueError("Ya existe un vehículo con esa patente.")
     vehiculo = Vehiculo(**kwargs)
     db.session.add(vehiculo)
     db.session.commit()
