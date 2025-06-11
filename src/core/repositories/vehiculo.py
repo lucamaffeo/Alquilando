@@ -11,7 +11,7 @@ def create_vehiculo(**kwargs):
     # Validar que la patente no exista (no inhabilitada)
     patente = kwargs.get("patente")
     if patente:
-        existe = db.session.query(Vehiculo).filter_by(patente=patente, inhabilitado=False).first()
+        existe = db.session.query(Vehiculo).filter_by(patente=patente).first()
         if existe:
             raise ValueError("Ya existe un vehículo con esa patente.")
     vehiculo = Vehiculo(**kwargs)
