@@ -5,8 +5,9 @@
 {% block table_body %}
 <div class="row justify-content-center">
     <div class="col-lg-10">
-        <div class="mb-4 d-flex justify-content-center">
-            <a href="{{ url_for('reservas.historial_reservas') }}" class="btn btn-info px-4 py-2" style="font-size:1.1rem;">
+        <div class="mb-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
+            <h1 class="text-center mb-3 mb-md-0" >Reservas activas</h1>
+            <a href="{{ url_for('reservas.historial_reservas') }}" class="btn btn-info px-4 py-2" style="font-size:1.05rem;">
                 <i class="bi bi-clock-history me-1"></i>Historial de reservas
             </a>
         </div>
