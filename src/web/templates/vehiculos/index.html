@@ -41,8 +41,6 @@
     <th>Marca</th>
     <th>Modelo</th>
     <th>Categoría</th>
-    <th>Año</th>
-    <th>Asientos</th>
     <th>Precio</th>
     <th>Sucursal</th>
     <th>Estado</th>
@@ -69,8 +67,6 @@
         <td>{{ vehiculo.marca }}</td>
         <td>{{ vehiculo.modelo_nombre() }}</td>
         <td>{{ vehiculo.categoria }}</td>
-        <td>{{ vehiculo.anio }}</td>
-        <td>{{ vehiculo.asientos }}</td>
         <td>${{ vehiculo.precio }}</td>
         <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
         <td>{{ vehiculo.estado() }}</td>

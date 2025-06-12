@@ -182,16 +182,17 @@ def run():
     )
    
     create_vehiculo(
-        patente="PKP555",
-        modelo_id=get_or_create_modelo("Hilux", "Sin reembolso").id,
+        patente="ACB999",
+        modelo_id=get_or_create_modelo("A3", "Sin reembolso").id,
         marca="Audi",
-        categoria="Sedan",
-        asientos=5,
+        categoria="Coupe",
+        asientos=2,
         precio=35000,
         anio=2022,
         sucursal_id=sucursal3.id,
-        imagen="audiA4.png"
+        imagen="Audi_A3.png"
     )
+   
    
     
 

@@ -133,9 +133,13 @@
                                   fecha_inicio=fecha_inicio,
                                   fecha_fin=fecha_fin,
                                   precio_total=item.precio_total) }}"
-                 class="btn btn-info"><i class="bi bi-car-front"></i> 
+                 class="btn btn-info d-block mb-2"><i class="bi bi-car-front"></i> 
                 Ver detalle
               </a>
+              <div class="text-muted" style="font-size:0.95rem;">
+                <i class="bi bi-car-front"></i>
+                {{ item.vehiculos|length}} disponibles
+              </div>
             </div>
           </div>
         </div>

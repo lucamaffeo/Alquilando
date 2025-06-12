@@ -207,7 +207,8 @@ def disponibles():
             "marca": vehiculo_azar.marca,
             "categoria": vehiculo_azar.categoria,
             "asientos": vehiculo_azar.asientos,
-            "imagen": vehiculo_azar.imagen
+            "imagen": vehiculo_azar.imagen,
+            "vehiculos": datos["vehiculos"]  # <-- Agrega esta línea
         })
     orden = request.form.get("orden", "asc")
     # Ordenar por precio total
