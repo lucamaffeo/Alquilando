@@ -14,10 +14,10 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="password" class="form-label">Contraseña:</label>
-                            <input type="password" class="form-control border-main" name="password" {% if is_update %}placeholder="Dejar vacío para no cambiar"{% endif %} {% if not is_update %}required{% endif %}>
+                            <input type="password" placeholder="Debe tener al menos 6 caracteres" class="form-control border-main" name="password" {% if is_update %}placeholder="Dejar vacío para no cambiar"{% endif %} {% if not is_update %}required{% endif %}>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento:</label>
+                            <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento: (*)</label>
                             <input type="date" class="form-control border-main" name="fecha_nacimiento" value="{{ user.fecha_nacimiento if user else '' }}" {% if is_update %}disabled{% endif %} required>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -58,6 +58,7 @@
                             {% endif %}
                         </div>
                         {% endif %}
+                        <p class="mt-1 text-muted" style="font-size: 0.95em;">* El usuario debe ser mayor de edad</p>
                     </div>
                 </div>
             </div>
