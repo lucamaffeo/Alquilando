@@ -97,7 +97,16 @@ def run():
         dni="55555555",
         fecha_nacimiento="2000-01-01",
     )
-    
+    user = create_user(
+        nombre="usuario",
+        email="user@user.com",
+        password="123456",  # Cambiado a más de 6 caracteres
+        role_id=2,
+        apellido="Helfer",
+        telefono="123456789",  
+        dni="66666666",
+        fecha_nacimiento="2000-01-01",  
+    )
 
     # Crear sucursales
     sucursal1 = create_sucursal(
@@ -192,7 +201,15 @@ def run():
         sucursal_id=sucursal3.id,
         imagen="Audi_A3.png"
     )
-   
+    
+    # Reservas
+    create_reserva(
+        vehiculo_id=5,  # ID del vehículo que se va a reservar
+        user_id=user.id,  # ID del usuario que realiza la reserva
+        fecha_inicio="2023-10-01",
+        fecha_fin="2023-10-05",
+        estado="finalizada"
+    )
    
     
 
