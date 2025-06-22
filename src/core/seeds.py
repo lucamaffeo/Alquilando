@@ -32,11 +32,14 @@ def run():
     reserva_show = create_permission(nombre="reserva_show")
     reserva_delete = create_permission(nombre="reserva_delete")
 
+    # Crear permisos de empleados
+    employee_create = create_permission(nombre="employee_create")
+
     # Crear roles
     admin_role = create_role(name="admin", permissions=[
         user_index, user_show, user_update, user_delete,
         vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index,
-        sucursal_index, sucursal_show, sucursal_create
+        sucursal_index, sucursal_show, sucursal_create, employee_create
     ])
     usuario_role = create_role(name="usuario registrado", permissions=[
         user_show, user_update, reserva_index, reserva_show, reserva_delete,
@@ -76,6 +79,16 @@ def run():
         telefono="123456789",
         dni="44444444",
         fecha_nacimiento="2001-01-01",
+    )
+    admin = create_user(
+        nombre="Luca",
+        email="lucamaffeo@gmail.com",
+        password="admin123",  # Cambiado a 8 caracteres
+        role_id=1,
+        apellido="Maffeo",
+        telefono="123456789",
+        dni="40882818",
+        fecha_nacimiento="2000-01-01",
     )
     admin = create_user(
         nombre="Luca",

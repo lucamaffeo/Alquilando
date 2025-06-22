@@ -3,7 +3,15 @@
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
     <div class="w-100" style="max-width: 1000px;">
-        <h1 class="mb-4 text-center titulo-principal">{% if is_update %}Actualizar Usuario{% else %}Registrar Usuario{% endif %}</h1>
+        <h1 class="mb-4 text-center titulo-principal">
+            {% if es_empleado %}
+                Registrar Empleado
+            {% elif is_update %}
+                Actualizar Usuario
+            {% else %}
+                Registrar Usuario
+            {% endif %}
+        </h1>
         <form method="POST" enctype="multipart/form-data" class="p-4 rounded border border-main shadow-sm bg-white mx-auto">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-10">
@@ -36,35 +44,21 @@
                             <label for="telefono" class="form-label">Teléfono (opcional):</label>
                             <input type="tel" class="form-control border-main" name="telefono" value="{{ user.telefono if user else '' }}">
                         </div>
-                        {% if is_update and session.get("user_role") == "admin" %}
-                        <div class="col-md-6 mb-3">
-                            <label for="role_id" class="form-label">Rol:</label>
-                            <select name="role_id" class="form-select border-main"
-                                {% if user.role.name == "admin" or user.role.name == "administrador" %}disabled{% endif %}>
-                                {% for role in roles %}
-                                    {% if user.role.name == "admin" or user.role.name == "administrador" %}
-                                        {% if role.id == user.role_id %}
-                                            <option value="{{ role.id }}" selected>{{ role.name }}</option>
-                                        {% endif %}
-                                    {% else %}
-                                        {% if role.name == "empleado" or role.name == "usuario registrado" %}
-                                            <option value="{{ role.id }}" {% if user.role_id == role.id %}selected{% endif %}>{{ role.name }}</option>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                            {% if user.role.name == "admin" or user.role.name == "administrador" %}
-                                <div class="form-text text-danger">No se puede cambiar el rol de un administrador.</div>
-                            {% endif %}
-                        </div>
-                        {% endif %}
+                        
                         <p class="mt-1 text-muted" style="font-size: 0.95em;">* El usuario debe ser mayor de edad</p>
-                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 text-center">
-                    <button type="submit" class="btn btn-main px-4">{% if is_update %}Actualizar{% else %}Registrar Usuario{% endif %}</button>
+                    <button type="submit" class="btn btn-main px-4">
+                        {% if es_empleado %}
+                            Registrar Empleado
+                        {% elif is_update %}
+                            Actualizar
+                        {% else %}
+                            Registrar Usuario
+                        {% endif %}
+                    </button>
                 </div>
             </div>
         </form>

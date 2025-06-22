@@ -157,3 +157,42 @@ def update(user_id):
         except ValueError as e:
             flash(str(e), "error")
     return render_template("users/register.html", user=u, is_update=True, roles=roles)
+
+def generar_password_aleatoria(longitud=8):
+    caracteres = string.ascii_letters + string.digits
+    return ''.join(random.choice(caracteres) for _ in range(longitud))
+
+def enviar_mail(destinatario, password):
+    msg = Message(
+        "Contraseña de acceso",
+        sender=current_app.config["MAIL_USERNAME"],
+        recipients=[destinatario]
+    )
+    msg.body = f"Su contraseña de acceso es: {password}"
+    mail.send(msg)
+
+@bp.route("/register/empleado", methods=["GET", "POST"])
+@has_permission("employee_create")  # Solo admin tiene este permiso
+def register_empleado():
+    user_obj = None
+    if request.method == "POST":
+        data = request.form
+        password = generar_password_aleatoria()
+        try:
+            user.create_user(
+                email=data["email"],
+                password=password,
+                role_id=3,  # 3 = empleado
+                nombre=data.get("nombre"),
+                dni=data.get("dni"),
+                apellido=data.get("apellido"),
+                telefono=data.get("telefono"),
+                fecha_nacimiento=data.get("fecha_nacimiento"),
+            )
+            enviar_mail(data["email"], password)
+            flash("Empleado registrado exitosamente. Se envió la contraseña al email.", "success")
+            return redirect(url_for("usuarios.index"))
+        except ValueError as e:
+            flash(str(e), "error")
+            user_obj = type("UserForm", (), data.to_dict())()
+    return render_template("users/register_empleado.html", user=user_obj, is_update=False)

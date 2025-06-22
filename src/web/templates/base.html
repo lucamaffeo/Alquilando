@@ -184,11 +184,17 @@
                         {% if has_permission(session.get("user_id"), "user_create") %}
                         <a href="{{ url_for('usuarios.register') }}" class="nav-link"><i class="bi bi-person-plus"></i>Registrar usuario</a>
                         {% endif %}
-                        <!--
-                        {% if has_permission(session.get("user_id"), "user_create_presencial") %}
-                        <a href="{{ url_for('usuarios.register_presencial') }}" class="nav-link"><Strong>Registrar usuario presencial</Strong></a>
+                        {% if has_permission(session.get("user_id"), "employee_create") %}
+                        <a href="{{ url_for('usuarios.register_empleado') }}" class="nav-link"><i class="bi bi-person-badge"></i>Registrar
+                            Empleado</a>
                         {% endif %}
-                        -->
+                       
+                        {% if has_permission(session.get("user_id"), "user_create_presencial") %}
+                        <a href="{{ url_for('usuarios.register_presencial') }}" class="nav-link">
+                            <i class="bi bi-person-lines-fill"></i>Registrar usuario presencial
+                        </a>
+                        {% endif %}
+                      
                     {% else %}
                     {% endif %}
                 </ul>
