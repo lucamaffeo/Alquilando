@@ -14,12 +14,13 @@ bp = Blueprint("vehiculos", __name__, url_prefix="/vehiculos")
 def index():
     patente = request.args.get("patente", "").strip()
     mensaje = None
+    # Mostrar todos los vehículos, incluidos los borrados (inhabilitados)
     if patente:
-        vehiculos_list = vehiculo.list_vehiculos(patente=patente)
+        vehiculos_list = vehiculo.list_vehiculos(patente=patente, incluir_borrados=True)
         if not vehiculos_list:
             mensaje = f"No existe un vehículo con la patente '{patente}'."
     else:
-        vehiculos_list = vehiculo.list_vehiculos()
+        vehiculos_list = vehiculo.list_vehiculos(incluir_borrados=True)
     return render_template("vehiculos/index.html", vehiculos=vehiculos_list, patente=patente, mensaje=mensaje)
 
 @bp.route("/<int:id>")

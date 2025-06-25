@@ -71,16 +71,16 @@ def delete_vehiculo(vehiculo_id):
         return True
     return False
 
-def list_vehiculos(aptos=False, patente=None):
+def list_vehiculos(patente=None, incluir_borrados=False):
     """
     Lista todos los vehículos, con opción de filtrar solo los aptos o por patente.
-    Excluye los inhabilitados.
+    Excluye los inhabilitados a menos que se solicite incluirlos.
     """
-    query = db.session.query(Vehiculo).filter_by(inhabilitado=False)
-    if aptos:
-        query = query.filter_by(en_mantenimiento=False)
+    query = db.session.query(Vehiculo)
     if patente:
         query = query.filter(Vehiculo.patente.ilike(f"%{patente}%"))
+    if not incluir_borrados:
+        query = query.filter(Vehiculo.inhabilitado == False)
     return query.all()
 
 def list_marcas():

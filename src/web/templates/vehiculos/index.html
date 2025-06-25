@@ -69,11 +69,13 @@
         <td>{{ vehiculo.categoria }}</td>
         <td>${{ vehiculo.precio }}</td>
         <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
-        <td>{{ vehiculo.estado() }}</td>
+        <td> <strong>{{ vehiculo.estado() }}</strong></td>
         <td>
             <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info btn-sm"><i class="bi bi-car-front"></i> Ver detalle</a>
         </td>
+        
     </tr>
     {% endfor %}
+    <p>*Si el vehiculo esta inhabilitado es porque se elimino.</p>
 {% endif %}
 {% endblock %}
