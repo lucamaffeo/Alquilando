@@ -10,7 +10,14 @@
 
     <p><strong>Fecha inicio:</strong> {{ fecha_inicio }}</p>
     <p><strong>Fecha fin:</strong> {{ fecha_fin }}</p>
-
+    
+    <p class="mt-3 mb-0"><strong>Política de Cancelación:</strong>
+        {{ vehiculo.modelo_rel.politica_cancelacion if vehiculo.modelo_rel and vehiculo.modelo_rel.politica_cancelacion else
+        "Sin reembolso" }}
+    </p>
+    <p class="text-muted mb-3" style="font-size:0.9rem;">
+        *Si cancela la reserva, se reembolsará lo que muestra la política de cancelación.
+    </p>
     <div class="mb-3">
         <label for="tarjeta" class="form-label">Número de tarjeta</label>
         <input type="text" class="form-control" id="tarjeta" name="tarjeta" required>
