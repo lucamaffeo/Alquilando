@@ -209,19 +209,28 @@ def cancelar_reserva(reserva_id):
 def sendConfirmationEmail(v, fecha_inicio, fecha_fin, precio):
     user_data = user.get_user_by_id(session.get("user_id"))
     modelo = v.modelo_rel.nombre if v.modelo_rel else "Desconocido"
+    sucursal = f"{v.sucursal.nombre} - {v.sucursal.ubicacion}" if v.sucursal else "No asignada"
+    politica = v.modelo_rel.politica_cancelacion if v.modelo_rel and v.modelo_rel.politica_cancelacion else "Sin reembolso"
     msg = Message(
         "Reserva Confirmada",
         sender=current_app.config["MAIL_USERNAME"],
         recipients=[user_data.email]
     )
-    msg.body = f"""Reserva confirmada!
-    
-Vehículo: {v.marca} {modelo} {v.anio}\n
-Fecha de inicio: {fecha_inicio}\n
-Fecha de devolución: {fecha_fin}\n
-Precio: ${precio}\n
-\n
-Gracias por elegirnos!"""
+    msg.body = f"""¡Reserva confirmada!
+
+Vehículo: {v.marca} {modelo} {v.anio}
+Categoría: {v.categoria}
+Asientos: {v.asientos}
+Sucursal: {sucursal}
+
+Fecha de inicio: {fecha_inicio}
+Fecha de devolución: {fecha_fin}
+Precio total: ${precio}
+
+Política de Cancelación: {politica}
+
+Gracias por elegirnos.
+"""
     mail.send(msg)
 
 def sendCancelationEmail(reserva, total, reembolso, politica):
