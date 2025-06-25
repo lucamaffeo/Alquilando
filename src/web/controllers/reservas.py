@@ -9,6 +9,7 @@ from resources.TARJETAS_VALIDAS import tarjetas_credito, tarjetas_debito
 from src.web.helpers.extensions import mail
 from flask_mail import Mail, Message
 import random
+from flask import abort
 
 bp = Blueprint("reservas", __name__, url_prefix="/reservas")
 
@@ -168,6 +169,44 @@ def historial_reservas():
     reservas = [r for r in reserva.list_reservas_by_user(user_id) if r.estado in ("finalizada", "cancelada")]
     return render_template("reservas/historial.html", reservas=reservas)
 
+@bp.route("/cancelar/<int:reserva_id>/confirmar", methods=["GET"])
+@has_permission("reserva_delete")
+def confirmar_cancelacion(reserva_id):
+    user_id = session.get("user_id")
+    user_role = session.get("user_role")
+    reserva_obj = show_reserva(reserva_id)
+    if not reserva_obj or reserva_obj.user_id != user_id or user_role != "usuario registrado":
+        flash("No tienes permiso para cancelar esta reserva.", "error")
+        return redirect(url_for("reservas.mis_reservas"))
+    if reserva_obj.estado == "cancelada":
+        flash("La reserva ya fue cancelada.", "info")
+        return redirect(url_for("reservas.mis_reservas"))
+
+    vehiculo_obj = reserva_obj.vehiculo
+    modelo = vehiculo_obj.modelo_rel
+    politica = modelo.politica_cancelacion if modelo and modelo.politica_cancelacion else "Sin reembolso"
+    dias = (reserva_obj.fecha_fin - reserva_obj.fecha_inicio).days + 1 if reserva_obj.fecha_inicio and reserva_obj.fecha_fin else 1
+    total = vehiculo_obj.precio * dias
+
+    if politica == "100% de reembolso":
+        porcentaje = 100
+        reembolso = total
+    elif politica == "20% de reembolso":
+        porcentaje = 20
+        reembolso = total * 0.2
+    else:
+        porcentaje = 0
+        reembolso = 0
+
+    return render_template(
+        "reservas/confirmar_cancelacion.html",
+        reserva=reserva_obj,
+        politica=politica,
+        porcentaje=porcentaje,
+        total=total,
+        reembolso=reembolso
+    )
+
 @bp.route("/cancelar/<int:reserva_id>", methods=["POST"])
 @has_permission("reserva_delete")
 def cancelar_reserva(reserva_id):
@@ -237,6 +276,16 @@ def sendCancelationEmail(reserva, total, reembolso, politica):
     user_data = reserva.user
     vehiculo = reserva.vehiculo
     modelo = vehiculo.modelo_rel
+
+    # Buscar la tarjeta utilizada en la reserva (por simplicidad, se asume la última usada)
+    # Si quieres guardar la tarjeta en la reserva, deberías hacerlo en el modelo y aquí obtenerla.
+    # Aquí solo mostramos un ejemplo genérico.
+    tarjeta_info = "El reembolso de dicho vehiculo es 0, por lo que no se realizará ningún reembolso."
+    if reembolso > 0:
+        # Puedes personalizar esto si guardas el número de tarjeta en la reserva
+        tarjeta_usada = "**** **** **** 1234"  # Cambia esto por el número real si lo tienes
+        tarjeta_info = f"\nEl reembolso se acreditará en la tarjeta utilizada para el pago ({tarjeta_usada}) dentro de los próximos 5 días hábiles."
+
     msg = Message(
         "Cancelación de Reserva",
         sender=current_app.config["MAIL_USERNAME"],
@@ -250,6 +299,7 @@ Fecha de devolución: {reserva.fecha_fin}
 Precio total: ${total}
 Política de Cancelación: {politica}
 Monto a reembolsar: ${reembolso:.2f}
+{tarjeta_info}
 
 Gracias por elegirnos.
 """

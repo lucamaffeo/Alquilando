@@ -155,7 +155,7 @@ def run():
 
     
 
-    # Sucursal 2
+    # Sucursal 2 (solo autos con imágenes disponibles)
     create_vehiculo(
         patente="ABC456",
         modelo_id=get_or_create_modelo("Corolla", "100% de reembolso").id,
@@ -178,7 +178,6 @@ def run():
         sucursal_id=sucursal2.id,
         imagen="Toyota_Corolla.png"
     )
-    
     create_vehiculo(
         patente="SUV555",
         modelo_id=get_or_create_modelo("CR-V", "100% de reembolso").id,
@@ -190,31 +189,83 @@ def run():
         sucursal_id=sucursal2.id,
         imagen="Honda_CRV.jpg"
     )
-    
     create_vehiculo(
         patente="PKP444",
         modelo_id=get_or_create_modelo("Amarok", "Sin reembolso").id,
         marca="Volkswagen",
         categoria="Pickup",
         asientos=5,
-        precio=35000,
+        precio=35000,   
         anio=2022,
         sucursal_id=sucursal2.id,
         imagen="Volkswagen_Amarok.png"
     )
-   
     create_vehiculo(
-        patente="ACB999",
+        patente="FOC111",
+        modelo_id=get_or_create_modelo("Focus", "20% de reembolso").id,
+        marca="Ford",
+        categoria="Hatchback",
+        asientos=5,
+        precio=18000,
+        anio=2018,
+        sucursal_id=sucursal2.id,
+        imagen="Ford_Focus.png"
+    )
+    create_vehiculo(
+        patente="RAN222",
+        modelo_id=get_or_create_modelo("Ranger", "20% de reembolso").id,
+        marca="Ford",
+        categoria="Pickup",
+        asientos=5,
+        precio=32000,
+        anio=2021,
+        sucursal_id=sucursal2.id,
+        imagen="Ford_Ranger.png"
+    )
+    create_vehiculo(
+        patente="FLU333",
+        modelo_id=get_or_create_modelo("Fluence", "100% de reembolso").id,
+        marca="Renault",
+        categoria="Sedan",
+        asientos=5,
+        precio=21000,
+        anio=2020,
+        sucursal_id=sucursal2.id,
+        imagen="Renault_Fluence.png"
+    )
+    create_vehiculo(
+        patente="HIL444",
+        modelo_id=get_or_create_modelo("Hilux", "20% de reembolso").id,
+        marca="Toyota",
+        categoria="Pickup",
+        asientos=5,
+        precio=34000,
+        anio=2022,
+        sucursal_id=sucursal2.id,
+        imagen="Toyota_Hillux.png"
+    )
+    create_vehiculo(
+        patente="SWJ555",
+        modelo_id=get_or_create_modelo("SW4", "100% de reembolso").id,
+        marca="Toyota",
+        categoria="SUV",
+        asientos=7,
+        precio=37000,
+        anio=2023,
+        sucursal_id=sucursal2.id,
+        imagen="Toyota_Sw4.jpg"
+    )
+    create_vehiculo(
+        patente="AUD888",
         modelo_id=get_or_create_modelo("A3", "Sin reembolso").id,
         marca="Audi",
         categoria="Coupe",
         asientos=2,
         precio=35000,
         anio=2022,
-        sucursal_id=sucursal3.id,
+        sucursal_id=sucursal2.id,
         imagen="Audi_A3.png"
     )
-    
     # Reservas
     create_reserva(
         vehiculo_id=5,  # ID del vehículo que se va a reservar
