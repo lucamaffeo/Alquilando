@@ -7,9 +7,18 @@
 
   <!-- Botones de filtro -->
   <div class="d-flex justify-content-center gap-2 mb-4">
-    <button class="btn btn-primary" id="btn-categoria" type="button">Filtrar por categoría</button>
-    <button class="btn btn-primary" id="btn-asientos" type="button">Filtrar por asientos</button>
-    <button class="btn btn-primary" id="btn-marca" type="button">Filtrar por marca</button>
+    <button class="btn btn-primary {% if filtro_categoria %}btn-dark active{% endif %}" id="btn-categoria" type="button">
+      Filtrar por categoría
+      {% if filtro_categoria %}<span class="ms-2">&#10003;</span>{% endif %}
+    </button>
+    <button class="btn btn-primary {% if filtro_asientos %}btn-dark active{% endif %}" id="btn-asientos" type="button">
+      Filtrar por asientos
+      {% if filtro_asientos %}<span class="ms-2">&#10003;</span>{% endif %}
+    </button>
+    <button class="btn btn-primary {% if filtro_marca %}btn-dark active{% endif %}" id="btn-marca" type="button">
+      Filtrar por marca
+      {% if filtro_marca %}<span class="ms-2">&#10003;</span>{% endif %}
+    </button>
   </div>
   <div class="text-center mb-4">
   <form method="POST" action="{{ url_for('vehiculos.disponibles') }}" class="d-inline-block">
