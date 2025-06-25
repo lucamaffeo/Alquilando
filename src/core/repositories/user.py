@@ -5,10 +5,17 @@ from src.core.models.rol import Role
 from src.core.models.user import User
 from src.core.models.permission import Permission
 from datetime import datetime, date
+from sqlalchemy import cast, String
 
 
-def list_users():
-    return User.query.all()
+def list_users(dni=None):
+    """
+    Lista todos los usuarios, con opción de filtrar solo por dni.
+    """
+    query = db.session.query(User)
+    if dni:
+        query = query.filter(cast(User.dni, String).ilike(f"%{dni}%"))
+    return query.all()
 
 
 def find_user_by_email(email):

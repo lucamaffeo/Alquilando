@@ -14,8 +14,15 @@ bp = Blueprint("usuarios", __name__, url_prefix="/users")
 @bp.route("/")
 @has_permission("user_index")
 def index():
-    users_list = user.list_users()
-    return render_template("users/index.html", users=users_list)
+    dni = request.args.get("search", "").strip()
+    mensaje = None
+    if dni:
+        users_list = user.list_users(dni=dni)
+        if not users_list:
+            mensaje = f"No existe un usuario con el dni '{dni}'."
+    else:
+        users_list = user.list_users()
+    return render_template("users/index.html", users=users_list, dni=dni, mensaje=mensaje)
 
 @bp.route("/<int:user_id>")
 def show(user_id):

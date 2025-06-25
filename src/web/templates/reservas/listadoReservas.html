@@ -181,7 +181,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('sucursales.index') }}"><i class="bi bi-building"></i>Sucursales</a></li>
                         {% endif %}
                         {% if has_permission(session.get("user_id"), "vehicle_index") %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.index') }}"><i class="bi bi-building"></i>Reservas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('lsitadoReservas.index') }}"><i class="bi bi-building"></i>Reservas</a></li>
                         {% endif %}
                         
                         {% if has_permission(session.get("user_id"), "user_create") %}

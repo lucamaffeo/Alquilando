@@ -11,6 +11,12 @@ def create_reserva(**kwargs):
     db.session.commit()
     return reserva
 
+def list_reservas(user_id):
+    """
+    Lista todas las reservas.
+    """
+    return Reserva.query.all()
+
 def list_reservas_by_user(user_id):
     """
     Lista reservas de un usuario.
