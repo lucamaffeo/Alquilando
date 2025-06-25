@@ -223,7 +223,45 @@ def run():
         fecha_fin="2023-10-05",
         estado="finalizada"
     )
-   
+
+    # --- Reservas adicionales para user@user.com ---
     
+    create_reserva(
+        vehiculo_id=1,
+        user_id=user.id,
+        fecha_inicio="2023-09-01",
+        fecha_fin="2023-09-05",
+        estado="finalizada"
+    )
+    # 2 canceladas
+    create_reserva(
+        vehiculo_id=4,
+        user_id=user.id,
+        fecha_inicio="2023-06-01",
+        fecha_fin="2023-06-05",
+        estado="cancelada"
+    )
+    create_reserva(
+        vehiculo_id=2,
+        user_id=user.id,
+        fecha_inicio="2023-05-10",
+        fecha_fin="2023-05-15",
+        estado="cancelada"
+    )
+    # 2 activas (misma fecha, diferente vehículo)
+    create_reserva(
+        vehiculo_id=1,
+        user_id=user.id,
+        fecha_inicio="2026-12-01",
+        fecha_fin="2026-12-10",
+        estado="activa"
+    )
+    create_reserva(
+        vehiculo_id=3,
+        user_id=user.id,
+        fecha_inicio="2026-12-01",
+        fecha_fin="2026-12-10",
+        estado="activa"
+    )
 
     print("Seed ejecutado correctamente!")
