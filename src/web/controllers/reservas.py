@@ -33,6 +33,9 @@ def index():
         reservas = reserva.list_reservas_by_user(user_id)
     else:
         reservas = reserva.list_reservas(None)
+        # Agregar usuario a cada reserva para mostrar en el template
+        for r in reservas:
+            r.usuario_obj = user.get_user_by_id(r.user_id)
     return render_template("reservas/index.html", reservas=reservas)
 
 @bp.route("/show/<int:id>")

@@ -6,10 +6,12 @@
 <div class="row justify-content-center">
     <div class="col-lg-10">
         <div class="mb-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
-            <h1 class="text-center mb-3 mb-md-0" >Reservas activas</h1>
+            <h1 class="text-center mb-3 mb-md-0">Reservas activas</h1>
+            {% if session.get("user_role") == "usuario registrado" %}
             <a href="{{ url_for('reservas.historial_reservas') }}" class="btn btn-info px-4 py-2" style="font-size:1.05rem;">
                 <i class="bi bi-clock-history me-1"></i>Historial de reservas
             </a>
+            {% endif %}
         </div>
         {% if reservas|length == 0 %}
             <div class="alert alert-info text-center mt-5 p-4 rounded shadow-sm">
@@ -23,6 +25,17 @@
                     <div class="d-flex justify-content-between align-items-start flex-wrap">
                         <div>
                             <h5 class="mb-2">{{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo_nombre() }}</h5>
+                            {% if session.get("user_role") in ["admin", "empleado"] and reserva.usuario_obj %}
+                                <p class="mb-1"><i class="bi bi-person me-1"></i>
+                                    <strong>Usuario:</strong> {{ reserva.usuario_obj.nombre }} {{ reserva.usuario_obj.apellido }}
+                                </p>
+                                <p class="mb-1"><i class="bi bi-envelope me-1"></i>
+                                    <strong>Email:</strong> {{ reserva.usuario_obj.email }}
+                                </p>
+                                <p class="mb-1"><i class="bi bi-credit-card-2-front me-1"></i>
+                                    <strong>DNI:</strong> {{ reserva.usuario_obj.dni }}
+                                </p>
+                            {% endif %}
                             <p class="mb-1"><i class="bi bi-calendar-event me-1"></i><strong>Inicio:</strong> {{ reserva.fecha_inicio }}</p>
                             <p class="mb-1"><i class="bi bi-calendar-check me-1"></i><strong>Fin:</strong> {{ reserva.fecha_fin }}</p>
                             <p class="mb-1"><i class="bi bi-cash-coin me-1"></i><strong>Precio total:</strong>
