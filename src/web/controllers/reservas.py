@@ -27,12 +27,12 @@ def actualizar_reservas_finalizadas(user_id):
 @has_permission("reserva_index")
 def index():
     user_id = session.get("user_id")
-    if (get_user_by_id(user_id).role_id == 1):
-        reservas = list_reservas()
+    user_role = session.get("user_role")
+    if user_id and user_role == "usuario registrado":
+        actualizar_reservas_finalizadas(user_id)
+        reservas = reserva.list_reservas_by_user(user_id)
     else:
-        if user_id:
-            actualizar_reservas_finalizadas(user_id)
-        reservas = list_reservas_by_user()
+        reservas = reserva.list_reservas(None)
     return render_template("reservas/index.html", reservas=reservas)
 
 @bp.route("/show/<int:id>")

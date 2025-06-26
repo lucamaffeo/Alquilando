@@ -11,10 +11,12 @@ def create_reserva(**kwargs):
     db.session.commit()
     return reserva
 
-def list_reservas(user_id):
+def list_reservas(user_id=None):
     """
-    Lista todas las reservas.
+    Lista todas las reservas o solo las del usuario si se pasa user_id.
     """
+    if user_id:
+        return Reserva.query.filter_by(user_id=user_id).all()
     return Reserva.query.all()
 
 def list_reservas_by_user(user_id):
