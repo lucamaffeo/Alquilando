@@ -191,7 +191,13 @@
                         <a href="{{ url_for('usuarios.register_empleado') }}" class="nav-link"><i class="bi bi-person-badge"></i>Registrar
                             Empleado</a>
                         {% endif %}
-                       
+
+                        {% if has_permission(session.get("user_id"), "estadisticas_index") %}
+                        <a href="{{ url_for('estadisticas.menu') }}" class="nav-link">
+                            <i class="bi bi-bar-chart"></i>Estadísticas
+                        </a>
+                        {% endif %}
+
                         {% if has_permission(session.get("user_id"), "user_create_presencial") %}
                         <a href="{{ url_for('usuarios.register_presencial') }}" class="nav-link">
                             <i class="bi bi-person-lines-fill"></i>Registrar usuario presencial

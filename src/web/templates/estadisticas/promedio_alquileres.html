@@ -1,0 +1,41 @@
+{% extends "estadisticas/layout.html" %}
+
+{% block estadisticas_content %}
+<h2>Promedio de Alquileres por Vehículo</h2>
+<p>Seleccioná un vehículo por patente y un rango de fechas para ver cuántas veces fue alquilado.</p>
+
+<form method="POST" class="border p-4 rounded bg-light mt-4">
+    <div class="mb-3">
+        <label for="patente" class="form-label">Patente:</label>
+        <select name="patente" id="patente" class="form-select" required>
+            <option value="" disabled selected>Seleccionar una patente</option>
+            {% for patente in patentes %}
+                <option value="{{ patente }}">{{ patente }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
+        <input type="date" name="fecha_inicio" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="fecha_fin" class="form-label">Fecha Fin:</label>
+        <input type="date" name="fecha_fin" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+{% if cantidad is not none %}
+<div class="mt-4">
+    <h4>Resultado:</h4>
+    <p>El vehículo con patente <strong>{{ patente_seleccionada }}</strong> fue alquilado <strong>{{ cantidad }}</strong> veces en el rango seleccionado.</p>
+</div>
+{% elif cantidad is not defined and request.method == 'POST' %}
+<div class="alert alert-warning mt-4">
+    No se encontraron registros de alquileres para el vehículo y fecha seleccionados.
+</div>
+{% endif %}
+{% endblock %}

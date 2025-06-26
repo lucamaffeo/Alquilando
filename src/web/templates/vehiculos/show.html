@@ -18,7 +18,7 @@
         <p><strong>Estado:</strong> {{ vehiculo.estado() }}</p>
         <div>
             {% if session.get("user_id") and has_permission(session.get("user_id"), "vehicle_update") %}
-                <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-primary disabled" >Modificar vehículo</a>
+                <a href="{{ url_for('vehiculos.register', id=vehiculo.id) }}" class="btn btn-danger" >Modificar vehículo</a>
             {% endif %}
             
             {% if has_permission(session.get("user_id"), "vehicle_cambiar_estado") %}
