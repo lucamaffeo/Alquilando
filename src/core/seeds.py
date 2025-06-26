@@ -35,11 +35,14 @@ def run():
     # Crear permisos de empleados
     employee_create = create_permission(nombre="employee_create")
 
+    # Crear permisos para ver estadisticas
+    estadisticas_index = create_permission(nombre="estadisticas_index")
+
     # Crear roles
     admin_role = create_role(name="admin", permissions=[
         user_index, user_show, user_update, user_delete,
         vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index,
-        sucursal_index, sucursal_show, sucursal_create, employee_create
+        sucursal_index, sucursal_show, sucursal_create, employee_create, estadisticas_index
     ])
     usuario_role = create_role(name="usuario registrado", permissions=[
         user_show, user_update, reserva_index, reserva_show, reserva_delete,

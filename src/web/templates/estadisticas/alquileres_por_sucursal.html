@@ -1,0 +1,39 @@
+{% extends "estadisticas/layout.html" %}
+
+{% block estadisticas_content %}
+<h2>Estadísticas de Alquileres por Sucursal</h2>
+<p>Seleccioná una sucursal y un rango de fechas para ver la cantidad de alquileres realizados.</p>
+
+<form method="POST" class="border p-4 rounded bg-light mt-4">
+    <div class="mb-3">
+        <label for="sucursal" class="form-label">Sucursal:</label>
+        <select name="sucursal" id="sucursal" class="form-select" required>
+            <option value="" disabled selected>Seleccionar una sucursal</option>
+            {% for sucursal in sucursales %}
+                <option value="{{ sucursal.id }}">{{ sucursal.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
+        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="fecha_fin" class="form-label">Fecha Fin:</label>
+        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+{% if estadisticas %}
+<div class="mt-4">
+    <h4>Resultados:</h4>
+    <ul class="list-group">
+        <li class="list-group-item">Cantidad de alquileres: <strong>{{ estadisticas.total_alquileres }}</strong></li>
+    </ul>
+</div>
+{% endif %}
+{% endblock %}

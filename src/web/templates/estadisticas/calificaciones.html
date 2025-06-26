@@ -1,0 +1,54 @@
+{% extends "estadisticas/layout.html" %}
+
+{% block estadisticas_content %}
+<h2>Estadísticas de Calificaciones</h2>
+<p>Seleccioná una marca, modelo y año para ver la calificación promedio del vehículo.</p>
+
+<form method="POST" class="border p-4 rounded bg-light mt-4">
+    <div class="mb-3">
+        <label for="marca" class="form-label">Marca:</label>
+        <select name="marca" id="marca" class="form-select" required>
+            <option value="" disabled selected>Seleccionar una marca</option>
+            {% for marca in marcas %}
+                <option value="{{ marca }}">{{ marca }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="modelo" class="form-label">Modelo:</label>
+        <select name="modelo" id="modelo" class="form-select" required>
+            <option value="" disabled selected>Seleccionar un modelo</option>
+            {% for modelo in modelos %}
+                <option value="{{ modelo }}">{{ modelo }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="anio" class="form-label">Año:</label>
+        <select name="anio" id="anio" class="form-select" required>
+            <option value="" disabled selected>Seleccionar un año</option>
+            {% for anio in anios %}
+                <option value="{{ anio }}">{{ anio }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+{% if resultado %}
+<div class="mt-4">
+    <h4>Resultados:</h4>
+    <ul class="list-group">
+        <li class="list-group-item">Calificación promedio: <strong>{{ resultado.promedio }}</strong></li>
+        <li class="list-group-item">Cantidad de opiniones: <strong>{{ resultado.cantidad }}</strong></li>
+    </ul>
+</div>
+{% elif not resultado and request.method == 'POST' %}
+<div class="alert alert-warning mt-4">
+    No se encontraron calificaciones para el vehículo seleccionado.
+</div>
+{% endif %}
+{% endblock %}
