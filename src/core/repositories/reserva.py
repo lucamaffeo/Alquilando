@@ -46,3 +46,13 @@ def get_reservas_by_vehiculo(vehiculo_id):
     from src.core.models.reserva import Reserva
     return Reserva.query.filter_by(vehiculo_id=vehiculo_id).all()
 
+def update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_id, adicionales_ids):
+    reserva = Reserva.query.get(reserva_id)
+    if reserva:
+        reserva.vehiculo_id = vehiculo_id
+        from src.core.models.adicional import Adicional
+        reserva.adicionales = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
+        db.session.commit()
+        return reserva
+    return None
+

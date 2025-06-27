@@ -31,6 +31,7 @@ def run():
     reserva_index = create_permission(nombre="reserva_index")
     reserva_show = create_permission(nombre="reserva_show")
     reserva_delete = create_permission(nombre="reserva_delete")
+    reserva_update = create_permission(nombre="reserva_update")
 
     # Crear permisos de empleados
     employee_create = create_permission(nombre="employee_create")
@@ -42,13 +43,13 @@ def run():
     admin_role = create_role(name="admin", permissions=[
         user_index, user_show, user_update, user_delete,
         vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index,
-        sucursal_index, sucursal_show, sucursal_create, employee_create, estadisticas_index, reserva_index
+        sucursal_index, sucursal_show, sucursal_create, employee_create, estadisticas_index, reserva_index, reserva_update
     ])
     usuario_role = create_role(name="usuario registrado", permissions=[
         user_show, user_update, reserva_index, reserva_show, reserva_delete,
     ])
     empleado_role = create_role(name="empleado", permissions=[
-    vehicle_show, vehicle_index, vehicle_cambiar_estado, user_update, user_create_presencial,reserva_index
+    vehicle_show, vehicle_index, vehicle_cambiar_estado, user_update, user_create_presencial,reserva_index,reserva_update
     ])
 
     # Crear usuarios
@@ -317,5 +318,14 @@ def run():
         fecha_fin="2026-12-10",
         estado="activa"
     )
+
+    # Crear adicionales
+    from src.core.models.adicional import Adicional
+    adicional1 = Adicional(nombre="Silla para bebes", precio=2000)
+    adicional2 = Adicional(nombre="Valija de techo", precio=3000)
+    adicional3 = Adicional(nombre="Seguro completo", precio=5000)
+    adicional4 = Adicional(nombre="GPS", precio=1500)
+    db.session.add_all([adicional1, adicional2, adicional3, adicional4])
+    db.session.commit()
 
     print("Seed ejecutado correctamente!")

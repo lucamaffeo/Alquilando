@@ -1,4 +1,5 @@
 from src.core.database import db
+from src.core.models.adicional import reserva_adicional
 
 class Reserva(db.Model):
     __tablename__ = "reservas"
@@ -12,3 +13,8 @@ class Reserva(db.Model):
 
     vehiculo = db.relationship("Vehiculo", backref="reservas")
     user = db.relationship("User", backref="reservas")
+    adicionales = db.relationship(
+        "Adicional",
+        secondary=reserva_adicional,
+        backref="reservas"
+    )

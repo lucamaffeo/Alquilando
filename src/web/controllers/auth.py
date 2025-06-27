@@ -5,7 +5,7 @@ from src.core.models import user as User  # Assuming you have a User model
 
 auth_bp = Blueprint('auth', __name__)
 
-maxTimeSecs = 20  # tiempo de expiracion del codigo de verificacion en segundos
+maxTimeSecs = 120  # tiempo de expiracion del codigo de verificacion en segundos
 
 @auth_bp.route('/login-code', methods=['GET', 'POST'])
 def login_code():

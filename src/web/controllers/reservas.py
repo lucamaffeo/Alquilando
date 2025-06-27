@@ -251,6 +251,32 @@ def cancelar_reserva(reserva_id):
     return redirect(url_for("reservas.mis_reservas"))
 
 
+@bp.route("/detalle/<int:reserva_id>", methods=["GET", "POST"])
+@has_permission("reserva_update")
+def detalle_reserva(reserva_id):
+    from src.core.models.adicional import Adicional
+    from src.core.repositories.vehiculo import list_vehiculos
+    reserva_obj = show_reserva(reserva_id)
+    if not reserva_obj:
+        flash("Reserva no encontrada.", "error")
+        return redirect(url_for("reservas.index"))
+    adicionales = Adicional.query.all()
+    vehiculos = list_vehiculos()
+    if request.method == "POST":
+        vehiculo_id = int(request.form.get("vehiculo_id"))
+        adicionales_ids = request.form.getlist("adicionales")
+        adicionales_ids = [int(aid) for aid in adicionales_ids]
+        from src.core.repositories.reserva import update_reserva_vehiculo_y_adicionales
+        update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_id, adicionales_ids)
+        flash("Reserva actualizada correctamente.", "success")
+        return redirect(url_for("reservas.detalle_reserva", reserva_id=reserva_id))
+    return render_template(
+        "reservas/detalle_reserva.html",
+        reserva=reserva_obj,
+        adicionales=adicionales,
+        vehiculos=vehiculos
+    )
+
 def sendConfirmationEmail(v, fecha_inicio, fecha_fin, precio):
     user_data = user.get_user_by_id(session.get("user_id"))
     modelo = v.modelo_rel.nombre if v.modelo_rel else "Desconocido"
