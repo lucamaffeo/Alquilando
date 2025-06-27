@@ -27,23 +27,46 @@
         nav.navbar .nav-link, nav.navbar .navbar-brand {
             color: #fff !important;
             border-radius: 20px;
-            padding: 6px 18px !important;
-            margin-right: 8px;
-            display: flex;
+            padding: 6px 14px !important;
+            margin-right: 4px;
+            display: inline-flex;
             align-items: center;
+            gap: 6px;
             transition: background 0.15s, color 0.15s, box-shadow 0.15s;
             box-shadow: 0 1px 4px rgba(30,42,56,0.10);
-            font-weight: normal;
+            font-weight: 500;
             background: transparent;
+            font-size: 1rem;
+            white-space: nowrap;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         nav.navbar .nav-link i {
-            margin-right: 7px;
-            font-size: 1.2em;
+            margin-right: 0;
+            font-size: 1.1em;
+            vertical-align: middle;
         }
-        nav.navbar .nav-link.active, nav.navbar .nav-link:hover {
+        nav.navbar .nav-link.active, 
+        nav.navbar .nav-link:active, 
+        nav.navbar .nav-link:focus,
+        .btn.active, .btn:active, .btn:focus, .btn-main.active, .btn-main:active, .btn-main:focus {
+            background: #e3e3e3 !important;
+            color: #232b32 !important;
+            border-color: #e3e3e3 !important;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(30,42,56,0.18);
+        }
+        nav.navbar .nav-link:hover {
             background: #e3e3e3 !important;
             color: #232b32 !important;
             text-decoration: none;
+        }
+        .navbar-nav {
+            align-items: center;
+        }
+        .navbar-nav .nav-item {
+            margin-bottom: 0 !important;
         }
         /* Estilo especial para el botón de inicio */
         .nav-link.inicio-btn {
@@ -96,7 +119,26 @@
         .btn.btn-success:hover,
         .btn.btn-info:hover,
         .btn.btn-warning:hover,
-        .btn.btn-danger:hover {
+        .btn.btn-danger:hover,
+        .btn-main.active,
+        .btn.btn-primary.active,
+        .btn.btn-success.active,
+        .btn.btn-info.active,
+        .btn.btn-warning.active,
+        .btn.btn-danger.active,
+        .btn-main:active,
+        .btn.btn-primary:active,
+        .btn.btn-success:active,
+        .btn.btn-info:active,
+        .btn.btn-warning:active,
+        .btn.btn-danger:active,
+        .btn:focus,
+        .btn-main:focus,
+        .btn.btn-primary:focus,
+        .btn.btn-success:focus,
+        .btn.btn-info:focus,
+        .btn.btn-warning:focus,
+        .btn.btn-danger:focus {
             background-color: #11171c !important;
             color: #fff !important;
             border-color: #11171c !important;
@@ -154,11 +196,11 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-row">
                     {% if not session.get("user_id") %}
                     <li class="nav-item">
-                        <a class="nav-link inicio-btn" href="{{ url_for('global.inicio_global') }}">
-                            <i class="bi bi-house-door-fill"></i>Inicio
+                        <a class="nav-link inicio-btn {% if request.endpoint == 'global.inicio_global' %}active{% endif %}" href="{{ url_for('global.inicio_global') }}">
+                            <i class="bi bi-house-door-fill"></i><span>Inicio</span>
                         </a>
                     </li>
 
@@ -166,71 +208,98 @@
                     {% if session.get("user_id") %}
                         {% if session.get("user_role") == "usuario registrado" %}
                         <li class="nav-item">
-                            <a class="nav-link inicio-btn" href="{{ url_for('global.inicio_global') }}">
-                                <i class="bi bi-house-door-fill"></i>Inicio
+                            <a class="nav-link inicio-btn {% if request.endpoint == 'global.inicio_global' %}active{% endif %}" href="{{ url_for('global.inicio_global') }}">
+                                <i class="bi bi-house-door-fill"></i><span>Inicio</span>
                             </a>
                         </li>
                         {% endif %}
                         {% if has_permission(session.get("user_id"), "vehicle_index") %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('vehiculos.index') }}"><i class="bi bi-car-front"></i>Vehículos</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'vehiculos.index' %}active{% endif %}" href="{{ url_for('vehiculos.index') }}">
+                                <i class="bi bi-car-front"></i><span>Vehículos</span>
+                            </a>
+                        </li>
                         {% endif %}
                         {% if has_permission(session.get("user_id"), "user_index") %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.index') }}"><i class="bi bi-people"></i>Usuarios</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'usuarios.index' %}active{% endif %}" href="{{ url_for('usuarios.index') }}">
+                                <i class="bi bi-people"></i><span>Usuarios</span>
+                            </a>
+                        </li>
                         {% endif %}
                         {% if has_permission(session.get("user_id"), "sucursal_index") %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('sucursales.index') }}"><i class="bi bi-building"></i>Sucursales</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'sucursales.index' %}active{% endif %}" href="{{ url_for('sucursales.index') }}">
+                                <i class="bi bi-building"></i><span>Sucursales</span>
+                            </a>
+                        </li>
                         {% endif %}
                         {% if has_permission(session.get("user_id"), "vehicle_index") %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('reservas.index') }}"><i class="bi bi-building"></i>Reservas</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'reservas.index' or request.endpoint == 'reservas.mis_reservas' %}active{% endif %}" href="{{ url_for('reservas.index') }}">
+                                <i class="bi bi-building"></i><span>Reservas</span>
+                            </a>
+                        </li>
                         {% endif %}
-                        
                         {% if has_permission(session.get("user_id"), "user_create") %}
-                        <a href="{{ url_for('usuarios.register') }}" class="nav-link"><i class="bi bi-person-plus"></i>Registrar usuario</a>
+                        <a href="{{ url_for('usuarios.register') }}" class="nav-link {% if request.endpoint == 'usuarios.register' %}active{% endif %}">
+                            <i class="bi bi-person-plus"></i><span>Registrar usuario</span>
+                        </a>
                         {% endif %}
                         {% if has_permission(session.get("user_id"), "employee_create") %}
-                        <a href="{{ url_for('usuarios.register_empleado') }}" class="nav-link"><i class="bi bi-person-badge"></i>Registrar
-                            Empleado</a>
+                        <a href="{{ url_for('usuarios.register_empleado') }}" class="nav-link {% if request.endpoint == 'usuarios.register_empleado' %}active{% endif %}">
+                            <i class="bi bi-person-badge"></i><span>Registrar Empleado</span>
+                        </a>
                         {% endif %}
-
                         {% if has_permission(session.get("user_id"), "estadisticas_index") %}
-                        <a href="{{ url_for('estadisticas.menu') }}" class="nav-link">
-                            <i class="bi bi-bar-chart"></i>Estadísticas
+                        <a href="{{ url_for('estadisticas.menu') }}" class="nav-link {% if request.endpoint.startswith('estadisticas') %}active{% endif %}">
+                            <i class="bi bi-bar-chart"></i><span>Estadísticas</span>
                         </a>
                         {% endif %}
-
                         {% if has_permission(session.get("user_id"), "user_create_presencial") %}
-                        <a href="{{ url_for('usuarios.register_presencial') }}" class="nav-link">
-                            <i class="bi bi-person-lines-fill"></i>Registrar usuario presencial
+                        <a href="{{ url_for('usuarios.register_presencial') }}" class="nav-link {% if request.endpoint == 'usuarios.register_presencial' %}active{% endif %}">
+                            <i class="bi bi-person-lines-fill"></i><span>Registrar usuario</span>
                         </a>
                         {% endif %}
-                      
                     {% else %}
                     {% endif %}
                 </ul>
-                <ul class="navbar-nav">
+                <ul class="navbar-nav flex-row">
                     {% if session.get("user_id") %}
                     {% if session.get("user_role") == "usuario registrado" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">
-                            <i class="bi bi-person-circle"></i>Mi Perfil
+                        <a class="nav-link {% if request.endpoint == 'usuarios.show' %}active{% endif %}" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">
+                            <i class="bi bi-person-circle"></i><span>Mi Perfil</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('reservas.mis_reservas') }}">
-                            <i class="bi bi-journal-bookmark"></i>Ver Mis Reservas
+                        <a class="nav-link {% if request.endpoint == 'reservas.mis_reservas' %}active{% endif %}" href="{{ url_for('reservas.mis_reservas') }}">
+                            <i class="bi bi-journal-bookmark"></i><span>Ver Mis Reservas</span>
                         </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">
-                            <i class="bi bi-person-circle"></i>Mi Perfil
+                        <a class="nav-link {% if request.endpoint == 'usuarios.show' %}active{% endif %}" href="{{ url_for('usuarios.show', user_id=session['user_id']) }}">
+                            <i class="bi bi-person-circle"></i><span>Mi Perfil</span>
                         </a>
                     </li>
                     {% endif %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.logout') }}"><i class="bi bi-box-arrow-right"></i>Cerrar Sesión</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('usuarios.logout') }}">
+                            <i class="bi bi-box-arrow-right"></i><span>Cerrar Sesión</span>
+                        </a>
+                    </li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.login') }}"><i class="bi bi-box-arrow-in-right"></i>Iniciar Sesión</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('usuarios.register') }}"><i class="bi bi-person-plus"></i>Registrarse</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'usuarios.login' %}active{% endif %}" href="{{ url_for('usuarios.login') }}">
+                            <i class="bi bi-box-arrow-in-right"></i><span>Iniciar Sesión</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'usuarios.register' %}active{% endif %}" href="{{ url_for('usuarios.register') }}">
+                            <i class="bi bi-person-plus"></i><span>Registrarse</span>
+                        </a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>

@@ -276,7 +276,8 @@ def run():
         user_id=user.id,  # ID del usuario que realiza la reserva
         fecha_inicio="2023-10-01",
         fecha_fin="2023-10-05",
-        estado="finalizada"
+        estado="finalizada",
+        precio_total_vehiculo=18000 * 5  # id=5, precio=18000, 5 días
     )
 
     # --- Reservas adicionales para user@user.com ---
@@ -286,7 +287,8 @@ def run():
         user_id=user.id,
         fecha_inicio="2023-09-01",
         fecha_fin="2023-09-05",
-        estado="finalizada"
+        estado="finalizada",
+        precio_total_vehiculo=20000 * 5  # id=1, precio=20000, 5 días
     )
     # 2 canceladas
     create_reserva(
@@ -294,14 +296,16 @@ def run():
         user_id=user.id,
         fecha_inicio="2023-06-01",
         fecha_fin="2023-06-05",
-        estado="cancelada"
+        estado="cancelada",
+        precio_total_vehiculo=35000 * 5  # id=4, precio=35000, 5 días
     )
     create_reserva(
         vehiculo_id=2,
         user_id=user.id,
         fecha_inicio="2023-05-10",
         fecha_fin="2023-05-15",
-        estado="cancelada"
+        estado="cancelada",
+        precio_total_vehiculo=20000 * 6  # id=2, precio=20000, 6 días
     )
     # 2 activas (misma fecha, diferente vehículo)
     create_reserva(
@@ -309,14 +313,16 @@ def run():
         user_id=user.id,
         fecha_inicio="2026-12-01",
         fecha_fin="2026-12-10",
-        estado="activa"
+        estado="activa",
+        precio_total_vehiculo=20000 * 10  # id=1, precio=20000, 10 días
     )
     create_reserva(
         vehiculo_id=3,
         user_id=user.id,
         fecha_inicio="2026-12-01",
         fecha_fin="2026-12-10",
-        estado="activa"
+        estado="activa",
+        precio_total_vehiculo=30000 * 10  # id=3, precio=30000, 10 días
     )
 
     # Crear adicionales
