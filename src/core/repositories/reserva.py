@@ -11,13 +11,20 @@ def create_reserva(**kwargs):
     db.session.commit()
     return reserva
 
-def list_reservas(user_id=None):
-    """
-    Lista todas las reservas o solo las del usuario si se pasa user_id.
-    """
+def list_reservas(user_id=None, email=None):
+    query = Reserva.query
     if user_id:
-        return Reserva.query.filter_by(user_id=user_id).all()
-    return Reserva.query.all()
+        query = query.filter_by(user_id=user_id)
+    if email:
+        from src.core.models.user import User
+        user = User.query.filter(User.email.ilike(f"%{email}%")).first()
+        if user:
+            query = query.filter_by(user_id=user.id)
+        else:
+            # Si no existe el usuario, devolver lista vacía
+            return []
+    return query.all()
+
 
 def list_reservas_by_user(user_id):
     """

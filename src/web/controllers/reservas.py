@@ -31,12 +31,18 @@ def index():
     if user_id and user_role == "usuario registrado":
         actualizar_reservas_finalizadas(user_id)
         reservas = reserva.list_reservas_by_user(user_id)
+        return render_template("reservas/index.html", reservas=reservas)
     else:
-        reservas = reserva.list_reservas(None)
-        # Agregar usuario a cada reserva para mostrar en el template
-        for r in reservas:
-            r.usuario_obj = user.get_user_by_id(r.user_id)
-    return render_template("reservas/index.html", reservas=reservas)
+        email = request.args.get("email", "").strip()
+        mensaje = None
+        if email:
+            reservas = reserva.list_reservas(email=email)
+        else:
+            reservas = reserva.list_reservas(None)
+        # Ordenar por estado (activas > finalizadas > canceladas)
+        estado_order = {"activa": 0, "finalizada": 1, "cancelada": 2}
+        reservas = sorted(reservas, key=lambda r: estado_order.get(r.estado, 99))# Filtrar por email si se ingresó uno
+        return render_template("reservas/listadoReservas.html", reservas=reservas, email=email, mensaje=mensaje)
 
 @bp.route("/show/<int:id>")
 @has_permission("reserva_show")
