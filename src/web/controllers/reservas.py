@@ -144,6 +144,7 @@ def pago():
             user_id=session.get("user_id"),
             fecha_inicio=fecha_inicio,
             fecha_fin=fecha_fin,
+            precio_total_vehiculo=precio_total  # Nuevo argumento
         )
         flash("Pago realizado y reserva confirmada.", "success")
         user_data = session.get
