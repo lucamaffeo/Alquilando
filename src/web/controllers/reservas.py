@@ -36,14 +36,16 @@ def index():
         email = request.args.get("email", "").strip()
         mensaje = None
         if email:
-            reservas = reserva.list_reservas(email=email)
+            # Obtener todas las reservas y filtrar por email en memoria (si el repositorio no soporta LIKE)
+            reservas = reserva.list_reservas(None)
+            reservas = [r for r in reservas if email.lower() in r.user.email.lower()]
             if not reservas:
                 mensaje = f"No hay reservas para el email '{email}'."
         else:
             reservas = reserva.list_reservas(None)
         # Ordenar por estado (activas > finalizadas > canceladas)
         estado_order = {"activa": 0, "finalizada": 1, "cancelada": 2}
-        reservas = sorted(reservas, key=lambda r: estado_order.get(r.estado, 99))# Filtrar por email si se ingresó uno
+        reservas = sorted(reservas, key=lambda r: estado_order.get(r.estado, 99))
         return render_template("reservas/listadoReservas.html", reservas=reservas, email=email, mensaje=mensaje)
 
 @bp.route("/show/<int:id>")
