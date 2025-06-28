@@ -37,6 +37,8 @@ def index():
         mensaje = None
         if email:
             reservas = reserva.list_reservas(email=email)
+            if not reservas:
+                mensaje = f"No hay reservas para el email '{email}'."
         else:
             reservas = reserva.list_reservas(None)
         # Ordenar por estado (activas > finalizadas > canceladas)
