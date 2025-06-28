@@ -1,0 +1,69 @@
+{% extends "base_index.html" %}
+
+{% block extra_content %}
+<h2 class="mb-4 text-center">Listado de Adicionales</h2>
+<div class="mb-3 text-end">
+    <a href="{{ url_for('adicionales.register') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Registrar adicional
+    </a>
+</div>
+{% endblock %}
+
+{% block table_header %}
+<tr>
+    <th>Nombre</th>
+    <th>Precio</th>
+    <th>Acciones</th>
+</tr>
+{% endblock %}
+
+{% block table_body %}
+{% if adicionales|length == 0 %}
+    <tr>
+        <td colspan="3">
+            <div class="alert alert-info text-center mt-5 p-4 rounded shadow-sm">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                No hay adicionales para mostrar.
+            </div>
+        </td>
+    </tr>
+{% else %}
+    {% for adicional in adicionales %}
+    <tr>
+        <td>{{ adicional.nombre }}</td>
+        <td>${{ adicional.precio }}</td>
+        <td>
+            <a href="{{ url_for('adicionales.actualizar', id=adicional.id) }}" class="btn btn-warning btn-sm">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarAdicional{{ adicional.id }}">
+                <i class="bi bi-trash"></i> Eliminar
+            </button>
+            <!-- Modal de confirmación -->
+            <div class="modal fade" id="modalEliminarAdicional{{ adicional.id }}" tabindex="-1" aria-labelledby="modalEliminarAdicionalLabel{{ adicional.id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background-color: #e3f2fd;">
+                  <div class="modal-header" style="background-color: #1E2A38;">
+                    <h5 class="modal-title text-white" id="modalEliminarAdicionalLabel{{ adicional.id }}">
+                      <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                  </div>
+                  <div class="modal-body text-center">
+                    <p class="fs-5 mb-3">¿Estás seguro que deseas eliminar el adicional <strong>{{ adicional.nombre }}</strong>?</p>
+                  </div>
+                  <div class="modal-footer justify-content-center">
+                    <form method="POST" action="{{ url_for('adicionales.eliminar', id=adicional.id) }}">
+                      <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
+                      <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+{% endif %}
+{% endblock %}
+

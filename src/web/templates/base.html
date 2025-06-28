@@ -266,9 +266,9 @@
                             <i class="bi bi-person-lines-fill"></i><span>Registrar usuario</span>
                         </a>
                         {% endif %}
-                        {% if session.get("user_role") == "admin" %}
+                        {% if has_permission(session.get("user_id"), "adicional_index") %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'adicionales.index' %}active{% endif %}" href="{{ url_for('sucursales.index') }}">
+                            <a class="nav-link {% if request.endpoint == 'adicionales.index' %}active{% endif %}" href="{{ url_for('adicionales.index') }}">
                                 <i class="bi bi-plus-square"></i><span>Adicional</span>
                             </a>
                         </li>

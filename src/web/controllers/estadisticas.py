@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-#from src.core.repositories.reserva import obtener_estadisticas, obtener_estadisticas_vehiculos
-# from src.core.repositories.calificaciones import obtener_estadisticas_calificaciones
+from src.core.repositories import sucursal, reserva
+from datetime import datetime
 
 bp = Blueprint("estadisticas", __name__, url_prefix="/estadisticas")
 
@@ -23,5 +23,32 @@ def promedio_alquileres():
 
 @bp.route("/alquileres-por-sucursal", methods=["GET", "POST"])
 def alquileres_por_sucursal():
-    return render_template("estadisticas/alquileres_por_sucursal.html")
+    sucursales = sucursal.list_sucursales()
+    estadisticas = None
+    if request.method == "POST":
+        sucursal_id = request.form.get("sucursal")
+        fecha_inicio = request.form.get("fecha_inicio")
+        fecha_fin = request.form.get("fecha_fin")
+        if sucursal_id and fecha_inicio and fecha_fin:
+            fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+            fecha_fin_dt = datetime.strptime(fecha_fin, "%Y-%m-%d").date()
+            # Buscar reservas de vehículos de esa sucursal en el rango de fechas
+            from src.core.models.reserva import Reserva
+            from src.core.models.vehiculo import Vehiculo
+            total_alquileres = (
+                Reserva.query
+                .join(Vehiculo, Reserva.vehiculo_id == Vehiculo.id)
+                .filter(
+                    Vehiculo.sucursal_id == int(sucursal_id),
+                    Reserva.fecha_inicio >= fecha_inicio_dt,
+                    Reserva.fecha_fin <= fecha_fin_dt
+                )
+                .count()
+            )
+            estadisticas = {"total_alquileres": total_alquileres}
+    return render_template(
+        "estadisticas/alquileres_por_sucursal.html",
+        sucursales=sucursales,
+        estadisticas=estadisticas
+    )
 
