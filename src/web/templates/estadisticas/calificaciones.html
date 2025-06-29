@@ -1,54 +1,49 @@
 {% extends "estadisticas/layout.html" %}
 
 {% block estadisticas_content %}
-<h2>Estadísticas de Calificaciones</h2>
-<p>Seleccioná una marca, modelo y año para ver la calificación promedio del vehículo.</p>
+<h2>Calificaciones de Vehículos</h2>
 
-<form method="POST" class="border p-4 rounded bg-light mt-4">
-    <div class="mb-3">
-        <label for="marca" class="form-label">Marca:</label>
-        <select name="marca" id="marca" class="form-select" required>
-            <option value="" disabled selected>Seleccionar una marca</option>
-            {% for marca in marcas %}
-                <option value="{{ marca }}">{{ marca }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label for="modelo" class="form-label">Modelo:</label>
-        <select name="modelo" id="modelo" class="form-select" required>
-            <option value="" disabled selected>Seleccionar un modelo</option>
-            {% for modelo in modelos %}
-                <option value="{{ modelo }}">{{ modelo }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label for="anio" class="form-label">Año:</label>
-        <select name="anio" id="anio" class="form-select" required>
-            <option value="" disabled selected>Seleccionar un año</option>
-            {% for anio in anios %}
-                <option value="{{ anio }}">{{ anio }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Buscar</button>
+<!-- Filtro por fechas -->
+<form method="POST" class="row g-3 mb-4">
+  <div class="col-md-5">
+    <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+    <input type="date" name="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
+  </div>
+  <div class="col-md-5">
+    <label for="fecha_fin" class="form-label">Fecha de fin</label>
+    <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+  </div>
+  <div class="col-md-2 align-self-end">
+    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+  </div>
 </form>
 
-{% if resultado %}
-<div class="mt-4">
-    <h4>Resultados:</h4>
-    <ul class="list-group">
-        <li class="list-group-item">Calificación promedio: <strong>{{ resultado.promedio }}</strong></li>
-        <li class="list-group-item">Cantidad de opiniones: <strong>{{ resultado.cantidad }}</strong></li>
-    </ul>
-</div>
-{% elif not resultado and request.method == 'POST' %}
-<div class="alert alert-warning mt-4">
-    No se encontraron calificaciones para el vehículo seleccionado.
-</div>
+<!-- Lista de calificaciones -->
+{% if vehiculos %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Vehículo</th>
+          <th>Cantidad de Calificaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vehiculo in vehiculos %}
+        <tr>
+          <td>{{ vehiculo.nombre }}</td>
+          <td>
+            {% for _ in range(vehiculo.cantidad) %}
+              <i class="bi bi-star-fill text-warning"></i>
+            {% endfor %}
+            <span class="ms-2">({{ vehiculo.cantidad }})</span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">No se encontraron calificaciones.</div>
 {% endif %}
 {% endblock %}
