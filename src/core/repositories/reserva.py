@@ -19,6 +19,12 @@ def list_reservas(user_id=None):
         return Reserva.query.filter_by(user_id=user_id).all()
     return Reserva.query.all()
 
+def list_reservas_by_date_range(fecha_inicio, fecha_fin):
+    """
+    Lista reservas en un rango de fechas.
+    """
+    return Reserva.query.filter(Reserva.fecha_inicio >= fecha_inicio, Reserva.fecha_fin <= fecha_fin).all()
+
 def list_reservas_by_user(user_id):
     """
     Lista reservas de un usuario.

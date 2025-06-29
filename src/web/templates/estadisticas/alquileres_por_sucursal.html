@@ -1,39 +1,65 @@
 {% extends "estadisticas/layout.html" %}
 
 {% block estadisticas_content %}
-<h2>Estadísticas de Alquileres por Sucursal</h2>
-<p>Seleccioná una sucursal y un rango de fechas para ver la cantidad de alquileres realizados.</p>
+<h2>Alquileres por Sucursal</h2>
 
-<form method="POST" class="border p-4 rounded bg-light mt-4">
-    <div class="mb-3">
-        <label for="sucursal" class="form-label">Sucursal:</label>
-        <select name="sucursal" id="sucursal" class="form-select" required>
-            <option value="" disabled selected>Seleccionar una sucursal</option>
-            {% for sucursal in sucursales %}
-                <option value="{{ sucursal.id }}">{{ sucursal.nombre }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
-        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="fecha_fin" class="form-label">Fecha Fin:</label>
-        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Buscar</button>
+<form method="POST" class="row g-3 mb-4">
+  <div class="col-md-5">
+    <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+    <input type="date" name="fecha_inicio" class="form-control" required>
+  </div>
+  <div class="col-md-5">
+    <label for="fecha_fin" class="form-label">Fecha de fin</label>
+    <input type="date" name="fecha_fin" class="form-control" required>
+  </div>
+  <div class="col-md-2 align-self-end">
+    <button type="submit" class="btn btn-primary w-100">Buscar</button>
+  </div>
 </form>
 
-{% if estadisticas %}
-<div class="mt-4">
-    <h4>Resultados:</h4>
-    <ul class="list-group">
-        <li class="list-group-item">Cantidad de alquileres: <strong>{{ estadisticas.total_alquileres }}</strong></li>
-    </ul>
-</div>
+<!-- Gráfico de torta -->
+{% if sucursales and alquileres %}
+  <div class="grafico-container">
+    <canvas id="graficoTorta"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById("graficoTorta").getContext("2d");
+    const chart = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: {{ sucursales | tojson }},
+        datasets: [{
+          label: "Alquileres por Sucursal",
+          data: {{ alquileres | tojson }},
+          backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  </script>
+{% else %}
+  {% if request.method == "POST" %}
+    <div class="alert alert-info">No se encontraron datos para las fechas seleccionadas.</div>
+  {% endif %}
 {% endif %}
+
+<style>
+  .grafico-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: auto;
+    aspect-ratio: 1;
+  }
+
+  #graficoTorta {
+    width: 100% !important;
+    height: auto !important;
+  }
+</style>
 {% endblock %}
