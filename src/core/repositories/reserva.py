@@ -6,7 +6,20 @@ def create_reserva(**kwargs):
     """
     Crea una nueva reserva.
     """
+    # Calcular el total de adicionales al momento de la reserva
+    adicionales_ids = kwargs.get("adicionales_ids", [])
+    precio_total_adicionales = 0.0
+    adicionales_objs = []
+    if adicionales_ids:
+        from src.core.models.adicional import Adicional
+        adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all()
+        precio_total_adicionales = sum(a.precio for a in adicionales_objs)
+    # Eliminar adicionales_ids de kwargs si existe
+    if "adicionales_ids" in kwargs:
+        kwargs.pop("adicionales_ids")
     reserva = Reserva(**kwargs)
+    reserva.adicionales = adicionales_objs
+    reserva.precio_total_adicionales = precio_total_adicionales
     db.session.add(reserva)
     db.session.commit()
     return reserva
@@ -64,7 +77,9 @@ def update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_id, adicionales_i
     if reserva:
         reserva.vehiculo_id = vehiculo_id
         from src.core.models.adicional import Adicional
-        reserva.adicionales = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
+        adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
+        reserva.adicionales = adicionales_objs
+        # No modificar reserva.precio_total_adicionales aquí, solo al crear la reserva
         db.session.commit()
         return reserva
     return None

@@ -59,7 +59,7 @@ def actualizar(id):
     return render_template("adicionales/register.html", adicional=adicional, is_update=True)
 
 @bp.route("/eliminar/<int:id>", methods=["POST"])
-@has_permission("adicionales_delete")
+@has_permission("adicional_delete")
 def eliminar(id):
     adicional = Adicional.query.get(id)
     if not adicional:

@@ -22,7 +22,7 @@
                             <p class="mb-1"><i class="bi bi-calendar-event me-1"></i><strong>Inicio:</strong> {{ reserva.fecha_inicio }}</p>
                             <p class="mb-1"><i class="bi bi-calendar-check me-1"></i><strong>Fin:</strong> {{ reserva.fecha_fin }}</p>
                             <p class="mb-1"><i class="bi bi-cash-coin me-1"></i><strong>Precio total:</strong>
-                                ${{ (reserva.vehiculo.precio * ((reserva.fecha_fin - reserva.fecha_inicio).days + 1)) if reserva.fecha_inicio and reserva.fecha_fin else reserva.vehiculo.precio }}
+                                ${{ reserva.precio_total_vehiculo }}
                             </p>
                             <p class="mb-1"><i class="bi bi-geo-alt me-1"></i><strong>Sucursal:</strong>
                                 {{ reserva.vehiculo.sucursal.nombre }} - {{ reserva.vehiculo.sucursal.ubicacion }}

@@ -6,9 +6,7 @@
 <p><strong>DNI:</strong> {{ reserva.user.dni }}</p>
 <p><strong>Inicio:</strong> {{ reserva.fecha_inicio }}</p>
 <p><strong>Fin:</strong> {{ reserva.fecha_fin }}</p>
-{% set dias = (reserva.fecha_fin - reserva.fecha_inicio).days + 1 if reserva.fecha_inicio and reserva.fecha_fin else 1 %}
-{% set precio_total = reserva.vehiculo.precio * dias %}
-<p><strong>Precio total:</strong> ${{ precio_total }}</p>
+<p><strong>Precio total:</strong> ${{ reserva.precio_total_vehiculo }}</p>
 <p><strong>Sucursal:</strong> {{ reserva.vehiculo.sucursal.nombre }} - {{ reserva.vehiculo.sucursal.ubicacion }}</p>
 <p><strong>Política de Cancelación:</strong> 
     {{ reserva.vehiculo.modelo_rel.politica_cancelacion if reserva.vehiculo.modelo_rel and reserva.vehiculo.modelo_rel.politica_cancelacion else "Sin reembolso" }}
@@ -18,15 +16,14 @@
     {% if reserva.adicionales %}
         <ul>
         {% for adicional in reserva.adicionales %}
-            <li>{{ adicional.nombre }} (${{ adicional.precio }})</li>
+            <li>{{ adicional.nombre }} (${{ reserva.precio_total_adicionales }})</li>
         {% endfor %}
         </ul>
     {% else %}
         Ninguno
     {% endif %}
 </p>
-{% set precio_adicionales = reserva.adicionales | sum(attribute='precio') %}
-<p><strong>Total a pagar por adicionales:</strong> ${{ precio_adicionales }}</p>
+<p><strong>Total a pagar por adicionales:</strong> ${{ reserva.precio_total_adicionales }}</p>
 <form method="POST">
     <div class="mb-3">
         <label for="vehiculo_id" class="form-label"><strong>Cambiar Vehículo:</strong></label>
