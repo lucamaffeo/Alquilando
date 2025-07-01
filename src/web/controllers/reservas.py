@@ -288,6 +288,25 @@ def detalle_reserva(reserva_id):
         vehiculos=vehiculos
     )
 
+@bp.route("/calificar/<int:reserva_id>", methods=["GET", "POST"])
+@has_permission("reserva_index")
+def calificar_reserva(reserva_id):
+    reserva_obj = show_reserva(reserva_id)
+    user_id = session.get("user_id")
+    user_role = session.get("user_role")
+    # Solo permitir si la reserva es del usuario logueado, está finalizada y el usuario es "usuario registrado"
+    if not reserva_obj or reserva_obj.user_id != user_id or reserva_obj.estado != "finalizada" or user_role != "usuario registrado":
+        flash("No puedes calificar esta reserva.", "error")
+        return redirect(url_for("reservas.historial_reservas"))
+    if request.method == "POST":
+        calificacion = int(request.form.get("calificacion"))
+        comentario = request.form.get("comentario", "").strip()
+        from src.core.repositories.reserva import calificar_reserva
+        calificar_reserva(reserva_id, calificacion, comentario)
+        flash("¡Reserva calificada con éxito!", "success")
+        return redirect(url_for("reservas.historial_reservas"))
+    return render_template("reservas/calificar.html", reserva=reserva_obj)
+
 def sendConfirmationEmail(v, fecha_inicio, fecha_fin, precio):
     user_data = user.get_user_by_id(session.get("user_id"))
     modelo = v.modelo_rel.nombre if v.modelo_rel else "Desconocido"

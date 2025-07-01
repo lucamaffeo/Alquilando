@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="card p-5 shadow-lg" style="max-width: 500px; width: 100%; border-radius: 1rem;">
+        <h2 class="text-center mb-4">Calificar tu Reserva</h2>
+        <form method="POST">
+            <div class="mb-4 text-center">
+                <label class="form-label d-block mb-2 fs-5">¿Qué te pareció el servicio?</label>
+                <div id="star-rating" class="mb-2">
+                    {% for i in range(5, 0, -1) %}
+                        <input type="radio" name="calificacion" id="star{{ i }}" value="{{ i }}" required>
+                        <label for="star{{ i }}" title="{{ i }} estrellas">&#9733;</label>
+                    {% endfor %}
+                </div>
+                <div class="small text-muted">
+                    1: Muy malo &nbsp;|&nbsp; 5: Excelente
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="comentario" class="form-label fs-5">Tu opinión</label>
+                <textarea name="comentario" id="comentario" class="form-control" rows="4" maxlength="255"
+                    placeholder="Contanos tu experiencia..." required></textarea>
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-success px-4 py-2 shadow-sm">
+                    Enviar
+                </button>
+                <a href="{{ url_for('reservas.historial_reservas') }}" class="btn btn-outline-secondary px-4 py-2">
+                    Volver
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+#star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 0.3rem;
+}
+#star-rating input[type="radio"] {
+    display: none;
+}
+#star-rating label {
+    font-size: 2.8rem;
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: color 0.25s, transform 0.2s;
+}
+#star-rating input[type="radio"]:checked ~ label {
+    color: #ffc107;
+}
+#star-rating label:hover,
+#star-rating label:hover ~ label {
+    color: #ffc107;
+    transform: scale(1.15);
+}
+textarea:focus {
+    box-shadow: 0 0 6px rgba(40, 167, 69, 0.4);
+    border-color: #28a745;
+}
+button.btn-success:hover {
+    background-color: #218838;
+}
+a.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %}

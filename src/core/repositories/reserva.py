@@ -63,3 +63,12 @@ def update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_id, adicionales_i
         return reserva
     return None
 
+def calificar_reserva(reserva_id, calificacion, comentario):
+    reserva = Reserva.query.get(reserva_id)
+    if reserva:
+        reserva.calificacion = calificacion
+        reserva.comentario = comentario
+        db.session.commit()
+        return reserva
+    return None
+
