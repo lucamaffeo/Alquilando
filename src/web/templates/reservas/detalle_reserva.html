@@ -16,15 +16,14 @@
     {% if reserva.adicionales %}
         <ul>
         {% for adicional in reserva.adicionales %}
-            <li>{{ adicional.nombre }} (${{ adicional.precio }})</li>
+            <li>{{ adicional.nombre }} (${{ reserva.precio_total_adicionales }})</li>
         {% endfor %}
         </ul>
     {% else %}
         Ninguno
     {% endif %}
 </p>
-{% set precio_adicionales = reserva.adicionales | sum(attribute='precio') %}
-<p><strong>Total a pagar por adicionales:</strong> ${{ precio_adicionales }}</p>
+<p><strong>Total a pagar por adicionales:</strong> ${{ reserva.precio_total_adicionales }}</p>
 <form method="POST">
     <div class="mb-3">
         <label for="vehiculo_id" class="form-label"><strong>Cambiar Vehículo:</strong></label>
