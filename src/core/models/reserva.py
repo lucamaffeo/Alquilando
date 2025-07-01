@@ -11,6 +11,8 @@ class Reserva(db.Model):
     fecha_fin = db.Column(db.Date, nullable=False)
     estado = db.Column(db.String(50), default="activa")
     precio_total_vehiculo = db.Column(db.Float, nullable=False)  # Nuevo campo
+    calificacion = db.Column(db.Integer, nullable=True)
+    comentario = db.Column(db.String(255), nullable=True)
 
     vehiculo = db.relationship("Vehiculo", backref="reservas")
     user = db.relationship("User", backref="reservas")
