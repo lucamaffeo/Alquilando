@@ -1,6 +1,7 @@
 from src.core.database import db
 from src.core.models.reserva import Reserva
-
+from sqlalchemy import func
+from src.core.models.vehiculo import Vehiculo
 
 def create_reserva(**kwargs):
     """
@@ -94,6 +95,34 @@ def calificar_reserva(reserva_id, calificacion, comentario):
         db.session.commit()
         return reserva
     return None
+def list_reservas_con_calificaciones():
+    return Reserva.query.filter(Reserva.calificacion.isnot(None)).all()
+
+def obtener_vehiculos_mas_alquilados(fecha_inicio=None, fecha_fin=None):
+    query = (
+        db.session.query(
+            Vehiculo,
+            func.count(Reserva.id).label("cantidad_reservas")
+        )
+        .join(Reserva)
+        .filter(Reserva.estado == "finalizada")
+    )
+
+    if fecha_inicio:
+        query = query.filter(Reserva.fecha_inicio >= fecha_inicio)
+    if fecha_fin:
+        query = query.filter(Reserva.fecha_fin <= fecha_fin)
+
+    resultados = (
+        query
+        .group_by(Vehiculo.id)
+        .order_by(func.count(Reserva.id).desc())
+        .all()
+    )
+
+    return resultados
+
+
 
 def create_reserva_en_curso(user_id, vehiculo_id, adicionales_ids, fecha_inicio, fecha_fin, precio_total_vehiculo):
     """

@@ -25,7 +25,8 @@
       <thead class="table-light">
         <tr>
           <th>Vehículo</th>
-          <th>Cantidad de Calificaciones</th>
+          <th>Promedio de Calificación</th>
+          <th>Cantidad de Opiniones</th>
         </tr>
       </thead>
       <tbody>
@@ -33,11 +34,30 @@
         <tr>
           <td>{{ vehiculo.nombre }}</td>
           <td>
-            {% for _ in range(vehiculo.cantidad) %}
+            {# Mostrar estrellas visuales #}
+            {% set promedio = vehiculo.calificacion_promedio %}
+            {% set enteras = vehiculo.calificacion_promedio | int %}
+            {% set decimal = vehiculo.calificacion_promedio - enteras %}
+            {% set vacias = 5 - (vehiculo.calificacion_promedio | round(0, 'ceil')) %}
+
+            <!-- Estrellas llenas -->
+            {% for _ in range(enteras) %}
               <i class="bi bi-star-fill text-warning"></i>
             {% endfor %}
-            <span class="ms-2">({{ vehiculo.cantidad }})</span>
+
+            <!-- Media estrella -->
+            {% if decimal >= 0.5 %}
+              <i class="bi bi-star-half text-warning"></i>
+            {% endif %}
+
+            <!-- Estrellas vacías -->
+            {% for _ in range(vacias | int) %}
+              <i class="bi bi-star text-warning"></i>
+            {% endfor %}
+
+            <span class="ms-2">({{ promedio }})</span>
           </td>
+          <td>{{ vehiculo.cantidad }}</td>
         </tr>
         {% endfor %}
       </tbody>
