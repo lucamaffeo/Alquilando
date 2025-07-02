@@ -6,6 +6,7 @@ class Reserva(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     vehiculo_id = db.Column(db.Integer, db.ForeignKey("vehiculos.id"), nullable=False)
+    vehiculo_asignado_id = db.Column(db.Integer, db.ForeignKey("vehiculos.id"), nullable=True)  # Nuevo campo
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     fecha_inicio = db.Column(db.Date, nullable=False)
     fecha_fin = db.Column(db.Date, nullable=False)
@@ -14,8 +15,10 @@ class Reserva(db.Model):
     calificacion = db.Column(db.Integer, nullable=True)
     comentario = db.Column(db.String(255), nullable=True)
     precio_total_adicionales = db.Column(db.Float, default=0.0)  # Nuevo campo para el total de adicionales
+    reporte_devolucion = db.Column(db.String(255), nullable=True)  # Nuevo campo para el reporte de devolución
 
-    vehiculo = db.relationship("Vehiculo", backref="reservas")
+    vehiculo = db.relationship("Vehiculo", foreign_keys=[vehiculo_id], backref="reservas")
+    vehiculo_asignado = db.relationship("Vehiculo", foreign_keys=[vehiculo_asignado_id], backref="reservas_asignadas")
     user = db.relationship("User", backref="reservas")
     adicionales = db.relationship(
         "Adicional",
