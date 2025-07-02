@@ -74,7 +74,6 @@ def alquileres_por_sucursal():
     reservas_total= list_reservas()
     alquileres_por_sucursal = {}
     for reserva in reservas_total:
-        # Se asume que reserva.vehiculo.sucursal existe y tiene nombre
         sucursal = getattr(getattr(reserva, "vehiculo", None), "sucursal", None)
         if sucursal:
             nombre_sucursal = getattr(sucursal, "nombre", "Desconocida")
@@ -93,7 +92,6 @@ def alquileres_por_sucursal():
         # Agrupar reservas por sucursal
         alquileres_por_sucursal = {}
         for reserva in reservas:
-            # Se asume que reserva.vehiculo.sucursal existe y tiene nombre
             sucursal = getattr(getattr(reserva, "vehiculo", None), "sucursal", None)
             if sucursal:
                 nombre_sucursal = getattr(sucursal, "nombre", "Desconocida")

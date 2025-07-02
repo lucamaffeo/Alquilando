@@ -104,7 +104,7 @@ def obtener_vehiculos_mas_alquilados(fecha_inicio=None, fecha_fin=None):
             Vehiculo,
             func.count(Reserva.id).label("cantidad_reservas")
         )
-        .join(Reserva)
+        .join(Reserva, Reserva.vehiculo_id == Vehiculo.id)  # acá se desambigua
         .filter(Reserva.estado == "finalizada")
     )
 
