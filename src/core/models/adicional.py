@@ -11,3 +11,4 @@ class Adicional(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), unique=True, nullable=False)
     precio = db.Column(db.Float, nullable=False)
+    estado = db.Column(db.String(20), nullable=False, default="activo")  # Nuevo campo
