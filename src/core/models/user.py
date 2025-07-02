@@ -14,6 +14,8 @@ class User(db.Model):
     telefono = db.Column(db.String(255), nullable=True)
     fecha_nacimiento = db.Column(db.Date, nullable=True)
 
+    estado = db.Column(db.String(20), default="activo")  # Nuevo campo: 'activo' o 'eliminado'
+
     inserted_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 

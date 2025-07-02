@@ -85,20 +85,13 @@ def update_user(user_id, **kwargs):
 
 
 def delete_user(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return False
-
-    if user.role.name == 'administrador':
-        other_admin = User.query.join(Role).filter(
-            and_(Role.name == 'administrador', User.id != user_id, User.active == True)
-        ).first()
-        if not other_admin:
-            return False
-
-    db.session.delete(user)
-    db.session.commit()
-    return True
+    user = get_user_by_id(user_id)
+    if user:
+        user.estado = "eliminado"
+        from src.core.database import db
+        db.session.commit()
+        return True
+    return False
 
 
 def has_permission(user_id, permission_name):
@@ -106,9 +99,13 @@ def has_permission(user_id, permission_name):
         and_(
             User.id == user_id,
             User.role_id == Role.id,
-            Role.permissions.any(Permission.nombre == permission_name)  # Cambiado a .nombre
+            Role.permissions.any(Permission.nombre == permission_name)
         )
     )).scalar()
+
+def list_users_by_role(role_id):
+    return User.query.filter_by(role_id=role_id).all()
+    
 
 
 def list_users_by_role(role_id):

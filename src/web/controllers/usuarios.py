@@ -61,6 +61,10 @@ def login():
         if not user_data:
             flash("Usuario no registrado.", "error")
             return redirect(url_for("usuarios.login"))
+        # Verificar que el usuario no esté eliminado
+        if user_data.estado == "eliminado":
+            flash("Este usuario ha sido eliminado y no puede acceder al sistema.", "error")
+            return redirect(url_for("usuarios.login"))
         if user_data and check_password_hash(user_data.password, data["password"]):
             # Redirigir según el rol
             if user_data.role.name == "admin":
