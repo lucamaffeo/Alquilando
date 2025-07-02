@@ -274,17 +274,47 @@ def detalle_reserva(reserva_id):
     adicionales = Adicional.query.all()
     vehiculos = list_vehiculos()
     if request.method == "POST":
-        vehiculo_id = int(request.form.get("vehiculo_id"))
-        adicionales_ids = request.form.getlist("adicionales")
-        adicionales_ids = [int(aid) for aid in adicionales_ids]
-        from src.core.repositories.reserva import update_reserva_vehiculo_y_adicionales
-        # Actualizar el precio de adicionales cada vez que se modifica la selección
-        adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
-        reserva_obj.precio_total_adicionales = sum(a.precio for a in adicionales_objs)
-        db.session.commit()
-        update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_id, adicionales_ids)
-        flash("Reserva actualizada correctamente.", "success")
-        return redirect(url_for("reservas.detalle_reserva", reserva_id=reserva_id))
+        accion = request.form.get("accion")
+        if accion == "iniciar":
+            vehiculo_asignado_id = request.form.get("vehiculo_asignado_id")
+            adicionales_ids = request.form.getlist("adicionales")
+            adicionales_ids = [int(aid) for aid in adicionales_ids]
+            if vehiculo_asignado_id is None:
+                flash("Debe seleccionar un vehículo para asignar.", "error")
+                return redirect(url_for("reservas.detalle_reserva", reserva_id=reserva_id))
+            from src.core.repositories.reserva import update_reserva_vehiculo_y_adicionales
+            # Actualizar el precio de adicionales cada vez que se modifica la selección
+            adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
+            reserva_obj.precio_total_adicionales = sum(a.precio for a in adicionales_objs)
+            db.session.commit()
+            update_reserva_vehiculo_y_adicionales(reserva_id, int(vehiculo_asignado_id), adicionales_ids)
+            # Cambiar estado a "en curso"
+            reserva_obj.estado = "en curso"
+            db.session.commit()
+            flash("Reserva iniciada correctamente.", "success")
+            return redirect(url_for("reservas.detalle_reserva", reserva_id=reserva_id))
+        elif accion == "finalizar":
+            reporte_devolucion = request.form.get("reporte_devolucion")
+            if not reporte_devolucion:
+                flash("Debe ingresar un reporte de devolución.", "error")
+                return redirect(url_for("reservas.detalle_reserva", reserva_id=reserva_id))
+            from src.core.repositories.reserva import finalizar_reserva_empleado
+            finalizar_reserva_empleado(reserva_id, reporte_devolucion)
+            flash("Reserva finalizada correctamente.", "success")
+            return redirect(url_for("reservas.detalle_reserva", reserva_id=reserva_id))
+        else:
+            # Manejo anterior para usuarios (actualizar adicionales)
+            vehiculo_id = request.form.get("vehiculo_id")
+            adicionales_ids = request.form.getlist("adicionales")
+            adicionales_ids = [int(aid) for aid in adicionales_ids]
+            if vehiculo_id:
+                from src.core.repositories.reserva import update_reserva_vehiculo_y_adicionales
+                adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
+                reserva_obj.precio_total_adicionales = sum(a.precio for a in adicionales_objs)
+                db.session.commit()
+                update_reserva_vehiculo_y_adicionales(reserva_id, int(vehiculo_id), adicionales_ids)
+                flash("Reserva actualizada correctamente.", "success")
+                return redirect(url_for("reservas.detalle_reserva", reserva_id=reserva_id))
     return render_template(
         "reservas/detalle_reserva.html",
         reserva=reserva_obj,

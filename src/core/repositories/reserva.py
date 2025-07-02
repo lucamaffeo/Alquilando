@@ -66,14 +66,13 @@ def get_reservas_by_vehiculo(vehiculo_id):
     from src.core.models.reserva import Reserva
     return Reserva.query.filter_by(vehiculo_id=vehiculo_id).all()
 
-def update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_id, adicionales_ids):
+def update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_asignado_id, adicionales_ids):
     reserva = Reserva.query.get(reserva_id)
     if reserva:
-        reserva.vehiculo_id = vehiculo_id
+        reserva.vehiculo_asignado_id = vehiculo_asignado_id  # Solo cambia el auto asignado
         from src.core.models.adicional import Adicional
         adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
         reserva.adicionales = adicionales_objs
-        # No modificar reserva.precio_total_adicionales aquí, solo al crear la reserva
         db.session.commit()
         return reserva
     return None
@@ -83,6 +82,44 @@ def calificar_reserva(reserva_id, calificacion, comentario):
     if reserva:
         reserva.calificacion = calificacion
         reserva.comentario = comentario
+        db.session.commit()
+        return reserva
+    return None
+
+def create_reserva_en_curso(user_id, vehiculo_id, adicionales_ids, fecha_inicio, fecha_fin, precio_total_vehiculo):
+    """
+    Crea una reserva en estado 'en curso' para uso de empleados, asignando auto y adicionales.
+    """
+    from src.core.models.adicional import Adicional
+    adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
+    precio_total_adicionales = sum(a.precio for a in adicionales_objs)
+    reserva = Reserva(
+        user_id=user_id,
+        vehiculo_id=vehiculo_id,
+        vehiculo_asignado_id=vehiculo_id,
+        fecha_inicio=fecha_inicio,
+        fecha_fin=fecha_fin,
+        estado="en curso",
+        precio_total_vehiculo=precio_total_vehiculo,
+        precio_total_adicionales=precio_total_adicionales
+    )
+    reserva.adicionales = adicionales_objs
+    db.session.add(reserva)
+    db.session.commit()
+    return reserva
+
+def finalizar_reserva_empleado(reserva_id, reporte_devolucion):
+    """
+    Finaliza una reserva en curso, guarda el reporte de devolución, cambia el estado de la reserva a 'finalizada'
+    y pone el vehículo asignado en mantenimiento.
+    """
+    reserva = Reserva.query.get(reserva_id)
+    if reserva and reserva.estado == "en curso":
+        reserva.estado = "finalizada"
+        reserva.reporte_devolucion = reporte_devolucion
+        # Poner el vehículo asignado en mantenimiento
+        if reserva.vehiculo_asignado:
+            reserva.vehiculo_asignado.en_mantenimiento = True
         db.session.commit()
         return reserva
     return None

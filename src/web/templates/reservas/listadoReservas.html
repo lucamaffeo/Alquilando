@@ -26,8 +26,10 @@
                 <tr>
                     <th>Mail</th>
                     <th>Nombre</th>
-                    <th>Marca Vehículo</th>
-                    <th>Modelo Vehículo</th>
+                    <th>Marca Reservado</th>
+                    <th>Modelo Reservado</th>
+                    <th>Marca Asignado</th>
+                    <th>Modelo Asignado</th>
                     <th>Dias</th>
                     <th>Precio total</th>
                     <th>Estado</th>
@@ -43,6 +45,12 @@
                     <td>{{ reserva.user.nombre }}</td>
                     <td>{{ reserva.vehiculo.marca }}</td>
                     <td>{{ reserva.vehiculo.modelo_rel }}</td>
+                    <td>
+                        {{ reserva.vehiculo_asignado.marca if reserva.vehiculo_asignado else reserva.vehiculo.marca }}
+                    </td>
+                    <td>
+                        {{ reserva.vehiculo_asignado.modelo_rel if reserva.vehiculo_asignado else reserva.vehiculo.modelo_rel }}
+                    </td>
                     <td>{{ ((reserva.fecha_fin - reserva.fecha_inicio).days + 1) }}</td>
                     <td>${{ reserva.precio_total_vehiculo }}</td>
                     <td><strong>{{ reserva.estado }}</strong></td>
