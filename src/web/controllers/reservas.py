@@ -171,7 +171,7 @@ def mis_reservas():
         flash("No tienes permiso para ver esta sección.", "error")
         return redirect(url_for("global.inicio_global"))
     actualizar_reservas_finalizadas(user_id)
-    reservas = [r for r in reserva.list_reservas_by_user(user_id) if r.estado == "activa"]
+    reservas = [r for r in reserva.list_reservas_by_user(user_id) if r.estado in ("activa", "en curso")]
     return render_template("reservas/index.html", reservas=reservas)
 
 @bp.route("/historial-reservas")
