@@ -64,7 +64,10 @@ def delete_reserva(reserva_id):
 
 def get_reservas_by_vehiculo(vehiculo_id):
     from src.core.models.reserva import Reserva
-    return Reserva.query.filter_by(vehiculo_id=vehiculo_id).all()
+    return Reserva.query.filter(
+        ((Reserva.vehiculo_asignado_id == vehiculo_id) & (Reserva.vehiculo_asignado_id != None)) |
+        ((Reserva.vehiculo_id == vehiculo_id) & (Reserva.vehiculo_asignado_id == None))
+    ).all()
 
 def update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_asignado_id, adicionales_ids):
     reserva = Reserva.query.get(reserva_id)
