@@ -17,27 +17,39 @@
   </div>
 </form>
 
-
 <table class="table-auto w-full border-collapse border border-gray-400">
     <thead>
         <tr class="bg-gray-200">
             <th class="border px-4 py-2">#</th>
-            <th class="border px-4 py-2">Vehículo</th>
+            <th class="border px-4 py-2">Marca</th>
+            <th class="border px-4 py-2">Modelo</th>
             <th class="border px-4 py-2">Cantidad de reservas finalizadas</th>
         </tr>
     </thead>
     <tbody>
+        {% set agrupados = {} %}
         {% for vehiculo, cantidad in vehiculos %}
-        <tr>
-            <td class="border px-4 py-2">{{ loop.index }}</td>
-            <td class="border px-4 py-2">{{ vehiculo.marca }} {{ vehiculo.modelo }}</td>
-            <td class="border px-4 py-2">{{ cantidad }}</td>
-        </tr>
+            {% set key = vehiculo.marca ~ '|' ~ vehiculo.modelo_rel.nombre %}
+            {% if key in agrupados %}
+                {% set _ = agrupados.__setitem__(key, agrupados[key] + cantidad) %}
+            {% else %}
+                {% set _ = agrupados.__setitem__(key, cantidad) %}
+            {% endif %}
+        {% endfor %}
+        {% set agrupados_list = agrupados.items()|sort(attribute=1, reverse=True) %}
+        {% for key, total in agrupados_list %}
+            {% set marca, modelo = key.split('|', 1) %}
+            <tr>
+                <td class="border px-4 py-2">{{ loop.index }}</td>
+                <td class="border px-4 py-2">{{ marca }}</td>
+                <td class="border px-4 py-2">{{ modelo }}</td>
+                <td class="border px-4 py-2">{{ total }}</td>
+            </tr>
         {% endfor %}
 
-        {% if vehiculos|length == 0 %}
+        {% if agrupados_list|length == 0 %}
         <tr>
-            <td colspan="3" class="text-center text-gray-500 py-4">No vehiculos alquilados en las fechas seleccionadas</td>
+            <td colspan="4" class="text-center text-gray-500 py-4">No vehículos alquilados en las fechas seleccionadas</td>
         </tr>
         {% endif %}
     </tbody>

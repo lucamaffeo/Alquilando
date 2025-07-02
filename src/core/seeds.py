@@ -331,6 +331,108 @@ def run():
         precio_total_vehiculo=30000 * 10  # id=3, precio=30000, 10 días
     )
 
+    # Crear 5 usuarios extra con reservas
+    usuarios_extra = []
+    for i in range(1, 6):
+        usuarios_extra.append(create_user(
+            nombre=f"Usuario{i}",
+            email=f"usuario{i}@mail.com",
+            password="usuario123",
+            role_id=2,
+            apellido=f"Apellido{i}",
+            telefono=f"1111111{i}",
+            dni=f"7000000{i}",
+            fecha_nacimiento="1995-01-01"
+        ))
+
+    # Crear una cuarta sucursal
+    sucursal4 = create_sucursal(
+        nombre="Sucursal Oeste",
+        ubicacion="Av. San Martín 12345",
+    )
+
+    # Crear más vehículos en todas las sucursales, usando imágenes ya usadas
+    vehiculos_extra = []
+    modelos_info = [
+        ("Corolla", "100% de reembolso", "Toyota", "Sedan", 5, 20000, 2020, "Toyota_Corolla.png"),
+        ("Focus", "20% de reembolso", "Ford", "Hatchback", 5, 18000, 2018, "Ford_Focus.png"),
+        ("Amarok", "Sin reembolso", "Volkswagen", "Pickup", 5, 35000, 2022, "Volkswagen_Amarok.png"),
+        ("CR-V", "100% de reembolso", "Honda", "SUV", 7, 30000, 2022, "Honda_CRV.jpg"),
+        ("Hilux", "20% de reembolso", "Toyota", "Pickup", 5, 34000, 2022, "Toyota_Hillux.png"),
+        ("A3", "Sin reembolso", "Audi", "Coupe", 2, 35000, 2022, "Audi_A3.png"),
+        ("Fluence", "100% de reembolso", "Renault", "Sedan", 5, 21000, 2020, "Renault_Fluence.png"),
+        ("SW4", "100% de reembolso", "Toyota", "SUV", 7, 37000, 2023, "Toyota_Sw4.jpg"),
+        ("Ranger", "20% de reembolso", "Ford", "Pickup", 5, 32000, 2021, "Ford_Ranger.png"),
+    ]
+    sucursales = [sucursal1, sucursal2, sucursal3, sucursal4]
+    idx = 100
+    for suc in sucursales:
+        for modelo in modelos_info:
+            for j in range(3):  # 3 autos por modelo por sucursal
+                vehiculos_extra.append(create_vehiculo(
+                    patente=f"EXTRA{idx}",
+                    modelo_id=get_or_create_modelo(modelo[0], modelo[1]).id,
+                    marca=modelo[2],
+                    categoria=modelo[3],
+                    asientos=modelo[4],
+                    precio=modelo[5],
+                    anio=modelo[6],
+                    sucursal_id=suc.id,
+                    imagen=modelo[7]
+                ))
+                idx += 1
+
+    # IDs de vehículos por política de cancelación
+    vehiculos_100 = [v.id for v in vehiculos_extra if "100%" in v.modelo_rel.politica_cancelacion][:5]
+    vehiculos_20 = [v.id for v in vehiculos_extra if "20%" in v.modelo_rel.politica_cancelacion][:5]
+    vehiculos_0 = [v.id for v in vehiculos_extra if "Sin reembolso" in v.modelo_rel.politica_cancelacion][:5]
+
+    # Crear 15 reservas finalizadas (5 de cada política)
+    from random import randint, choice
+    all_users = [user.id] + [u.id for u in usuarios_extra]
+    fechas_finalizadas = [
+        ("2023-01-01", "2023-01-05"),
+        ("2023-02-01", "2023-02-05"),
+        ("2023-03-01", "2023-03-05"),
+        ("2023-04-01", "2023-04-05"),
+        ("2023-05-01", "2023-05-05"),
+    ]
+    for idx, veh_list in enumerate([vehiculos_100, vehiculos_20, vehiculos_0]):
+        for i, veh_id in enumerate(veh_list):
+            fi, ff = fechas_finalizadas[i]
+            calif = randint(2, 5)
+            comentario = f"Comentario finalizada {veh_id}-{i}"
+            create_reserva(
+                vehiculo_id=veh_id,
+                user_id=choice(all_users),
+                fecha_inicio=fi,
+                fecha_fin=ff,
+                estado="finalizada",
+                precio_total_vehiculo=20000 * 5,
+                calificacion=calif,
+                comentario=comentario
+            )
+
+    # Crear 15 reservas activas (5 de cada política)
+    fechas_activas = [
+        ("2026-01-01", "2026-01-05"),
+        ("2026-02-01", "2026-02-05"),
+        ("2026-03-01", "2026-03-05"),
+        ("2026-04-01", "2026-04-05"),
+        ("2026-05-01", "2026-05-05"),
+    ]
+    for idx, veh_list in enumerate([vehiculos_100, vehiculos_20, vehiculos_0]):
+        for i, veh_id in enumerate(veh_list):
+            fi, ff = fechas_activas[i]
+            create_reserva(
+                vehiculo_id=veh_id,
+                user_id=choice(all_users),
+                fecha_inicio=fi,
+                fecha_fin=ff,
+                estado="activa",
+                precio_total_vehiculo=20000 * 5
+            )
+
     # Crear adicionales
     from src.core.models.adicional import Adicional
     adicional1 = Adicional(nombre="Silla para bebes", precio=2000)

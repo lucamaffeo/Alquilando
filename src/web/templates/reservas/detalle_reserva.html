@@ -110,19 +110,13 @@
                 {{ reserva.reporte_devolucion }}
             </div>
         {% endif %}
-    {% endif %}
-{% else %}
-    <!-- ...existing cliente/usuario forms y calificación... -->
-    {% if reserva.estado == "finalizada"%}
-    <div class="mt-4">
-        <h5><span style="color: gold;">&#9733;</span> Calificación de la Reserva</h5>
-        {% if reserva.calificacion %}
-            <p><strong>Calificación:</strong> {{ reserva.calificacion }} / 5</p>
-            <p><strong>Comentario:</strong> {{ reserva.comentario }}</p>
-        {% else %}
-            <p class="text-muted">Esta reserva aún no fue calificada.</p>
+        {% if reserva.calificacion is not none and reserva.calificacion != "" %}
+            <div class="mt-4">
+                <h5><span style="color: gold;">&#9733;</span> Calificación de la Reserva</h5>
+                <p><strong>Calificación:</strong> {{ reserva.calificacion }} / 5</p>
+                <p><strong>Comentario:</strong> {{ reserva.comentario }}</p>
+            </div>
         {% endif %}
-    </div>
     {% endif %}
 {% endif %}
 <a href="{{ url_for('reservas.index') }}" class="btn btn-secondary mt-3">Volver</a>
