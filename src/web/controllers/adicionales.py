@@ -67,7 +67,7 @@ def eliminar(id):
         return redirect(url_for("adicionales.index"))
     adicional.estado = "eliminado"  # Baja lógica
     db.session.commit()
-    flash("Adicional eliminado exitosamente.", "success")
+    flash("Adicional eliminado (lógicamente) correctamente.", "success")
     return redirect(url_for("adicionales.index"))
 
 @bp.route("/habilitar/<int:id>", methods=["POST"])
