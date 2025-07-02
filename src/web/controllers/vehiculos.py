@@ -143,7 +143,7 @@ def disponibles():
         flash("La fecha fin no puede ser menor a la fecha inicio.", "error")
         return redirect(url_for("global.inicio_global"))
     vehiculos_sucursal = vehiculo.list_vehiculos()
-    marca_vehiculos=vehiculo.list_marcas()
+    marca_vehiculos = vehiculo.list_marcas()
     categoria_vehiculos = vehiculo.list_categorias()
     asientos_vehiculos = vehiculo.list_asientos()
     disponibles = []
@@ -155,8 +155,8 @@ def disponibles():
         reservas = reserva.get_reservas_by_vehiculo(v.id)
         disponible = True
         for r in reservas:
-            # Solo considerar reservas activas
-            if r.estado != "activa":
+            # Solo considerar reservas activas o en curso
+            if r.estado not in ["activa", "en curso"]:
                 continue
             # Si hay cruce de fechas, no está disponible
             if not (fecha_fin_dt < r.fecha_inicio or fecha_inicio_dt > r.fecha_fin):
@@ -164,11 +164,11 @@ def disponibles():
                 break
         if disponible:
             disponibles.append(v)
-      # Filtros opcionales
+    # Filtros opcionales
     filtro_marca = request.form.get("marca")
     filtro_asientos = request.form.get("asientos")
     filtro_categoria = request.form.get("categoria")
-     # 🔎 Aplicar los filtros opcionales
+    # 🔎 Aplicar los filtros opcionales
     filtrados = []
     for v in disponibles:
         if filtro_marca and v.marca != filtro_marca:

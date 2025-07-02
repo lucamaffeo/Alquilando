@@ -27,6 +27,7 @@
     <th>Apellido</th>
     <th>DNI</th>
     <th>Rol</th>
+    <th>Estado</th>
     <th>Acciones</th>
 </tr>
 {% endif %}
@@ -49,6 +50,13 @@
     <td>{{ user.apellido }}</td>
     <td>{{ user.dni }}</td>
     <td>{{ user.role.name }}</td>
+    <td>
+        {% if user.estado == "eliminado" %}
+            <span class="badge bg-danger">Eliminado</span>
+        {% else %}
+            <span class="badge bg-success">Activo</span>
+        {% endif %}
+    </td>
     <td>
         <a href="{{ url_for('usuarios.show', user_id=user.id) }}"
             class="btn btn-info btn-sm d-inline-flex align-items-center" style="white-space:nowrap;">
