@@ -238,7 +238,7 @@
                         {% if has_permission(session.get("user_id"), "vehicle_index") %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'reservas.index' or request.endpoint == 'reservas.mis_reservas' %}active{% endif %}" href="{{ url_for('reservas.index') }}">
-                                <i class="bi bi-building"></i><span>Reservas</span>
+                                <i class="bi bi-journal-bookmark"></i><span>Reservas</span>
                             </a>
                         </li>
                         {% endif %}

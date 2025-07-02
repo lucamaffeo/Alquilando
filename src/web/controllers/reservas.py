@@ -278,11 +278,10 @@ def detalle_reserva(reserva_id):
         adicionales_ids = request.form.getlist("adicionales")
         adicionales_ids = [int(aid) for aid in adicionales_ids]
         from src.core.repositories.reserva import update_reserva_vehiculo_y_adicionales
-        # Solo guardar el precio de los adicionales si es la primera vez que se agregan adicionales a la reserva
-        if reserva_obj.precio_total_adicionales == 0.0 and adicionales_ids:
-            adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all()
-            reserva_obj.precio_total_adicionales = sum(a.precio for a in adicionales_objs)
-            db.session.commit()
+        # Actualizar el precio de adicionales cada vez que se modifica la selección
+        adicionales_objs = Adicional.query.filter(Adicional.id.in_(adicionales_ids)).all() if adicionales_ids else []
+        reserva_obj.precio_total_adicionales = sum(a.precio for a in adicionales_objs)
+        db.session.commit()
         update_reserva_vehiculo_y_adicionales(reserva_id, vehiculo_id, adicionales_ids)
         flash("Reserva actualizada correctamente.", "success")
         return redirect(url_for("reservas.detalle_reserva", reserva_id=reserva_id))
