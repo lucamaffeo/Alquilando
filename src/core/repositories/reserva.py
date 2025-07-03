@@ -2,6 +2,8 @@ from src.core.database import db
 from src.core.models.reserva import Reserva
 from sqlalchemy import func
 from src.core.models.vehiculo import Vehiculo
+import calendar
+from datetime import datetime
 
 def create_reserva(**kwargs):
     """
@@ -122,7 +124,33 @@ def obtener_vehiculos_mas_alquilados(fecha_inicio=None, fecha_fin=None):
 
     return resultados
 
+def ingresos_total_vehiculos(fecha_inicio=None, fecha_fin=None):
 
+    # Si no se pasan fechas, usá un rango por defecto
+    if not fecha_inicio:
+        fecha_inicio = "2020-01-01"
+    if not fecha_fin:
+        fecha_fin = datetime.now().date().isoformat()
+
+    # Consultar ingresos por año y mes
+    resultados = db.session.query(
+        func.extract('year', Reserva.fecha_inicio).label("anio"),
+        func.extract('month', Reserva.fecha_inicio).label("mes"),
+        func.sum(Reserva.precio_total_vehiculo + Reserva.precio_total_adicionales).label("total")
+    ).filter(
+        Reserva.estado == "finalizada",
+        Reserva.fecha_inicio >= fecha_inicio,
+        Reserva.fecha_inicio <= fecha_fin
+    ).group_by("anio", "mes").order_by("anio", "mes").all()
+
+    # Armar diccionario { "Enero 2025": 1234.0, ... }
+    ingresos_por_mes = {}
+    for anio, mes, total in resultados:
+        mes_nombre = calendar.month_name[int(mes)]
+        clave = f"{mes_nombre} {int(anio)}"
+        ingresos_por_mes[clave] = float(total or 0)
+
+    return ingresos_por_mes
 
 def create_reserva_en_curso(user_id, vehiculo_id, adicionales_ids, fecha_inicio, fecha_fin, precio_total_vehiculo):
     """

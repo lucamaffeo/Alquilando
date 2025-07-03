@@ -1,20 +1,31 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from src.core.repositories.reserva import list_reservas_by_date_range, list_reservas, list_reservas_con_calificaciones, obtener_vehiculos_mas_alquilados
+from src.core.repositories.reserva import list_reservas_by_date_range, list_reservas, list_reservas_con_calificaciones, obtener_vehiculos_mas_alquilados, ingresos_total_vehiculos
 # from src.core.repositories.calificaciones import obtener_estadisticas_calificaciones
 from collections import defaultdict
 from datetime import datetime
 
 
+
 bp = Blueprint("estadisticas", __name__, url_prefix="/estadisticas")
 
 
-@bp.route("/")
+@bp.route("/", methods=["GET", "POST"])
 def menu():
-    return render_template("estadisticas/layout.html")
+
+    fecha_inicio = None
+    fecha_fin = None
+    if request.method == "POST":
+        fecha_inicio = request.form.get("fecha_inicio")
+        fecha_fin = request.form.get("fecha_fin")
+
+    ingresos_total = ingresos_total_vehiculos(fecha_inicio, fecha_fin)
+
+
+    return render_template("estadisticas/layout.html", ingresos=ingresos_total,fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
 
 
 
-@bp.route("/calificaciones")
+@bp.route("/calificaciones", methods=["GET", "POST"])
 def calificaciones():
     fecha_inicio = request.form.get("fecha_inicio")
     fecha_fin = request.form.get("fecha_fin")
@@ -38,7 +49,8 @@ def calificaciones():
             "calificacion_promedio": round(datos["suma_calificacion"] / datos["cantidad"], 2)
         }
         for nombre, datos in acumulador.items()
-    ], key=lambda x: x["cantidad"], reverse=True)
+    ], key=lambda x: x["calificacion_promedio"], reverse=True)
+
 
     print(f"Vehículos con calificaciones: {resultado}")
     return render_template("estadisticas/calificaciones.html",vehiculos=resultado)
