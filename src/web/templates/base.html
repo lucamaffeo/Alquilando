@@ -269,7 +269,7 @@
                         {% if has_permission(session.get("user_id"), "adicional_index") %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'adicionales.index' %}active{% endif %}" href="{{ url_for('adicionales.index') }}">
-                                <i class="bi bi-plus-square"></i><span>Adicional</span>
+                                <i class="bi bi-plus-square"></i><span>Adicionales</span>
                             </a>
                         </li>
                         {% endif %}
