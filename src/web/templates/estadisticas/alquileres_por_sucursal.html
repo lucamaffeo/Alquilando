@@ -28,13 +28,18 @@
 
   let labels = {{ sucursales | tojson }};
   let data = {{ alquileres | tojson }};
-  let baseColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d', '#6610f2', '#fd7e14', '#20c997', '#e83e8c'];
+  let baseColors = [
+    '#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8',
+    '#6c757d', '#6610f2', '#fd7e14', '#20c997', '#e83e8c',
+    '#b02a37', '#198754', '#0dcaf0', '#adb5bd', '#f8f9fa'
+  ];
   let backgroundColors = labels.map((_, i) => baseColors[i % baseColors.length]);
 
-  // Si no hay ningún alquiler (suma 0), mostrar la torta vacía en gris
+  // Si no hay ningún alquiler (suma 0), mostrar una torta vacía (un solo sector gris claro)
   if (data.length === 0 || data.reduce((a, b) => a + b, 0) === 0) {
-    data = labels.map(() => 1);
-    backgroundColors = labels.map(() => 'black');
+    labels = ["Sin reservas"];
+    data = [1];
+    backgroundColors = ['black'];
   }
 
   const chart = new Chart(ctx, {
@@ -49,14 +54,27 @@
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              // Si es la torta vacía, no mostrar valor
+              if (labels.length === 1 && labels[0] === "Sin reservas") {
+                return "Sin reservas en el rango seleccionado";
+              }
+              return context.label + ': ' + context.parsed;
+            }
+          }
+        }
+      }
     }
   });
 </script>
 
-{% if alquileres|length == 0 or alquileres|sum == 0 %}
-  <div class="alert alert-info mt-3">No se registraron alquileres en las fechas seleccionadas, pero se muestran todas las sucursales.</div>
-{% endif %}
 
 <style>
   .grafico-container {
@@ -72,5 +90,4 @@
     height: auto !important;
   }
 </style>
-
 {% endblock %}
