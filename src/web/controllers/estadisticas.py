@@ -108,35 +108,33 @@ def promedio_alquileres():
 @bp.route("/alquileres-por-sucursal", methods=["GET", "POST"])
 @has_permission("estadisticas_alquileres")
 def alquileres_por_sucursal():
+    from src.core.repositories.sucursal import list_sucursales
 
-    reservas_total= list_reservas()
-    alquileres_por_sucursal = {}
-    for reserva in reservas_total:
-        sucursal = getattr(getattr(reserva, "vehiculo", None), "sucursal", None)
-        if sucursal:
-            nombre_sucursal = getattr(sucursal, "nombre", "Desconocida")
-            alquileres_por_sucursal[nombre_sucursal] = alquileres_por_sucursal.get(nombre_sucursal, 0) + 1
+    # Obtener todas las sucursales
+    sucursales_objs = list_sucursales()
+    sucursales_nombres = [s.nombre for s in sucursales_objs]
 
-    sucursales = list(alquileres_por_sucursal.keys())
-    alquileres = list(alquileres_por_sucursal.values())
-   
+    # Inicializar el diccionario con todas las sucursales en 0
+    alquileres_por_sucursal = {nombre: 0 for nombre in sucursales_nombres}
 
+    # Filtrar reservas por fechas si corresponde
     if request.method == "POST":
         fecha_inicio = request.form.get("fecha_inicio")
         fecha_fin = request.form.get("fecha_fin")
-
         reservas = list_reservas_by_date_range(fecha_inicio, fecha_fin)
-        print(f"Reservas encontradas: {len(reservas)}")
-        # Agrupar reservas por sucursal
-        alquileres_por_sucursal = {}
-        for reserva in reservas:
-            sucursal = getattr(getattr(reserva, "vehiculo", None), "sucursal", None)
-            if sucursal:
-                nombre_sucursal = getattr(sucursal, "nombre", "Desconocida")
-                alquileres_por_sucursal[nombre_sucursal] = alquileres_por_sucursal.get(nombre_sucursal, 0) + 1
+    else:
+        reservas = list_reservas()
 
-        sucursales = list(alquileres_por_sucursal.keys())
-        alquileres = list(alquileres_por_sucursal.values())
+    # Sumar reservas finalizadas por sucursal
+    for reserva in reservas:
+        sucursal = getattr(getattr(reserva, "vehiculo", None), "sucursal", None)
+        if sucursal:
+            nombre_sucursal = getattr(sucursal, "nombre", "Desconocida")
+            if nombre_sucursal in alquileres_por_sucursal:
+                alquileres_por_sucursal[nombre_sucursal] += 1
+
+    sucursales = list(alquileres_por_sucursal.keys())
+    alquileres = list(alquileres_por_sucursal.values())
 
     return render_template("estadisticas/alquileres_por_sucursal.html",
                            sucursales=sucursales,

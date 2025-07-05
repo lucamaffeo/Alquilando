@@ -26,15 +26,15 @@
 <script>
   const ctx = document.getElementById("graficoTorta").getContext("2d");
 
-  // Si alquileres tiene todos ceros, mostramos un único valor 'Sin datos' para que no falle
   let labels = {{ sucursales | tojson }};
   let data = {{ alquileres | tojson }};
-  let backgroundColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8'];
+  let baseColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d', '#6610f2', '#fd7e14', '#20c997', '#e83e8c'];
+  let backgroundColors = labels.map((_, i) => baseColors[i % baseColors.length]);
 
-  // Si no hay ningún alquiler (suma 0), mostrar sólo las sucursales con datos en cero
-  if (data.reduce((a, b) => a + b, 0) === 0) {
-    data = labels.map(() => 1); // Le ponemos 1 a cada sucursal solo para que se vea el gráfico
-    backgroundColors = labels.map(() => '#d3d3d3'); // Color gris claro
+  // Si no hay ningún alquiler (suma 0), mostrar la torta vacía en gris
+  if (data.length === 0 || data.reduce((a, b) => a + b, 0) === 0) {
+    data = labels.map(() => 1);
+    backgroundColors = labels.map(() => 'black');
   }
 
   const chart = new Chart(ctx, {
@@ -54,10 +54,9 @@
   });
 </script>
 
-{% if alquileres|sum == 0 %}
-  <div class="alert alert-info mt-3">No se registraron alquileres en las fechas seleccionadas, pero se muestran las sucursales.</div>
+{% if alquileres|length == 0 or alquileres|sum == 0 %}
+  <div class="alert alert-info mt-3">No se registraron alquileres en las fechas seleccionadas, pero se muestran todas las sucursales.</div>
 {% endif %}
-
 
 <style>
   .grafico-container {
@@ -73,4 +72,5 @@
     height: auto !important;
   }
 </style>
+
 {% endblock %}
