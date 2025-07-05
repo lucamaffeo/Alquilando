@@ -18,35 +18,46 @@
 </form>
 
 <!-- Gráfico de torta -->
-{% if sucursales and alquileres %}
-  <div class="grafico-container">
-    <canvas id="graficoTorta"></canvas>
-  </div>
+<div class="grafico-container">
+  <canvas id="graficoTorta"></canvas>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    const ctx = document.getElementById("graficoTorta").getContext("2d");
-    const chart = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: {{ sucursales | tojson }},
-        datasets: [{
-          label: "Alquileres por Sucursal",
-          data: {{ alquileres | tojson }},
-          backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8']
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  </script>
-{% else %}
-  {% if request.method == "POST" %}
-    <div class="alert alert-info">No se encontraron datos para las fechas seleccionadas.</div>
-  {% endif %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById("graficoTorta").getContext("2d");
+
+  // Si alquileres tiene todos ceros, mostramos un único valor 'Sin datos' para que no falle
+  let labels = {{ sucursales | tojson }};
+  let data = {{ alquileres | tojson }};
+  let backgroundColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8'];
+
+  // Si no hay ningún alquiler (suma 0), mostrar sólo las sucursales con datos en cero
+  if (data.reduce((a, b) => a + b, 0) === 0) {
+    data = labels.map(() => 1); // Le ponemos 1 a cada sucursal solo para que se vea el gráfico
+    backgroundColors = labels.map(() => '#d3d3d3'); // Color gris claro
+  }
+
+  const chart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Alquileres por Sucursal",
+        data: data,
+        backgroundColor: backgroundColors
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+</script>
+
+{% if alquileres|sum == 0 %}
+  <div class="alert alert-info mt-3">No se registraron alquileres en las fechas seleccionadas, pero se muestran las sucursales.</div>
 {% endif %}
+
 
 <style>
   .grafico-container {
