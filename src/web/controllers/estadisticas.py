@@ -3,13 +3,14 @@ from src.core.repositories.reserva import list_reservas_by_date_range, list_rese
 # from src.core.repositories.calificaciones import obtener_estadisticas_calificaciones
 from collections import defaultdict
 from datetime import datetime
-
+from src.web.helpers.auth import has_permission
 
 
 bp = Blueprint("estadisticas", __name__, url_prefix="/estadisticas")
 
 
 @bp.route("/", methods=["GET", "POST"])
+@has_permission("estadisticas_index")
 def menu():
 
     fecha_inicio = None
@@ -26,6 +27,7 @@ def menu():
 
 
 @bp.route("/calificaciones", methods=["GET", "POST"])
+@has_permission("estadisticas_calificaciones")
 def calificaciones():
     fecha_inicio = request.form.get("fecha_inicio")
     fecha_fin = request.form.get("fecha_fin")
@@ -57,12 +59,14 @@ def calificaciones():
 
 
 @bp.route("/promedio-alquileres", methods=["GET", "POST"])
+@has_permission("estadisticas_promedio")
 def promedio_alquileres():
+    from src.core.models.vehiculo import Vehiculo
+    from src.core.models.modelo import Modelo
 
     fecha_inicio = None
     fecha_fin = None
     if request.method == "POST":
-        # Obtenemos las fechas del formulario
         fecha_inicio = request.form.get("fecha_inicio")
         fecha_fin = request.form.get("fecha_fin")
 
@@ -70,17 +74,39 @@ def promedio_alquileres():
     inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d") if fecha_inicio else None
     fin = datetime.strptime(fecha_fin, "%Y-%m-%d") if fecha_fin else None
 
+    # Obtener todos los modelos y marcas posibles
+    vehiculos_todos = Vehiculo.query.all()
+    grupos = {}
+    for v in vehiculos_todos:
+        modelo_nombre = v.modelo_rel.nombre if v.modelo_rel else ""
+        key = (v.marca, modelo_nombre)
+        if key not in grupos:
+            grupos[key] = 0
+
+    # Obtener reservas finalizadas agrupadas por marca/modelo
+    from src.core.repositories.reserva import obtener_vehiculos_mas_alquilados
     vehiculos_con_reservas = obtener_vehiculos_mas_alquilados(inicio, fin)
+    for vehiculo, cantidad in vehiculos_con_reservas:
+        modelo_nombre = vehiculo.modelo_rel.nombre if vehiculo.modelo_rel else ""
+        key = (vehiculo.marca, modelo_nombre)
+        grupos[key] = grupos.get(key, 0) + cantidad
+
+    # Convertir a lista ordenada por cantidad desc
+    agrupados_list = sorted(
+        [ (marca, modelo, total) for (marca, modelo), total in grupos.items() ],
+        key=lambda x: x[2], reverse=True
+    )
 
     return render_template(
         "estadisticas/promedio_alquileres.html",
-        vehiculos=vehiculos_con_reservas,
+        agrupados_list=agrupados_list,
         fecha_inicio=fecha_inicio,
         fecha_fin=fecha_fin
     )
 
 
 @bp.route("/alquileres-por-sucursal", methods=["GET", "POST"])
+@has_permission("estadisticas_alquileres")
 def alquileres_por_sucursal():
 
     reservas_total= list_reservas()

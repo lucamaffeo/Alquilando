@@ -23,7 +23,7 @@
         <li class="nav-item">
             <a class="nav-link text-white {% if request.endpoint == 'estadisticas.promedio_alquileres' %}bg-secondary{% endif %}" 
             href="{{ url_for('estadisticas.promedio_alquileres') }}">
-            <i class="bi bi-graph-up"></i> ALquileres por Vehículo
+            <i class="bi bi-graph-up"></i> Alquileres por Vehículo
             </a>
         </li>
         <li class="nav-item">
@@ -50,7 +50,7 @@
         <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
       </div>
       <div class="col-md-2 align-self-end">
-        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        <button type="submit" class="btn btn-primary w-100">Buscar</button>
       </div>
     </form>
 

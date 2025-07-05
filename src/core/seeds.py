@@ -38,6 +38,9 @@ def run():
 
     # Crear permisos para ver estadisticas
     estadisticas_index = create_permission(nombre="estadisticas_index")
+    estadisticas_promedio = create_permission(nombre="estadisticas_promedio")
+    estadisticas_alquileres = create_permission(nombre="estadisticas_alquileres")
+    estadisticas_calificaciones = create_permission(nombre="estadisticas_calificaciones")
 
     # Crear permisos para adicionales
     adicional_index = create_permission(nombre="adicional_index")
@@ -49,7 +52,7 @@ def run():
     admin_role = create_role(name="admin", permissions=[
         user_index, user_show, user_update, user_delete,
         vehicle_create, vehicle_update, vehicle_delete, vehicle_show, vehicle_index,
-        sucursal_index, sucursal_show, sucursal_create, employee_create, estadisticas_index, reserva_index, reserva_update, adicional_create, adicional_index, adicional_update, adicional_delete
+        sucursal_index, sucursal_show, sucursal_create, employee_create, estadisticas_index, reserva_index, reserva_update, adicional_create, adicional_index, adicional_update, adicional_delete, estadisticas_alquileres, estadisticas_calificaciones, estadisticas_promedio
     ])
     usuario_role = create_role(name="usuario registrado", permissions=[
         user_show, user_update, reserva_index, reserva_show, reserva_delete,
