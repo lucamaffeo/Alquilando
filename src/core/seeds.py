@@ -74,8 +74,8 @@ def run():
         fecha_nacimiento="2000-01-01",
     )
     admin4 = create_user(
-        nombre="admin4",
-        email="guillehelfer@gmail.com",
+        nombre="Guillermo",
+        email="guillermohelfer@gmail.com",
         password="admin123",  # Cambiado a 8 caracteres
         role_id=1,
         apellido="Helfer",

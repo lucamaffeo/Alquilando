@@ -5,7 +5,7 @@ from src.core.models import user as User  # Assuming you have a User model
 
 auth_bp = Blueprint('auth', __name__)
 
-maxTimeSecs = 120  # tiempo de expiracion del codigo de verificacion en segundos
+maxTimeSecs = 3 * 60  # tiempo de expiracion del codigo de verificacion en segundos
 
 @auth_bp.route('/login-code', methods=['GET', 'POST'])
 def login_code():
@@ -13,7 +13,6 @@ def login_code():
         code = request.form["code"]
         if code == session.get("2fa_code"):
             tiempo_2fa = datetime.fromisoformat(session.get("2fa_code_time"))
-            # Cambiar minutes por seconds para que funcione correctamente
             if datetime.utcnow() - tiempo_2fa <= timedelta(seconds=maxTimeSecs):
                 session["user_id"] = session.get("temp_user_id")
                 session["user_role"] = session.get("temp_user_role")
