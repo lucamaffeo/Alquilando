@@ -13,7 +13,7 @@
     <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
   </div>
   <div class="col-md-2 align-self-end">
-    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    <button type="submit" class="btn btn-primary w-100">Buscar</button>
   </div>
 </form>
 
@@ -23,29 +23,28 @@
             <th class="border px-4 py-2">#</th>
             <th class="border px-4 py-2">Marca</th>
             <th class="border px-4 py-2">Modelo</th>
-            <th class="border px-4 py-2">Cantidad de reservas finalizadas</th>
+            <th class="border px-4 py-2">Cantidad de reservas</th>
         </tr>
     </thead>
     <tbody>
-        {% set agrupados = {} %}
-        {% for vehiculo, cantidad in vehiculos %}
-            {% set key = vehiculo.marca ~ '|' ~ vehiculo.modelo_rel.nombre %}
-            {% if key in agrupados %}
-                {% set _ = agrupados.__setitem__(key, agrupados[key] + cantidad) %}
-            {% else %}
-                {% set _ = agrupados.__setitem__(key, cantidad) %}
-            {% endif %}
-        {% endfor %}
-        {% set agrupados_list = agrupados.items()|sort(attribute=1, reverse=True) %}
-        {% for key, total in agrupados_list %}
-            {% set marca, modelo = key.split('|', 1) %}
+        {% if agrupados_list %}
+            {% for marca, modelo, total in agrupados_list %}
             <tr>
                 <td class="border px-4 py-2">{{ loop.index }}</td>
                 <td class="border px-4 py-2">{{ marca }}</td>
                 <td class="border px-4 py-2">{{ modelo }}</td>
                 <td class="border px-4 py-2">{{ total }}</td>
             </tr>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4" class="text-center text-gray-500 py-4">No vehículos alquilados en las fechas seleccionadas</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}
+            </tr>
 
         {% if agrupados_list|length == 0 %}
         <tr>
@@ -54,4 +53,4 @@
         {% endif %}
     </tbody>
 </table>
-{% endblock %}
+

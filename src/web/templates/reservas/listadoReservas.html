@@ -1,73 +1,80 @@
-{% extends "base_index.html" %}
-
-{% block content %}
-    {% block extra_content %}
-    <h2 class="mb-4 text-center">Listado de Reservas</h2>
-    <div class="row mb-3 align-items-center">
-        <div class="col-md-8 mx-auto">
-            <form method="GET" action="{{ url_for('reservas.index') }}">
-                <div class="input-group">
-                    <input type="text" name="email" class="form-control" placeholder="Buscar reserva por email"
-                        value="{{ email or '' }}">
-                    <button class="btn btn-info btn-sm" type="submit"><i class="bi bi-search"></i> Buscar</button>
-                </div>
-            </form>
-            {% if mensaje %}
-            <div class="alert alert-warning mt-2">{{ mensaje }}</div>
-            {% endif %}
-        </div>
-    </div>
-    {% endblock %}
-
-    {% if reservas|length > 0 %}
-        <table class="table table-bordered text-center" style="background-color: #e3f2fd;">
-            <thead>
-                {% block table_header %}
-                <tr>
-                    <th>Mail</th>
-                    <th>Nombre</th>
-                    <th>Marca Reservado</th>
-                    <th>Modelo Reservado</th>
-                    <th>Marca Asignado</th>
-                    <th>Modelo Asignado</th>
-                    <th>Dias</th>
-                    <th>Precio total</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-                {% endblock %}
-            </thead>
-            <tbody>
-                {% block table_body %}
-                {% for reserva in reservas %}
-                <tr>
-                    <td>{{ reserva.user.email }}</td>
-                    <td>{{ reserva.user.nombre }}</td>
-                    <td>{{ reserva.vehiculo.marca }}</td>
-                    <td>{{ reserva.vehiculo.modelo_rel }}</td>
-                    <td>
-                        {{ reserva.vehiculo_asignado.marca if reserva.vehiculo_asignado else reserva.vehiculo.marca }}
-                    </td>
-                    <td>
-                        {{ reserva.vehiculo_asignado.modelo_rel if reserva.vehiculo_asignado else reserva.vehiculo.modelo_rel }}
-                    </td>
-                    <td>{{ ((reserva.fecha_fin - reserva.fecha_inicio).days + 1) }}</td>
-                    <td>${{ reserva.precio_total_vehiculo }}</td>
-                    <td><strong>{{ reserva.estado }}</strong></td>
-                    <td>
-                        <a href="{{ url_for('reservas.detalle_reserva', reserva_id = reserva.id) }}" class="btn btn-info btn-sm">
-                            <i class="bi bi-eye"></i> Ver detalle
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-                {% endblock %}
-            </tbody>
-        </table>
-    {% else %}
-        <div class="alert alert-info text-center mt-5 p-4 rounded shadow-sm" style="background-color: #d4f6fd;">
-            <i class="bi bi-info-circle-fill me-2"></i>
-            No hay reservas para mostrar.
-        </div>
+{% extends "base_index.html" %} {% block content %} {% block extra_content %}
+<h2 class="mb-4 text-center">Listado de Reservas</h2>
+<div class="row mb-3 align-items-center">
+  <div class="col-md-8 mx-auto">
+    <form method="GET" action="{{ url_for('reservas.index') }}">
+      <div class="input-group">
+        <input
+          type="text"
+          name="email"
+          class="form-control"
+          placeholder="Buscar reserva por email"
+          value="{{ email or '' }}"
+        />
+        <button class="btn btn-info btn-sm" type="submit">
+          <i class="bi bi-search"></i> Buscar
+        </button>
+      </div>
+    </form>
+    {% if mensaje %}
+    <div class="alert alert-warning mt-2">{{ mensaje }}</div>
     {% endif %}
-{% endblock %}
+  </div>
+</div>
+{% endblock %} {% if reservas|length > 0 %}
+<table
+  class="table table-bordered text-center"
+  style="background-color: #e3f2fd"
+>
+  <thead>
+    {% block table_header %}
+    <tr>
+      <th>Mail</th>
+      <th>Nombre</th>
+      <th>Marca Reservado</th>
+      <th>Modelo Reservado</th>
+      <th>Fecha inicio</th>
+      <th>Precio total</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+    {% endblock %}
+  </thead>
+  <tbody>
+    {% block table_body %} {% for reserva in reservas %}
+    <tr>
+      <td>{{ reserva.user.email }}</td>
+      <td>{{ reserva.user.nombre }}</td>
+      <td>{{ reserva.vehiculo.marca }}</td>
+      <td>{{ reserva.vehiculo.modelo_rel }}</td>
+      <td>{{ reserva.fecha_inicio.strftime('%d/%m/%Y') }}</td>
+      <td>${{ reserva.precio_total_vehiculo }}</td>
+      <td><strong>{{ reserva.estado }}</strong></td>
+      <td>
+        <a
+          href="{{ url_for('reservas.detalle_reserva', reserva_id = reserva.id) }}"
+          class="btn btn-info btn-sm"
+        >
+          <i class="bi bi-eye"></i> Ver detalle
+        </a>
+        <p></p>
+        <a
+          href="{{ url_for('usuarios.show', user_id=reserva.user.id) }}"
+          class="btn btn-info btn-sm"
+        >
+          <i class="bi bi-person"></i> Ver usuario
+        </a>
+      </td>
+    </tr>
+    {% endfor %} {% endblock %}
+  </tbody>
+</table>
+{% else %}
+<div
+  class="alert alert-info text-center mt-5 p-4 rounded shadow-sm"
+  style="background-color: #d4f6fd"
+>
+  <i class="bi bi-info-circle-fill me-2"></i>
+  No hay reservas para mostrar.
+</div>
+{% endif %} {% endblock %}

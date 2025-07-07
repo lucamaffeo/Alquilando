@@ -205,10 +205,10 @@ def confirmar_cancelacion(reserva_id):
     dias = (reserva_obj.fecha_fin - reserva_obj.fecha_inicio).days + 1 if reserva_obj.fecha_inicio and reserva_obj.fecha_fin else 1
     total = vehiculo_obj.precio * dias
 
-    if politica == "100% de reembolso":
+    if politica == "Reembolso completo":
         porcentaje = 100
         reembolso = total
-    elif politica == "20% de reembolso":
+    elif politica == "Reembolso parcial":
         porcentaje = 20
         reembolso = total * 0.2
     else:
@@ -229,34 +229,40 @@ def confirmar_cancelacion(reserva_id):
 def cancelar_reserva(reserva_id):
     user_id = session.get("user_id")
     user_role = session.get("user_role")
-    reserva = show_reserva(reserva_id)
-    if not reserva or reserva.user_id != user_id or user_role != "usuario registrado":
+    reserva_obj = show_reserva(reserva_id)
+    if not reserva_obj or reserva_obj.user_id != user_id or user_role != "usuario registrado":
         flash("No tienes permiso para cancelar esta reserva.", "error")
         return redirect(url_for("reservas.mis_reservas"))
-    if reserva.estado == "cancelada":
+    if reserva_obj.estado == "cancelada":
         flash("La reserva ya fue cancelada.", "info")
         return redirect(url_for("reservas.mis_reservas"))
 
     # Calcular monto a reembolsar según la política de cancelación
-    vehiculo = reserva.vehiculo
+    vehiculo = reserva_obj.vehiculo
     modelo = vehiculo.modelo_rel
     politica = modelo.politica_cancelacion if modelo and modelo.politica_cancelacion else "Sin reembolso"
-    dias = (reserva.fecha_fin - reserva.fecha_inicio).days + 1 if reserva.fecha_inicio and reserva.fecha_fin else 1
+    dias = (reserva_obj.fecha_fin - reserva_obj.fecha_inicio).days + 1 if reserva_obj.fecha_inicio and reserva_obj.fecha_fin else 1
     total = vehiculo.precio * dias
 
-    if politica == "100% de reembolso":
+    # Normalizar texto para lógica de reembolso
+    politica_lower = politica.strip().lower()
+    if politica_lower in ["reembolso completo", "100% de reembolso"]:
         reembolso = total
-    elif politica == "20% de reembolso":
+        politica_mail = "Reembolso completo"
+    elif politica_lower in ["reembolso parcial", "20% de reembolso"]:
         reembolso = total * 0.2
+        politica_mail = "Reembolso parcial"
     else:
         reembolso = 0
+        politica_mail = "Sin reembolso"
 
-    # Cambiar estado
-    reserva.estado = "cancelada"
+    # Guardar estado y fecha de cancelación
+    from datetime import date
+    reserva_obj.estado = "cancelada"
+    reserva_obj.fecha_cancelacion = date.today()
     db.session.commit()
 
-    # Enviar mail informativo
-    sendCancelationEmail(reserva, total, reembolso, politica)
+    sendCancelationEmail(reserva_obj, total, reembolso, politica_mail)
 
     flash(f"Reserva cancelada exitosamente. Se enviará un mail con el detalle del reembolso.", "success")
     return redirect(url_for("reservas.mis_reservas"))
@@ -373,14 +379,25 @@ def sendCancelationEmail(reserva, total, reembolso, politica):
     vehiculo = reserva.vehiculo
     modelo = vehiculo.modelo_rel
 
-    # Buscar la tarjeta utilizada en la reserva (por simplicidad, se asume la última usada)
-    # Si quieres guardar la tarjeta en la reserva, deberías hacerlo en el modelo y aquí obtenerla.
-    # Aquí solo mostramos un ejemplo genérico.
-    tarjeta_info = "El reembolso de dicho vehiculo es 0, por lo que no se realizará ningún reembolso."
+    tarjeta_info = "No se realizara ningún reembolso ya que la política de cancelación es Sin Reembolso."
     if reembolso > 0:
-        # Puedes personalizar esto si guardas el número de tarjeta en la reserva
         tarjeta_usada = "**** **** **** 1234"  # Cambia esto por el número real si lo tienes
         tarjeta_info = f"\nEl reembolso se acreditará en la tarjeta utilizada para el pago ({tarjeta_usada}) dentro de los próximos 5 días hábiles."
+
+    # Normalizar texto de política para el mail
+    politica_lower = politica.strip().lower()
+    if politica_lower in ["reembolso completo", "100% de reembolso"]:
+        politica_mail = "Reembolso completo"
+    elif politica_lower in ["reembolso parcial", "20% de reembolso"]:
+        politica_mail = "Reembolso parcial"
+    else:
+        politica_mail = "Sin reembolso"
+    if politica_mail == "Reembolso parcial":
+        porcentaje = "20% de reembolso"
+    elif politica_mail == "Reembolso completo":
+        porcentaje = "100% de reembolso"
+    else:
+        porcentaje = "0% de reembolso"
 
     msg = Message(
         "Cancelación de Reserva",
@@ -393,7 +410,7 @@ Vehículo: {vehiculo.marca} {modelo.nombre if modelo else ''} {vehiculo.anio}
 Fecha de inicio: {reserva.fecha_inicio}
 Fecha de devolución: {reserva.fecha_fin}
 Precio total: ${total}
-Política de Cancelación: {politica}
+Política de Cancelación: {politica_mail} ({porcentaje if 'porcentaje' in locals() else ''})
 Monto a reembolsar: ${reembolso:.2f}
 {tarjeta_info}
 

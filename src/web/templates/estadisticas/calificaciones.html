@@ -14,11 +14,10 @@
     <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
   </div>
   <div class="col-md-2 align-self-end">
-    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    <button type="submit" class="btn btn-primary w-100">Buscar</button>
   </div>
 </form>
 
-<!-- Lista de calificaciones -->
 {% if vehiculos %}
   <div class="table-responsive">
     <table class="table table-hover align-middle">
@@ -26,7 +25,6 @@
         <tr>
           <th>Vehículo</th>
           <th>Promedio de Calificación</th>
-          <th>Cantidad de Opiniones</th>
         </tr>
       </thead>
       <tbody>
@@ -57,13 +55,12 @@
 
             <span class="ms-2">({{ promedio }})</span>
           </td>
-          <td>{{ vehiculo.cantidad }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 {% else %}
-  <div class="alert alert-info">No se encontraron calificaciones.</div>
+  <div class="alert alert-info mt-3">No se encontraron calificaciones de reservas realizadas.</div>
 {% endif %}
 {% endblock %}
