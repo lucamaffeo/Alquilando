@@ -16,6 +16,7 @@ class Reserva(db.Model):
     comentario = db.Column(db.String(255), nullable=True)
     precio_total_adicionales = db.Column(db.Float, default=0.0)  # Nuevo campo para el total de adicionales
     reporte_devolucion = db.Column(db.String(255), nullable=True)  # Nuevo campo para el reporte de devolución
+    fecha_cancelacion = db.Column(db.Date, nullable=True)  # Nueva columna para la fecha de cancelación
 
     vehiculo = db.relationship("Vehiculo", foreign_keys=[vehiculo_id], backref="reservas")
     vehiculo_asignado = db.relationship("Vehiculo", foreign_keys=[vehiculo_asignado_id], backref="reservas_asignadas")

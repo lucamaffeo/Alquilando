@@ -71,6 +71,19 @@ def delete_reserva(reserva_id):
         return True
     return False
 
+def cancelar_reserva_y_guardar_fecha(reserva_id):
+    """
+    Cancela una reserva y guarda la fecha de cancelación.
+    """
+    reserva = Reserva.query.get(reserva_id)
+    if reserva and reserva.estado != "cancelada":
+        from datetime import date
+        reserva.estado = "cancelada"
+        reserva.fecha_cancelacion = date.today()
+        db.session.commit()
+        return reserva
+    return None
+
 def get_reservas_by_vehiculo(vehiculo_id):
     from src.core.models.reserva import Reserva
     return Reserva.query.filter(
@@ -107,7 +120,7 @@ def obtener_vehiculos_mas_alquilados(fecha_inicio=None, fecha_fin=None):
             func.count(Reserva.id).label("cantidad_reservas")
         )
         .join(Reserva, Reserva.vehiculo_id == Vehiculo.id)  # acá se desambigua
-        .filter(Reserva.estado == "finalizada")
+        
     )
 
     if fecha_inicio:
@@ -125,30 +138,68 @@ def obtener_vehiculos_mas_alquilados(fecha_inicio=None, fecha_fin=None):
     return resultados
 
 def ingresos_total_vehiculos(fecha_inicio=None, fecha_fin=None):
+    from src.core.models.reserva import Reserva
 
-    # Si no se pasan fechas, usá un rango por defecto
+    # Si no se pasan fechas, usar todo el rango posible
+    default_range = not fecha_inicio and not fecha_fin
     if not fecha_inicio:
         fecha_inicio = "2020-01-01"
     if not fecha_fin:
         fecha_fin = datetime.now().date().isoformat()
 
-    # Consultar ingresos por año y mes
-    resultados = db.session.query(
-        func.extract('year', Reserva.fecha_inicio).label("anio"),
-        func.extract('month', Reserva.fecha_inicio).label("mes"),
-        func.sum(Reserva.precio_total_vehiculo + Reserva.precio_total_adicionales).label("total")
-    ).filter(
-        Reserva.estado == "finalizada",
-        Reserva.fecha_inicio >= fecha_inicio,
-        Reserva.fecha_inicio <= fecha_fin
-    ).group_by("anio", "mes").order_by("anio", "mes").all()
+    # Buscar reservas finalizadas por fecha_fin y canceladas por fecha_cancelacion
+    reservas_finalizadas = Reserva.query.filter(
+        Reserva.fecha_fin >= fecha_inicio,
+        Reserva.fecha_fin <= fecha_fin,
+        Reserva.estado == "finalizada"
+    ).all()
+    reservas_canceladas = Reserva.query.filter(
+        Reserva.fecha_cancelacion != None,
+        Reserva.fecha_cancelacion >= fecha_inicio,
+        Reserva.fecha_cancelacion <= fecha_fin,
+        Reserva.estado == "cancelada"
+    ).all()
 
-    # Armar diccionario { "Enero 2025": 1234.0, ... }
     ingresos_por_mes = {}
-    for anio, mes, total in resultados:
-        mes_nombre = calendar.month_name[int(mes)]
-        clave = f"{mes_nombre} {int(anio)}"
-        ingresos_por_mes[clave] = float(total or 0)
+    total_general = 0.0
+
+    # Procesar finalizadas
+    for r in reservas_finalizadas:
+        total = (r.precio_total_vehiculo or 0) + (r.precio_total_adicionales or 0)
+        fecha_ingreso = r.fecha_fin
+        ingreso = total
+        if fecha_ingreso:
+            mes_nombre = calendar.month_name[int(fecha_ingreso.month)]
+            clave = f"{mes_nombre} {fecha_ingreso.year}"
+            ingresos_por_mes[clave] = ingresos_por_mes.get(clave, 0) + float(ingreso or 0)
+            total_general += float(ingreso or 0)
+
+    # Procesar canceladas
+    for r in reservas_canceladas:
+        total = (r.precio_total_vehiculo or 0) + (r.precio_total_adicionales or 0)
+        politica = None
+        if r.vehiculo and r.vehiculo.modelo_rel and r.vehiculo.modelo_rel.politica_cancelacion:
+            politica = r.vehiculo.modelo_rel.politica_cancelacion.strip().lower()
+        else:
+            politica = "sin reembolso"
+        fecha_ingreso = r.fecha_cancelacion
+        if politica in ["sin reembolso"]:
+            ingreso = total
+        elif politica in ["reembolso parcial", "20% de reembolso"]:
+            ingreso = total * 0.8
+        elif politica in ["reembolso completo", "100% de reembolso"]:
+            ingreso = 0
+        else:
+            ingreso = total  # fallback
+        if fecha_ingreso:
+            mes_nombre = calendar.month_name[int(fecha_ingreso.month)]
+            clave = f"{mes_nombre} {fecha_ingreso.year}"
+            ingresos_por_mes[clave] = ingresos_por_mes.get(clave, 0) + float(ingreso or 0)
+            total_general += float(ingreso or 0)
+
+    # Mostrar total solo si es el rango por defecto (sin filtro)
+    if default_range and total_general > 0:
+        ingresos_por_mes["Total (todos los tiempos)"] = total_general
 
     return ingresos_por_mes
 
@@ -177,12 +228,17 @@ def create_reserva_en_curso(user_id, vehiculo_id, adicionales_ids, fecha_inicio,
 def finalizar_reserva_empleado(reserva_id, reporte_devolucion):
     """
     Finaliza una reserva en curso, guarda el reporte de devolución, cambia el estado de la reserva a 'finalizada'
-    y pone el vehículo asignado en mantenimiento.
+    y pone el vehículo asignado en mantenimiento. Además, actualiza fecha_fin al día de hoy.
     """
     reserva = Reserva.query.get(reserva_id)
     if reserva and reserva.estado == "en curso":
+        from datetime import date
         reserva.estado = "finalizada"
         reserva.reporte_devolucion = reporte_devolucion
+        reserva.fecha_fin = date.today()  # Actualiza la fecha de fin al día de hoy
+        # Recalcular el total de adicionales al finalizar (por si hubo cambios)
+        adicionales = reserva.adicionales or []
+        reserva.precio_total_adicionales = sum(a.precio for a in adicionales)
         # Poner el vehículo asignado en mantenimiento
         if reserva.vehiculo_asignado:
             reserva.vehiculo_asignado.en_mantenimiento = True

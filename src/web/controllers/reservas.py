@@ -229,19 +229,19 @@ def confirmar_cancelacion(reserva_id):
 def cancelar_reserva(reserva_id):
     user_id = session.get("user_id")
     user_role = session.get("user_role")
-    reserva = show_reserva(reserva_id)
-    if not reserva or reserva.user_id != user_id or user_role != "usuario registrado":
+    reserva_obj = show_reserva(reserva_id)
+    if not reserva_obj or reserva_obj.user_id != user_id or user_role != "usuario registrado":
         flash("No tienes permiso para cancelar esta reserva.", "error")
         return redirect(url_for("reservas.mis_reservas"))
-    if reserva.estado == "cancelada":
+    if reserva_obj.estado == "cancelada":
         flash("La reserva ya fue cancelada.", "info")
         return redirect(url_for("reservas.mis_reservas"))
 
     # Calcular monto a reembolsar según la política de cancelación
-    vehiculo = reserva.vehiculo
+    vehiculo = reserva_obj.vehiculo
     modelo = vehiculo.modelo_rel
     politica = modelo.politica_cancelacion if modelo and modelo.politica_cancelacion else "Sin reembolso"
-    dias = (reserva.fecha_fin - reserva.fecha_inicio).days + 1 if reserva.fecha_inicio and reserva.fecha_fin else 1
+    dias = (reserva_obj.fecha_fin - reserva_obj.fecha_inicio).days + 1 if reserva_obj.fecha_inicio and reserva_obj.fecha_fin else 1
     total = vehiculo.precio * dias
 
     # Normalizar texto para lógica de reembolso
@@ -256,10 +256,13 @@ def cancelar_reserva(reserva_id):
         reembolso = 0
         politica_mail = "Sin reembolso"
 
-    reserva.estado = "cancelada"
+    # Guardar estado y fecha de cancelación
+    from datetime import date
+    reserva_obj.estado = "cancelada"
+    reserva_obj.fecha_cancelacion = date.today()
     db.session.commit()
 
-    sendCancelationEmail(reserva, total, reembolso, politica_mail)
+    sendCancelationEmail(reserva_obj, total, reembolso, politica_mail)
 
     flash(f"Reserva cancelada exitosamente. Se enviará un mail con el detalle del reembolso.", "success")
     return redirect(url_for("reservas.mis_reservas"))
