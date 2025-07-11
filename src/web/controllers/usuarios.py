@@ -106,6 +106,16 @@ def logout():
 @bp.route("/delete/<int:user_id>", methods=["POST"])
 @has_permission("user_delete")
 def delete(user_id):
+    u = user.get_user_by_id(user_id)
+    if u and u.estado == "eliminado":
+        flash("El usuario ya se encuentra eliminado.", "info")
+        return redirect(url_for("usuarios.index"))
+    # Verifica reservas activas o en curso antes de eliminar
+    if u and u.role.name == "usuario registrado":
+        reservas_activas = [r for r in u.reservas if r.estado in ("activa", "en curso")]
+        if reservas_activas:
+            flash("No se puede eliminar el usuario porque tiene reservas activas o en curso.", "warning")
+            return redirect(url_for("usuarios.show", user_id=user_id))
     if user.delete_user(user_id):
         flash("Usuario eliminado correctamente.", "success")
     else:

@@ -83,16 +83,6 @@ def run():
         dni="45034325",
         fecha_nacimiento="2000-01-01",
     )
-    admin2 = create_user(
-        nombre="admin2",
-        email="diamondcodedev@gmail.com",
-        password="admin123",  # Cambiado a 8 caracteres
-        role_id=1,
-        apellido="Helfer",
-        telefono="123456789",
-        dni="44444444",
-        fecha_nacimiento="2001-01-01",
-    )
     admin = create_user(
         nombre="Luca",
         email="lucamaffeo@gmail.com",
@@ -121,6 +111,16 @@ def run():
         apellido="Proia",
         telefono="123456789",
         dni="55555555",
+        fecha_nacimiento="2000-01-01",
+    )
+    empleado_borrar = create_user(
+        nombre="empleado2",
+        email="empleadoBorrar@empleado.com",
+        password="empleado123",  # Cambiado a más de 6 caracteres
+        role_id=3,
+        apellido="BORRAR",
+        telefono="123456789",
+        dni="55555597",
         fecha_nacimiento="2000-01-01",
     )
     user = create_user(
