@@ -52,7 +52,7 @@ def calificaciones():
 
 
     print(f"Vehículos con calificaciones: {resultado}")
-    return render_template("estadisticas/calificaciones.html",vehiculos=resultado)
+    return render_template("estadisticas/calificaciones.html",vehiculos=resultado, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
 
 
 @bp.route("/promedio-alquileres", methods=["GET", "POST"])
