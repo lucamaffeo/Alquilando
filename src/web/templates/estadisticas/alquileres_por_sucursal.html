@@ -1,16 +1,27 @@
-{% extends "estadisticas/layout.html" %}
-
-{% block estadisticas_content %}
+{% extends "estadisticas/layout.html" %} {% block estadisticas_content %}
 <h2>Alquileres por Sucursal</h2>
 
 <form method="POST" class="row g-3 mb-4">
   <div class="col-md-5">
     <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-    <input type="date" name="fecha_inicio" class="form-control" required>
+    <input
+      type="date"
+      name="fecha_inicio"
+      class="form-control"
+      value="{{ fecha_inicio }}"
+      required
+    />
   </div>
   <div class="col-md-5">
     <label for="fecha_fin" class="form-label">Fecha de fin</label>
-    <input type="date" name="fecha_fin" class="form-control" required>
+    <input
+      type="date"
+      name="fecha_fin"
+      class="form-control"
+      value="{{ fecha_fin }}"
+      min="{{ fecha_inicio }}"
+      required
+    />
   </div>
   <div class="col-md-2 align-self-end">
     <button type="submit" class="btn btn-primary w-100">Buscar</button>
@@ -74,7 +85,6 @@
     }
   });
 </script>
-
 
 <style>
   .grafico-container {

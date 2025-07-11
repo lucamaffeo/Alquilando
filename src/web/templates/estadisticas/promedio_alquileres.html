@@ -1,16 +1,25 @@
-{% extends "estadisticas/layout.html" %}
-
-{% block estadisticas_content %}
+{% extends "estadisticas/layout.html" %} {% block estadisticas_content %}
 <h2 class="text-2xl font-bold mb-4">Vehículos más alquilados</h2>
 
 <form method="POST" class="row g-3 mb-4">
   <div class="col-md-5">
     <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-    <input type="date" name="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
+    <input
+      type="date"
+      name="fecha_inicio"
+      class="form-control"
+      value="{{ fecha_inicio }}"
+    />
   </div>
   <div class="col-md-5">
     <label for="fecha_fin" class="form-label">Fecha de fin</label>
-    <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+    <input
+      type="date"
+      name="fecha_fin"
+      class="form-control"
+      value="{{ fecha_fin }}"
+      min="{{ fecha_inicio }}"
+    />
   </div>
   <div class="col-md-2 align-self-end">
     <button type="submit" class="btn btn-primary w-100">Buscar</button>
@@ -18,39 +27,29 @@
 </form>
 
 <table class="table-auto w-full border-collapse border border-gray-400">
-    <thead>
-        <tr class="bg-gray-200">
-            <th class="border px-4 py-2">#</th>
-            <th class="border px-4 py-2">Marca</th>
-            <th class="border px-4 py-2">Modelo</th>
-            <th class="border px-4 py-2">Cantidad de reservas</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% if agrupados_list %}
-            {% for marca, modelo, total in agrupados_list %}
-            <tr>
-                <td class="border px-4 py-2">{{ loop.index }}</td>
-                <td class="border px-4 py-2">{{ marca }}</td>
-                <td class="border px-4 py-2">{{ modelo }}</td>
-                <td class="border px-4 py-2">{{ total }}</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-        <tr>
-            <td colspan="4" class="text-center text-gray-500 py-4">No vehículos alquilados en las fechas seleccionadas</td>
-        </tr>
-        {% endif %}
-    </tbody>
+  <thead>
+    <tr class="bg-gray-200">
+      <th class="border px-4 py-2">#</th>
+      <th class="border px-4 py-2">Marca</th>
+      <th class="border px-4 py-2">Modelo</th>
+      <th class="border px-4 py-2">Cantidad de reservas</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if agrupados_list %} {% for marca, modelo, total in agrupados_list %}
+    <tr>
+      <td class="border px-4 py-2">{{ loop.index }}</td>
+      <td class="border px-4 py-2">{{ marca }}</td>
+      <td class="border px-4 py-2">{{ modelo }}</td>
+      <td class="border px-4 py-2">{{ total }}</td>
+    </tr>
+    {% endfor %} {% else %}
+    <tr>
+      <td colspan="4" class="text-center text-gray-500 py-4">
+        No vehículos alquilados en las fechas seleccionadas
+      </td>
+    </tr>
+    {% endif %}
+  </tbody>
 </table>
 {% endblock %}
-            </tr>
-
-        {% if agrupados_list|length == 0 %}
-        <tr>
-            <td colspan="4" class="text-center text-gray-500 py-4">No vehículos alquilados en las fechas seleccionadas</td>
-        </tr>
-        {% endif %}
-    </tbody>
-</table>
-

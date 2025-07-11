@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from src.core.repositories.reserva import list_reservas_by_date_range, list_reservas, list_reservas_con_calificaciones, obtener_vehiculos_mas_alquilados, ingresos_total_vehiculos
 # from src.core.repositories.calificaciones import obtener_estadisticas_calificaciones
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from src.web.helpers.auth import has_permission
 
 
@@ -12,25 +12,22 @@ bp = Blueprint("estadisticas", __name__, url_prefix="/estadisticas")
 @bp.route("/", methods=["GET", "POST"])
 @has_permission("estadisticas_index")
 def menu():
-
-    fecha_inicio = None
-    fecha_fin = None
+    # Fechas por defecto
+    fecha_inicio = "2020-01-01"
+    fecha_fin = datetime.now().date().isoformat()
     if request.method == "POST":
-        fecha_inicio = request.form.get("fecha_inicio")
-        fecha_fin = request.form.get("fecha_fin")
-
+        fecha_inicio = request.form.get("fecha_inicio") or fecha_inicio
+        fecha_fin = request.form.get("fecha_fin") or fecha_fin
     ingresos_total = ingresos_total_vehiculos(fecha_inicio, fecha_fin)
-
-
-    return render_template("estadisticas/layout.html", ingresos=ingresos_total,fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
+    return render_template("estadisticas/layout.html", ingresos=ingresos_total, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
 
 
 
 @bp.route("/calificaciones", methods=["GET", "POST"])
 @has_permission("estadisticas_calificaciones")
 def calificaciones():
-    fecha_inicio = request.form.get("fecha_inicio")
-    fecha_fin = request.form.get("fecha_fin")
+    fecha_inicio = request.form.get("fecha_inicio") or "2020-01-01"
+    fecha_fin = request.form.get("fecha_fin") or datetime.now().date().isoformat()
 
     reservas = list_reservas_con_calificaciones()
 
@@ -64,11 +61,11 @@ def promedio_alquileres():
     from src.core.models.vehiculo import Vehiculo
     from src.core.models.modelo import Modelo
 
-    fecha_inicio = None
-    fecha_fin = None
+    fecha_inicio = "2020-01-01"
+    fecha_fin = datetime.now().date().isoformat()
     if request.method == "POST":
-        fecha_inicio = request.form.get("fecha_inicio")
-        fecha_fin = request.form.get("fecha_fin")
+        fecha_inicio = request.form.get("fecha_inicio") or fecha_inicio
+        fecha_fin = request.form.get("fecha_fin") or fecha_fin
 
     # Parseamos las fechas si existen
     inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d") if fecha_inicio else None
@@ -118,9 +115,11 @@ def alquileres_por_sucursal():
     alquileres_por_sucursal = {nombre: 0 for nombre in sucursales_nombres}
 
     # Filtrar reservas por fechas si corresponde
+    fecha_inicio = "2020-01-01"
+    fecha_fin = datetime.now().date().isoformat()
     if request.method == "POST":
-        fecha_inicio = request.form.get("fecha_inicio")
-        fecha_fin = request.form.get("fecha_fin")
+        fecha_inicio = request.form.get("fecha_inicio") or fecha_inicio
+        fecha_fin = request.form.get("fecha_fin") or fecha_fin
         reservas = list_reservas_by_date_range(fecha_inicio, fecha_fin)
     else:
         reservas = list_reservas()
@@ -138,6 +137,8 @@ def alquileres_por_sucursal():
 
     return render_template("estadisticas/alquileres_por_sucursal.html",
                            sucursales=sucursales,
-                           alquileres=alquileres)
+                           alquileres=alquileres,
+                           fecha_inicio=fecha_inicio,
+                           fecha_fin=fecha_fin)
 
 
