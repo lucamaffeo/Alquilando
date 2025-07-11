@@ -20,6 +20,12 @@
                             <label for="email" class="form-label">Email:</label>
                             <input type="email" class="form-control border-main" name="email" value="{{ user.email if user else '' }}" {% if is_update %}disabled{% endif %} required>
                         </div>
+                        {% if is_update %}
+                        <div class="col-md-6 mb-3">
+                            <label for="current_password" class="form-label">Contraseña actual:</label>
+                            <input type="password" class="form-control border-main" name="current_password" placeholder="Ingrese su contraseña actual para cambiar la contraseña">
+                        </div>
+                        {% endif %}
                         <div class="col-md-6 mb-3">
                             <label for="password" class="form-label">Contraseña:</label>
                             <input type="password" placeholder="Debe tener al menos 6 caracteres" class="form-control border-main" name="password" {% if is_update %}placeholder="Dejar vacío para no cambiar"{% endif %} {% if not is_update %}required{% endif %}>

@@ -146,6 +146,10 @@ def update(user_id):
     if not u:
         flash("Usuario no encontrado.", "error")
         return redirect(url_for("usuarios.index"))
+    # Solo permitir que el usuario actualice su propio perfil
+    if session.get("user_id") != user_id:
+        flash("Solo puedes actualizar tu propio perfil.", "error")
+        return redirect(url_for("usuarios.show", user_id=user_id))
     roles = rol.list_roles()
     if request.method == "POST":
         data = request.form
@@ -153,14 +157,24 @@ def update(user_id):
             password = data["password"] if data.get("password") else None
             if password == "":
                 password = None
+            current_password = data.get("current_password", "")
+            # Si se completa el campo contraseña actual, se debe completar la nueva y tener al menos 6 caracteres
+            if current_password:
+                if not password:
+                    flash("Debes ingresar una nueva contraseña si completas la contraseña actual.", "error")
+                    return render_template("users/register.html", user=u, is_update=True, roles=roles)
+                if len(password) < 6:
+                    flash("La nueva contraseña debe tener al menos 6 caracteres.", "error")
+                    return render_template("users/register.html", user=u, is_update=True, roles=roles)
+                if not check_password_hash(u.password, current_password):
+                    flash("La contraseña actual es incorrecta.", "error")
+                    return render_template("users/register.html", user=u, is_update=True, roles=roles)
             user.update_user(
                 user_id,
                 nombre=data.get("nombre"),
                 apellido=data.get("apellido"),
                 telefono=data.get("telefono"),
-                # Solo actualizar contraseña si se ingresa una nueva
                 password=password,
-                # Permitir cambiar el rol solo si el usuario es admin
                 role_id=int(data.get("role_id")) if session.get("user_role") == "admin" and data.get("role_id") else u.role_id,
             )
             flash("Usuario actualizado correctamente.", "success")
