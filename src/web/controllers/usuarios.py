@@ -114,7 +114,7 @@ def delete(user_id):
     if u and u.role.name == "usuario registrado":
         reservas_activas = [r for r in u.reservas if r.estado in ("activa", "en curso")]
         if reservas_activas:
-            flash("No se puede eliminar el usuario porque tiene reservas activas o en curso.", "warning")
+            flash("No se puede eliminar el usuario porque tiene reservas activas o en curso.", "error")
             return redirect(url_for("usuarios.show", user_id=user_id))
     if user.delete_user(user_id):
         flash("Usuario eliminado correctamente.", "success")

@@ -48,7 +48,7 @@
 </p>
 <p><strong>Total a pagar por adicionales:</strong> ${{ reserva.precio_total_adicionales }}</p>
 
-{% if session.get("user_role") in ["admin", "empleado"] %}
+{% if session.get("user_role") == "empleado" %}
     {% if reserva.estado == "activa" %}
     <!-- Formulario para iniciar reserva (asignar auto y adicionales) -->
     <form method="POST" action="{{ url_for('reservas.detalle_reserva', reserva_id=reserva.id) }}">
@@ -103,20 +103,20 @@
         </div>
         <button type="submit" class="btn btn-warning">Finalizar Reserva</button>
     </form>
-    {% elif reserva.estado == "finalizada" %}
-        {% if reserva.reporte_devolucion %}
-            <div class="alert alert-info mt-3">
-                <strong>Reporte de devolución:</strong><br>
-                {{ reserva.reporte_devolucion }}
-            </div>
-        {% endif %}
-        {% if reserva.calificacion is not none and reserva.calificacion != "" %}
-            <div class="mt-4">
-                <h5><span style="color: gold;">&#9733;</span> Calificación de la Reserva</h5>
-                <p><strong>Calificación:</strong> {{ reserva.calificacion }} / 5</p>
-                <p><strong>Comentario:</strong> {{ reserva.comentario }}</p>
-            </div>
-        {% endif %}
+    {% endif %}
+{% elif reserva.estado == "finalizada" %}
+    {% if reserva.reporte_devolucion %}
+        <div class="alert alert-info mt-3">
+            <strong>Reporte de devolución:</strong><br>
+            {{ reserva.reporte_devolucion }}
+        </div>
+    {% endif %}
+    {% if reserva.calificacion is not none and reserva.calificacion != "" %}
+        <div class="mt-4">
+            <h5><span style="color: gold;">&#9733;</span> Calificación de la Reserva</h5>
+            <p><strong>Calificación:</strong> {{ reserva.calificacion }} / 5</p>
+            <p><strong>Comentario:</strong> {{ reserva.comentario }}</p>
+        </div>
     {% endif %}
 {% endif %}
 <a href="{{ url_for('reservas.index') }}" class="btn btn-secondary mt-3">Volver</a>
