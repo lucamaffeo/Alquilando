@@ -10,6 +10,7 @@
       name="fecha_inicio"
       class="form-control"
       value="{{ fecha_inicio }}"
+      id="fecha_inicio"
     />
   </div>
   <div class="col-md-5">
@@ -20,6 +21,7 @@
       class="form-control"
       value="{{ fecha_fin }}"
       min="{{ fecha_inicio }}"
+      id="fecha_fin"
     />
   </div>
   <div class="col-md-2 align-self-end">
@@ -73,4 +75,21 @@
 <div class="alert alert-info mt-3">
   No se encontraron calificaciones de reservas realizadas.
 </div>
-{% endif %} {% endblock %}
+{% endif %}
+
+<script>
+  // Sincroniza fecha de fin con fecha de inicio
+  document.addEventListener("DOMContentLoaded", function() {
+    const fechaInicio = document.getElementById("fecha_inicio");
+    const fechaFin = document.getElementById("fecha_fin");
+    if (fechaInicio && fechaFin) {
+      fechaInicio.addEventListener("change", function() {
+        fechaFin.min = fechaInicio.value;
+        if (fechaFin.value < fechaInicio.value) {
+          fechaFin.value = fechaInicio.value;
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}
