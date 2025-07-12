@@ -53,7 +53,6 @@
 </p>
 <p><strong>Total a pagar por adicionales:</strong> ${{ reserva.precio_total_adicionales }}</p>
 
-{% if session.get("user_role") == "empleado" %}
     {% if reserva.estado == "activa" %}
     <!-- Formulario para iniciar reserva (asignar auto y adicionales) -->
     <form method="POST" action="{{ url_for('reservas.detalle_reserva', reserva_id=reserva.id) }}">
@@ -108,7 +107,6 @@
         </div>
         <button type="submit" class="btn btn-warning">Finalizar Reserva</button>
     </form>
-    {% endif %}
 {% elif reserva.estado == "finalizada" %}
     {% if reserva.reporte_devolucion %}
         <div class="alert alert-info mt-3">
