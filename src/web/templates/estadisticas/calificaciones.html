@@ -36,6 +36,7 @@
       <tr>
         <th>Vehículo</th>
         <th>Promedio de Calificación</th>
+        <th>Cantidad de Calificaciones</th>
       </tr>
     </thead>
     <tbody>
@@ -66,6 +67,7 @@
 
           <span class="ms-2">({{ promedio }})</span>
         </td>
+        <td>{{ vehiculo.veces_calificado }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -79,11 +81,11 @@
 
 <script>
   // Sincroniza fecha de fin con fecha de inicio
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     const fechaInicio = document.getElementById("fecha_inicio");
     const fechaFin = document.getElementById("fecha_fin");
     if (fechaInicio && fechaFin) {
-      fechaInicio.addEventListener("change", function() {
+      fechaInicio.addEventListener("change", function () {
         fechaFin.min = fechaInicio.value;
         if (fechaFin.value < fechaInicio.value) {
           fechaFin.value = fechaInicio.value;

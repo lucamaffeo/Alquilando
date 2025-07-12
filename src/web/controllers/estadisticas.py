@@ -31,7 +31,7 @@ def calificaciones():
 
     reservas = list_reservas_con_calificaciones()
 
-    acumulador = defaultdict(lambda: {"cantidad": 0, "suma_calificacion": 0})
+    acumulador = defaultdict(lambda: {"cantidad": 0, "suma_calificacion": 0, "veces_calificado": 0})
 
     for reserva in reservas:
         vehiculo = reserva.vehiculo
@@ -39,13 +39,15 @@ def calificaciones():
             nombre = f"{vehiculo.marca} {vehiculo.modelo_nombre()} {vehiculo.anio}"
             acumulador[nombre]["cantidad"] += 1
             acumulador[nombre]["suma_calificacion"] += reserva.calificacion
+            acumulador[nombre]["veces_calificado"] += 1
 
     # Transformar en lista y calcular el promedio
     resultado = sorted([
         {
             "nombre": nombre,
             "cantidad": datos["cantidad"],
-            "calificacion_promedio": round(datos["suma_calificacion"] / datos["cantidad"], 2)
+            "calificacion_promedio": round(datos["suma_calificacion"] / datos["cantidad"], 2),
+            "veces_calificado": datos["veces_calificado"]
         }
         for nombre, datos in acumulador.items()
     ], key=lambda x: x["calificacion_promedio"], reverse=True)
