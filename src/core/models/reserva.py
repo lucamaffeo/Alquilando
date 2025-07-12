@@ -1,5 +1,6 @@
 from src.core.database import db
 from src.core.models.adicional import reserva_adicional
+from sqlalchemy import Column, Boolean
 
 class Reserva(db.Model):
     __tablename__ = "reservas"

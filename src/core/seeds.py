@@ -381,7 +381,7 @@ def run():
     idx = 100
     for suc in sucursales:
         for modelo in modelos_info:
-            for j in range(3):  # 3 autos por modelo por sucursal
+            for j in range(1):  # 3 autos por modelo por sucursal
                 vehiculos_extra.append(create_vehiculo(
                     patente=f"EXTRA{idx}",
                     modelo_id=get_or_create_modelo(modelo[0], modelo[1]).id,

@@ -29,6 +29,11 @@
         {{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo_nombre() }} ({{ reserva.vehiculo.patente }})
     {% endif %}
 </p>
+{% if reserva.vehiculo_asignado and reserva.vehiculo_asignado_id != reserva.vehiculo_id %}
+    <div style="color: red; font-weight: bold;">
+        ¡Atención! El vehículo asignado no es el que eligió originalmente el cliente.
+    </div>
+{% endif %}
 <p>
 <span title="Servicios extra">
     <i class="bi bi-plus-circle" style="color: #0d6efd;"></i>
