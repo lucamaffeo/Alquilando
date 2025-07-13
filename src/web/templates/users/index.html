@@ -6,7 +6,7 @@
     <div class="col-md-8 mx-auto">
         <form method="GET" action="{{ url_for('usuarios.index') }}">
             <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Buscar usuarios por DNI o Email"
+                <input type="text" name="search" class="form-control" placeholder="Buscar usuarios por DNI"
                     value="{{ dni or '' or email }}">
                 <button class="btn btn-info btn-sm" type="submit"> <i class="bi bi-search"></i> Buscar</button>
             </div>
