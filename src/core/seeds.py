@@ -298,6 +298,16 @@ def run():
         estado="finalizada",
         precio_total_vehiculo=18000 * 5  # id=5, precio=18000, 5 días
     )
+    
+    create_reserva(
+        vehiculo_id=5,  # ID del vehículo que se va a reservar
+        vehiculo_asignado_id = 4,
+        user_id=user.id,  # ID del usuario que realiza la reserva
+        fecha_inicio="2023-11-01",
+        fecha_fin="2023-11-05",
+        estado="finalizada",
+        precio_total_vehiculo=18000 * 5  # id=5, precio=18000, 5 días
+    )
 
     # --- Reservas adicionales para user@user.com ---
     

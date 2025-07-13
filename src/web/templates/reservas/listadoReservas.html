@@ -49,8 +49,24 @@
     >
       <td>{{ reserva.user.email }}</td>
       <td>{{ reserva.user.nombre }}</td>
-      <td>{{ reserva.vehiculo.marca }}</td>
-      <td>{{ reserva.vehiculo.modelo_rel }}</td>
+      {% if reserva.vehiculo_asignado.marca != null %}
+        <td>
+          <p style="color:red;">{{ reserva.vehiculo.marca }}</p>
+          <p style="color:green;">{{ reserva.vehiculo_asignado.marca}}</p>
+        </td>
+      {% else %}
+        <td>{{ reserva.vehiculo.marca }}</td>
+      {% endif %}
+
+      {% if reserva.vehiculo_asignado.modelo_rel != null %}
+        <td>
+          <p style="color:red;">{{ reserva.vehiculo.modelo_rel}}</p>
+          <p style="color:green;">{{ reserva.vehiculo_asignado.modelo_rel}}</p>
+        </td>
+      {% else %}
+        <td>{{ reserva.vehiculo.marca }}</td>
+      {% endif %}
+      </td>
       <td>{{ reserva.fecha_inicio.strftime('%d/%m/%Y') }}</td>
       <td>${{ reserva.precio_total_vehiculo }}</td>
       <td>

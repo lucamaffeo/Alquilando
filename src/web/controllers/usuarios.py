@@ -108,7 +108,7 @@ def logout():
 def delete(user_id):
     u = user.get_user_by_id(user_id)
     if u and u.estado == "eliminado":
-        flash("El usuario ya se encuentra eliminado.", "info")
+        flash("El usuario ya se encuentra eliminado.", "error")
         return redirect(url_for("usuarios.index"))
     # Verifica reservas activas o en curso antes de eliminar
     if u and u.role.name == "usuario registrado":
