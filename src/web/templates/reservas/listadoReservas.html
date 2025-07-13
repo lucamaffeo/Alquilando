@@ -60,11 +60,11 @@
 
       {% if reserva.vehiculo_asignado.modelo_rel != null %}
         <td>
-          <p style="color:red;">{{ reserva.vehiculo.modelo_rel}}</p>
-          <p style="color:green;">{{ reserva.vehiculo_asignado.modelo_rel}}</p>
+          <p style="color:red;">{{ reserva.vehiculo.modelo_rel.nombre }}</p>
+          <p style="color:green;">{{ reserva.vehiculo_asignado.modelo_rel.nombre }}</p>
         </td>
       {% else %}
-        <td>{{ reserva.vehiculo.marca }}</td>
+        <td>{{ reserva.vehiculo.modelo_rel.nombre }}</td>
       {% endif %}
       </td>
       <td>{{ reserva.fecha_inicio.strftime('%d/%m/%Y') }}</td>
