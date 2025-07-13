@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from src.core.repositories.reserva import list_reservas_by_date_range, list_reservas, list_reservas_con_calificaciones, obtener_vehiculos_mas_alquilados, ingresos_total_vehiculos
+from src.core.repositories.reserva import ingresos_total_vehiculos_por_sucursal, list_reservas_by_date_range, list_reservas, list_reservas_con_calificaciones, obtener_vehiculos_mas_alquilados, ingresos_total_vehiculos
 # from src.core.repositories.calificaciones import obtener_estadisticas_calificaciones
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -12,14 +12,30 @@ bp = Blueprint("estadisticas", __name__, url_prefix="/estadisticas")
 @bp.route("/", methods=["GET", "POST"])
 @has_permission("estadisticas_index")
 def menu():
-    # Fechas por defecto
+    from src.core.repositories.sucursal import list_sucursales
+
     fecha_inicio = "2020-01-01"
     fecha_fin = datetime.now().date().isoformat()
+    sucursal_id = None
+
+    sucursales_objs = list_sucursales()
+    sucursales = [{"id": str(s.id), "nombre": s.nombre} for s in sucursales_objs]
+
     if request.method == "POST":
         fecha_inicio = request.form.get("fecha_inicio") or fecha_inicio
         fecha_fin = request.form.get("fecha_fin") or fecha_fin
-    ingresos_total = ingresos_total_vehiculos(fecha_inicio, fecha_fin)
-    return render_template("estadisticas/layout.html", ingresos=ingresos_total, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
+        sucursal_id = request.form.get("sucursal_id") or None
+
+    ingresos_total = ingresos_total_vehiculos_por_sucursal(fecha_inicio, fecha_fin, sucursal_id)
+
+    return render_template(
+        "estadisticas/layout.html",
+        ingresos=ingresos_total,
+        fecha_inicio=fecha_inicio,
+        fecha_fin=fecha_fin,
+        sucursales=sucursales,
+        sucursal_id=sucursal_id
+    )
 
 
 

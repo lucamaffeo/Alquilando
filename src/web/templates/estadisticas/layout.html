@@ -49,8 +49,8 @@
       {% block estadisticas_content %}
       <h2 class="mb-4">Estadísticas de Ingresos por Mes</h2>
 
-      <form method="POST" class="row g-3 mb-4">
-        <div class="col-md-5">
+      <form method="POST" class="row g-3 mb-4 align-items-end">
+        <div class="col-md-3">
           <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
           <input
             type="date"
@@ -61,7 +61,7 @@
             max="2030-12-31"
           />
         </div>
-        <div class="col-md-5">
+        <div class="col-md-3">
           <label for="fecha_fin" class="form-label">Fecha de fin</label>
           <input
             type="date"
@@ -72,8 +72,17 @@
             max="2030-12-31"
           />
         </div>
-        <div class="col-md-2 align-self-end">
-          <button type="submit" class="btn btn-primary w-100">Buscar</button>
+        <div class="col-md-4">
+          <label for="sucursal_id" class="form-label">Sucursal</label>
+          <div class="input-group">
+            <select name="sucursal_id" class="form-select" style="min-width: 180px;">
+              <option value="">Todas</option>
+              {% for suc in sucursales %}
+                <option value="{{ suc.id }}" {% if sucursal_id == suc.id %}selected{% endif %}>{{ suc.nombre }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary ms-2">Buscar</button>
+          </div>
         </div>
       </form>
 
@@ -81,13 +90,23 @@
       <canvas id="graficoIngresos" height="100"></canvas>
       {% else %}
       <p>No se encontraron ingresos en el rango seleccionado.</p>
-      {% endif %} {% endblock %} {% block scripts %}
+      {% endif %}
+      {% endblock %}
+      {% block scripts %}
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       {% if ingresos %}
       <script>
         const ctx = document.getElementById('graficoIngresos').getContext('2d');
         const labels = {{ ingresos.keys()|list|tojson }};
         const data = {{ ingresos.values()|list|tojson }};
+
+        // Colores: verde por defecto, azul para "Total (todos los tiempos)"
+        const backgroundColors = labels.map(label =>
+          label === "Total (todos los tiempos)" ? "rgba(0, 123, 255, 0.7)" : "rgba(0, 128, 0, 0.6)"
+        );
+        const borderColors = labels.map(label =>
+          label === "Total (todos los tiempos)" ? "rgba(0, 123, 255, 1)" : "rgba(0, 128, 0, 1)"
+        );
 
         const chart = new Chart(ctx, {
           type: 'bar',
@@ -96,8 +115,8 @@
             datasets: [{
               label: 'Ingresos por mes ($)',
               data: data,
-              backgroundColor: 'rgba(0, 128, 0, 0.6)',
-              borderColor: 'rgba(0, 128, 0, 1)',
+              backgroundColor: backgroundColors,
+              borderColor: borderColors,
               borderWidth: 1
             }]
           },
