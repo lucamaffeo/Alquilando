@@ -75,12 +75,14 @@ def list_vehiculos(patente=None, incluir_borrados=False):
     """
     Lista todos los vehículos, con opción de filtrar solo los aptos o por patente.
     Excluye los inhabilitados a menos que se solicite incluirlos.
+    Ordena primero por marca y luego por modelo.
     """
     query = db.session.query(Vehiculo)
     if patente:
         query = query.filter(Vehiculo.patente.ilike(f"%{patente}%"))
     if not incluir_borrados:
         query = query.filter(Vehiculo.inhabilitado == False)
+    query = query.order_by(Vehiculo.marca.asc(), Vehiculo.precio.asc())
     return query.all()
 
 def list_marcas():

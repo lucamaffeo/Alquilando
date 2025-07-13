@@ -67,7 +67,7 @@
                     </option>
                     {# Luego mostrar los otros vehículos disponibles, excluyendo el reservado #}
                     {% for v in vehiculos %}
-                        {% if v.id != reserva.vehiculo.id %}
+                        {% if (v.id != reserva.vehiculo.id) and (v.sucursal_id == reserva.vehiculo.sucursal_id) %}
                             {% set asignable = (not v.en_mantenimiento and v.estado != "eliminado") %}
                             {% for r in v.reservas %}
                                 {% if r.id != reserva.id and r.estado == "en curso" and not (reserva.fecha_fin < r.fecha_inicio or reserva.fecha_inicio > r.fecha_fin) %}
