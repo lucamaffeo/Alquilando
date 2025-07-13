@@ -58,7 +58,7 @@
         <td>{{ reserva.vehiculo.marca }}</td>
       {% endif %}
 
-      {% if (reserva.vehiculo_asignado.modelo_rel.nombre != null) and (reserva.vehiculo.modelo_rel.nombre != reserva.vehiculo_asignado.modelo_rel.nombre) %}
+      {% if (reserva.vehiculo_asignado.modelo_rel != null) and (reserva.vehiculo.modelo_rel.nombre != reserva.vehiculo_asignado.modelo_rel.nombre) %}
           <td>
             <p style="color:red;">{{ reserva.vehiculo.modelo_rel.nombre }}</p>
             <p style="color:green;">{{ reserva.vehiculo_asignado.modelo_rel.nombre }}</p>
