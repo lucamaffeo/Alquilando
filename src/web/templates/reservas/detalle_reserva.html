@@ -62,18 +62,17 @@
                 <label for="vehiculo_asignado_id" class="form-label"><strong>Asignar Vehículo:</strong></label>
                 <select name="vehiculo_asignado_id" class="form-select" required>
                     {% for v in vehiculos %}
-                        {% if not v.en_mantenimiento or v.id == reserva.vehiculo_id or v.id == reserva.vehiculo_asignado_id %}
-                            {% set disponible = true %}
-                            {% for r in v.reservas %}
-                                {% if r.id != reserva.id and r.estado in ["activa", "en curso"] and not (reserva.fecha_fin < r.fecha_inicio or reserva.fecha_inicio > r.fecha_fin) %}
-                                    {% set disponible = false %}
-                                {% endif %}
-                            {% endfor %}
-                            {% if disponible or v.id == reserva.vehiculo_id or v.id == reserva.vehiculo_asignado_id %}
-                                <option value="{{ v.id }}" {% if v.id == reserva.vehiculo_asignado_id or (reserva.vehiculo_asignado_id is none and v.id == reserva.vehiculo_id) %}selected{% endif %}>
-                                    {{ v.marca }} {{ v.modelo_nombre() }} ({{ v.patente }})
-                                </option>
+                        {# Mostrar solo vehículos que NO estén en mantenimiento, NO estén en una reserva en curso y NO estén dados de baja #}
+                        {% set asignable = (not v.en_mantenimiento and v.estado != "eliminado") %}
+                        {% for r in v.reservas %}
+                            {% if r.id != reserva.id and r.estado == "en curso" and not (reserva.fecha_fin < r.fecha_inicio or reserva.fecha_inicio > r.fecha_fin) %}
+                                {% set asignable = false %}
                             {% endif %}
+                        {% endfor %}
+                        {% if asignable %}
+                            <option value="{{ v.id }}" {% if v.id == reserva.vehiculo_asignado_id %}selected{% endif %}>
+                                {{ v.marca }} {{ v.modelo_nombre() }} ({{ v.patente }})
+                            </option>
                         {% endif %}
                     {% endfor %}
                 </select>
