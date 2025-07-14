@@ -29,7 +29,7 @@
   <thead>
     {% block table_header %}
     <tr>
-      <th>Mail</th>
+      <th>Email</th>
       <th>Nombre</th>
       <th>Marca Reservado</th>
       <th>Modelo Reservado</th>
@@ -47,7 +47,7 @@
         style="background-color: #ffe5e5;"
       {% endif %}
     >
-      <td>{{ reserva.user.email }}</td>
+      <td><strong>{{ reserva.user.email }}</strong></td>
       <td>{{ reserva.user.nombre }}</td>
       {% if (reserva.vehiculo_asignado.marca != null) and (reserva.vehiculo.marca != reserva.vehiculo_asignado.marca) %}
           <td>
