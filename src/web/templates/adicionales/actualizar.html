@@ -7,7 +7,10 @@
         <form method="POST" class="p-4 rounded border border-main shadow-sm bg-white mx-auto">
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre:</label>
-                <input type="text" class="form-control" name="nombre" id="nombre" value="{{ adicional.nombre }}" required>
+                <input type="text" class="form-control" name="nombre" id="nombre" value="{{ adicional.nombre }}" required {% if asignado %}disabled{% endif %}>
+                {% if asignado %}
+                  <div class="form-text text-danger">No se puede modificar el nombre porque este adicional ya está asignado a algún vehículo.</div>
+                {% endif %}
             </div>
             <div class="mb-3">
                 <label for="precio" class="form-label">Precio:</label>
