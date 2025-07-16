@@ -60,29 +60,34 @@
             <input type="hidden" name="accion" value="iniciar">
             <div class="mb-3">
                 {% if (reserva.vehiculo.estado() != "Activo") %}
-                <label for="vehiculo_asignado_id" class="form-label"><strong>Asignar Vehículo:</strong></label>
-                <select name="vehiculo_asignado_id" class="form-select" required>
-                    {# Mostrar primero el vehículo reservado #}
-                    <option value="{{ reserva.vehiculo.id }}" {% if reserva.vehiculo.id == reserva.vehiculo_asignado_id or not reserva.vehiculo_asignado_id %}selected{% endif %}>
-                        {{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo_nombre() }} ({{ reserva.vehiculo.patente }}) [Reservado]
-                    </option>
-                    {# Luego mostrar los otros vehículos disponibles, excluyendo el reservado #}
-                    {% for v in vehiculos %}
-                        {% if (v.id != reserva.vehiculo.id) and (v.sucursal_id == reserva.vehiculo.sucursal_id) %}
-                            {% set asignable = (not v.en_mantenimiento and v.estado != "eliminado") %}
-                            {% for r in v.reservas %}
-                                {% if r.id != reserva.id and r.estado == "en curso" and not (reserva.fecha_fin < r.fecha_inicio or reserva.fecha_inicio > r.fecha_fin) %}
-                                    {% set asignable = false %}
+                    <label for="vehiculo_asignado_id" class="form-label"><strong>Asignar Vehículo:</strong></label>
+                    <select name="vehiculo_asignado_id" class="form-select" required>
+                        {# Mostrar primero el vehículo reservado #}
+                        <option value="{{ reserva.vehiculo.id }}" {% if reserva.vehiculo.id == reserva.vehiculo_asignado_id or not reserva.vehiculo_asignado_id %}selected{% endif %}>
+                            {{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo_nombre() }} ({{ reserva.vehiculo.patente }}) [Reservado]
+                        </option>
+                        {# Luego mostrar los otros vehículos disponibles, excluyendo el reservado #}
+                        {% for v in vehiculos %}
+                            {% if (v.id != reserva.vehiculo.id) and (v.sucursal_id == reserva.vehiculo.sucursal_id) %}
+                                {% set asignable = (not v.en_mantenimiento and v.estado != "eliminado") %}
+                                {% for r in v.reservas %}
+                                    {% if r.id != reserva.id and r.estado == "en curso" and not (reserva.fecha_fin < r.fecha_inicio or reserva.fecha_inicio > r.fecha_fin) %}
+                                        {% set asignable = false %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if asignable %}
+                                    <option value="{{ v.id }}" {% if v.id == reserva.vehiculo_asignado_id %}selected{% endif %}>
+                                        {{ v.marca }} {{ v.modelo_nombre() }} ({{ v.patente }})
+                                    </option>
                                 {% endif %}
-                            {% endfor %}
-                            {% if asignable %}
-                                <option value="{{ v.id }}" {% if v.id == reserva.vehiculo_asignado_id %}selected{% endif %}>
-                                    {{ v.marca }} {{ v.modelo_nombre() }} ({{ v.patente }})
-                                </option>
                             {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                </select>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <input type="hidden" name="vehiculo_asignado_id" value="{{ reserva.vehiculo.id }}">
+                    <div class="alert alert-info mb-2">
+                        El vehículo reservado está <strong>activo</strong> y será asignado automáticamente.
+                    </div>
                 {% endif %}
             </div>
             <div class="mb-3">
