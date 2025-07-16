@@ -1,72 +1,75 @@
-{% extends "base_index.html" %}
-
-{% block extra_content %}
+{% extends "base_index.html" %} {% block extra_content %}
 <h2 class="mb-4 text-center">Listado de Vehículos</h2>
 <div class="row mb-3 align-items-center">
-    <div class="col-md-8 mx-auto">
-        <form method="GET" action="{{ url_for('vehiculos.index') }}">
-            <div class="input-group">
-                <input type="text" name="patente" class="form-control" placeholder="Buscar vehículo por patente"
-                    value="{{ patente or '' }}">
-                <button class="btn btn-info btn-sm" type="submit"> <i class="bi bi-search"></i> Buscar</button>
-            </div>
-        </form>
-        {% if mensaje %}
-        <div class="alert alert-warning mt-2">{{ mensaje }}</div>
-        {% endif %}
-    </div>
-    {% if has_permission(session.get("user_id"), "vehicle_create") %}
-    <div class="col-md-4 text-end mt-2 mt-md-0">
-        <a class="btn btn-success" href="{{ url_for('vehiculos.register') }}">
-            <i class="bi bi-plus-circle"></i> Registrar vehículo
-        </a>
-    </div>
+  <div class="col-md-8 mx-auto">
+    <form method="GET" action="{{ url_for('vehiculos.index') }}">
+      <div class="input-group">
+        <input
+          type="text"
+          name="patente"
+          class="form-control"
+          placeholder="Buscar vehículo por patente"
+          value="{{ patente or '' }}"
+        />
+        <button class="btn btn-info btn-sm" type="submit">
+          <i class="bi bi-search"></i> Buscar
+        </button>
+      </div>
+    </form>
+    {% if mensaje %}
+    <div class="alert alert-warning mt-2">{{ mensaje }}</div>
     {% endif %}
+  </div>
+  {% if has_permission(session.get("user_id"), "vehicle_create") %}
+  <div class="col-md-4 text-end mt-2 mt-md-0">
+    <a class="btn btn-success" href="{{ url_for('vehiculos.register') }}">
+      <i class="bi bi-plus-circle"></i> Registrar vehículo
+    </a>
+  </div>
+  {% endif %}
 </div>
-{% endblock %}
-
-{% block table_header %}
-{% if vehiculos|length > 0 %}
+{% endblock %} {% block table_header %} {% if vehiculos|length > 0 %}
 <tr>
-    <th>Patente</th>
-    <th>Marca</th>
-    <th>Modelo</th>
-    <th>Categoría</th>
-    <th>Precio</th>
-    <th>Sucursal</th>
-    <th>Estado</th>
-    <th>Acciones</th>
+  <th>Patente</th>
+  <th>Marca</th>
+  <th>Modelo</th>
+  <th>Categoría</th>
+  <th>Precio</th>
+  <th>Sucursal</th>
+  <th>Estado</th>
+  <th>Acciones</th>
 </tr>
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %} {% block table_body %} {% if vehiculos|length == 0 %}
+<div
+  class="text-center mt-5 mb-0"
+  style="
+    background-color: #d4f6fd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: none;
+  "
+>
+  <i class="bi bi-info-circle-fill me-2"></i>
+  <span class="fw-semibold">No hay vehículos habilitados para mostrar.</span>
+</div>
 
-{% block table_body %}
-{% if vehiculos|length == 0 %}
+{% else %} {% for vehiculo in vehiculos %}
 <tr>
-    <td colspan="8">
-        <div class="text-center mt-5 mb-0"
-            style="background-color: #d4f6fd; border-radius: 8px; padding: 1.5rem; border: none;">
-            <i class="bi bi-info-circle-fill me-2"></i>
-            <span class="fw-semibold">No hay vehículos habilitados para mostrar.</span>
-        </div>
-    </td>
-</tr>
-{% else %}
-{% for vehiculo in vehiculos %}
-<tr>
-    <td>{{ vehiculo.patente }}</td>
-    <td>{{ vehiculo.marca }}</td>
-    <td>{{ vehiculo.modelo_nombre() }}</td>
-    <td>{{ vehiculo.categoria }}</td>
-    <td>${{ vehiculo.precio }}</td>
-    <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
-    <td> <strong>{{ vehiculo.estado() }}</strong></td>
-    <td>
-        <a href="{{ url_for('vehiculos.show', id=vehiculo.id) }}" class="btn btn-info btn-sm"><i
-                class="bi bi-car-front"></i> Ver detalle</a>
-    </td>
+  <td>{{ vehiculo.patente }}</td>
+  <td>{{ vehiculo.marca }}</td>
+  <td>{{ vehiculo.modelo_nombre() }}</td>
+  <td>{{ vehiculo.categoria }}</td>
+  <td>${{ vehiculo.precio }}</td>
+  <td>{{ vehiculo.sucursal.nombre }} - {{ vehiculo.sucursal.ubicacion }}</td>
+  <td><strong>{{ vehiculo.estado() }}</strong></td>
+  <td>
+    <a
+      href="{{ url_for('vehiculos.show', id=vehiculo.id) }}"
+      class="btn btn-info btn-sm"
+      ><i class="bi bi-car-front"></i> Ver detalle</a
+    >
+  </td>
 </tr>
 {% endfor %}
 <p>*Si el vehiculo esta inhabilitado es porque se elimino.</p>
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %}
