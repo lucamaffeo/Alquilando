@@ -63,9 +63,6 @@
                     <label for="vehiculo_asignado_id" class="form-label"><strong>Asignar Vehículo:</strong></label>
                     <select name="vehiculo_asignado_id" class="form-select" required>
                         {# Mostrar primero el vehículo reservado #}
-                        <option value="{{ reserva.vehiculo.id }}" {% if reserva.vehiculo.id == reserva.vehiculo_asignado_id or not reserva.vehiculo_asignado_id %}selected{% endif %}>
-                            {{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo_nombre() }} ({{ reserva.vehiculo.patente }}) [Reservado]
-                        </option>
                         {# Luego mostrar los otros vehículos disponibles, excluyendo el reservado #}
                         {% for v in vehiculos %}
                             {% if (v.id != reserva.vehiculo.id) and (v.sucursal_id == reserva.vehiculo.sucursal_id) %}

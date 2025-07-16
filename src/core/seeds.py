@@ -273,30 +273,7 @@ def run():
     )
 
     # Reservas activas adicionales (ninguna de usuario2/lucaaw37@gmail.com)
-    create_reserva(
-        vehiculo_id=vehiculos_demo[11].id,
-        user_id=user.id,
-        fecha_inicio="2027-05-01",
-        fecha_fin="2027-05-05",
-        estado="activa",
-        precio_total_vehiculo=vehiculos_demo[11].precio * 5
-    )
-    create_reserva(
-        vehiculo_id=vehiculos_demo[11].id,
-        user_id=usuario3.id,
-        fecha_inicio="2027-06-01",
-        fecha_fin="2027-06-05",
-        estado="activa",
-        precio_total_vehiculo=vehiculos_demo[11].precio * 5
-    )
-    create_reserva(
-        vehiculo_id=vehiculos_demo[12].id,
-        user_id=user.id,
-        fecha_inicio="2027-07-01",
-        fecha_fin="2027-07-05",
-        estado="activa",
-        precio_total_vehiculo=vehiculos_demo[12].precio * 5
-    )
+
     create_reserva(
         vehiculo_id=vehiculos_demo[13].id,
         user_id=usuario3.id,
@@ -349,7 +326,7 @@ def run():
         user_id=user.id,
         fecha_inicio="2023-03-10",
         fecha_fin="2023-03-15",
-        estado="activa",
+        estado="finalizada",
         precio_total_vehiculo=vehiculo_oeste_1.precio * 6,
         calificacion=5,
         comentario="Muy buen Fiesta"
