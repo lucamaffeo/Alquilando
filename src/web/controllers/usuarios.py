@@ -203,7 +203,13 @@ def enviar_mail(destinatario, password):
         sender=current_app.config["MAIL_USERNAME"],
         recipients=[destinatario]
     )
-    msg.body = f"Su contraseña de acceso es: {password}"
+    msg.body = (
+        f"¡Bienvenido/a!\n\n"
+        f"Su cuenta ha sido creada exitosamente.\n"
+        f"Su contraseña de acceso es: {password}\n\n"
+        f"Por favor, cambie su contraseña después de iniciar sesión por primera vez para mayor seguridad.\n"
+        f"Saludos,\nAlquilando"
+    )
     mail.send(msg)
 
 @bp.route("/register/empleado", methods=["GET", "POST"])

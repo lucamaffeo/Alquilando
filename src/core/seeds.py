@@ -122,6 +122,16 @@ def run():
         dni="70000003",
         fecha_nacimiento="1995-01-01"
     )
+    usuario_eliminar = create_user(
+        nombre="usuario_eliminar",
+        email="usuario4@mail.com",
+        password="123456",
+        role_id=2,
+        apellido="Apellido4",
+        telefono="11111114",
+        dni="70000004",
+        fecha_nacimiento="1995-01-01"
+    )
 
     # Crear sucursales (solo 3 + 1 nueva)
     sucursal1 = create_sucursal(
@@ -248,28 +258,9 @@ def run():
         calificacion=3,
         comentario="Todo ok"
     )
-    create_reserva(
-        vehiculo_id=vehiculos_demo[7].id,
-        user_id=usuario3.id,
-        fecha_inicio="2024-07-01",
-        fecha_fin="2024-07-05",
-        estado="finalizada",
-        precio_total_vehiculo=vehiculos_demo[7].precio * 5,
-        calificacion=5,
-        comentario="Perfecto"
-    )
-
+    
     # Reservas para otros usuarios (ejemplo)
-    create_reserva(
-        vehiculo_id=vehiculos_demo[8].id,
-        user_id=user.id,
-        fecha_inicio="2024-06-01",
-        fecha_fin="2024-06-05",
-        estado="finalizada",
-        precio_total_vehiculo=vehiculos_demo[8].precio * 5,
-        calificacion=4,
-        comentario="Buen trato"
-    )
+    
     create_reserva(
         vehiculo_id=vehiculos_demo[9].id,
         user_id=usuario3.id,
@@ -283,12 +274,12 @@ def run():
 
     # Reservas activas adicionales (ninguna de usuario2/lucaaw37@gmail.com)
     create_reserva(
-        vehiculo_id=vehiculos_demo[10].id,
+        vehiculo_id=vehiculos_demo[11].id,
         user_id=user.id,
         fecha_inicio="2027-05-01",
         fecha_fin="2027-05-05",
         estado="activa",
-        precio_total_vehiculo=vehiculos_demo[10].precio * 5
+        precio_total_vehiculo=vehiculos_demo[11].precio * 5
     )
     create_reserva(
         vehiculo_id=vehiculos_demo[11].id,
