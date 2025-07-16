@@ -96,9 +96,9 @@
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       {% if ingresos %}
       <script>
-        const ctx = document.getElementById('graficoIngresos').getContext('2d');
-        const labels = {{ ingresos.keys()|list|tojson }};
-        const data = {{ ingresos.values()|list|tojson }};
+        // Usar los labels y data ordenados por el controlador
+        const labels = {{ labels|tojson }};
+        const data = {{ data|tojson }};
 
         // Colores: verde por defecto, azul para "Total (todos los tiempos)"
         const backgroundColors = labels.map(label =>
@@ -108,6 +108,7 @@
           label === "Total (todos los tiempos)" ? "rgba(0, 123, 255, 1)" : "rgba(0, 128, 0, 1)"
         );
 
+        const ctx = document.getElementById('graficoIngresos').getContext('2d');
         const chart = new Chart(ctx, {
           type: 'bar',
           data: {

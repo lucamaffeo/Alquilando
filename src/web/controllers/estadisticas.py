@@ -28,9 +28,28 @@ def menu():
 
     ingresos_total = ingresos_total_vehiculos_por_sucursal(fecha_inicio, fecha_fin, sucursal_id)
 
+    # --- Ordenar los ingresos por año y mes, dejando el total al final ---
+    total_key = "Total (todos los tiempos)"
+    month_names = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
+    items = list(ingresos_total.items())
+    meses = [item for item in items if item[0] != total_key]
+    total = [item for item in items if item[0] == total_key]
+
+    def mes_ano_key(item):
+        mes, anio = item[0].split()
+        return int(anio) * 100 + month_names.index(mes)
+
+    meses_ordenados = sorted(meses, key=mes_ano_key)
+    ingresos_ordenados = meses_ordenados + total
+    labels = [x[0] for x in ingresos_ordenados]
+    data = [x[1] for x in ingresos_ordenados]
+
     return render_template(
         "estadisticas/layout.html",
         ingresos=ingresos_total,
+        labels=labels,
+        data=data,
         fecha_inicio=fecha_inicio,
         fecha_fin=fecha_fin,
         sucursales=sucursales,
