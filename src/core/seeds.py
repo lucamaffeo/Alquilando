@@ -239,8 +239,6 @@ def run():
         fecha_fin="2024-10-05",
         estado="finalizada",
         precio_total_vehiculo=vehiculos_demo[4].precio * 5,
-        calificacion=5,
-        comentario="Excelente servicio"
     )
     create_reserva(
         vehiculo_id=vehiculos_demo[5].id,
@@ -249,8 +247,6 @@ def run():
         fecha_fin="2024-09-05",
         estado="finalizada",
         precio_total_vehiculo=vehiculos_demo[5].precio * 5,
-        calificacion=4,
-        comentario="Muy buen auto"
     )
     create_reserva(
         vehiculo_id=vehiculos_demo[6].id,
