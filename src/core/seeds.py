@@ -82,16 +82,6 @@ def run():
         dni="45034325",
         fecha_nacimiento="2000-01-01",
     )
-    admin = create_user(
-        nombre="Luca",
-        email="lucamaffeo@gmail.com",
-        password="123456",
-        role_id=1,
-        apellido="Maffeo",
-        telefono="123456789",
-        dni="40882818",
-        fecha_nacimiento="2000-01-01",
-    )
     empleado = create_user(
         nombre="empleado",
         email="empleado@empleado.com",
