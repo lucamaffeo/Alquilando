@@ -257,7 +257,14 @@ def run():
         estado="activa",
         precio_total_vehiculo=vehiculos_demo[5].precio * 5
         )
-
+    create_reserva(
+        vehiculo_id=vehiculos_demo[0].id,
+        user_id=user.id,
+        fecha_inicio="2025-07-01",  
+        fecha_fin="2025-07-17",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[0].precio * 5
+        )
 
     create_reserva(
         vehiculo_id=vehiculos_demo[6].id,
@@ -292,6 +299,14 @@ def run():
         fecha_fin="2027-08-05",
         estado="activa",
         precio_total_vehiculo=vehiculos_demo[13].precio * 5
+    )
+    create_reserva(
+        vehiculo_id=vehiculos_demo[7].id,
+        user_id=usuario3.id,
+        fecha_inicio="2027-08-01",
+        fecha_fin="2027-08-05",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[7].precio * 5
     )
 
     # Crear adicionales (sin GPS)
