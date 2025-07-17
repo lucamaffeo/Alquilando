@@ -64,11 +64,16 @@ def calificaciones():
     fecha_inicio = request.form.get("fecha_inicio") or "2020-01-01"
     fecha_fin = request.form.get("fecha_fin") or datetime.now().date().isoformat()
 
+    # Filtrar reservas con calificaciones por rango de fechas
     reservas = list_reservas_con_calificaciones()
+    reservas_filtradas = [
+        r for r in reservas
+        if r.fecha_fin and fecha_inicio <= r.fecha_fin.strftime("%Y-%m-%d") <= fecha_fin
+    ]
 
     acumulador = defaultdict(lambda: {"cantidad": 0, "suma_calificacion": 0, "veces_calificado": 0})
 
-    for reserva in reservas:
+    for reserva in reservas_filtradas:
         vehiculo = reserva.vehiculo
         if vehiculo:
             nombre = f"{vehiculo.marca} {vehiculo.modelo_nombre()} {vehiculo.anio}"
@@ -89,7 +94,7 @@ def calificaciones():
 
 
     print(f"Vehículos con calificaciones: {resultado}")
-    return render_template("estadisticas/calificaciones.html",vehiculos=resultado, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
+    return render_template("estadisticas/calificaciones.html", vehiculos=resultado, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
 
 
 @bp.route("/promedio-alquileres", methods=["GET", "POST"])
@@ -97,6 +102,7 @@ def calificaciones():
 def promedio_alquileres():
     from src.core.models.vehiculo import Vehiculo
     from src.core.models.modelo import Modelo
+    from src.core.models.reserva import Reserva
 
     fecha_inicio = "2020-01-01"
     fecha_fin = datetime.now().date().isoformat()
@@ -104,11 +110,9 @@ def promedio_alquileres():
         fecha_inicio = request.form.get("fecha_inicio") or fecha_inicio
         fecha_fin = request.form.get("fecha_fin") or fecha_fin
 
-    # Parseamos las fechas si existen
     inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d") if fecha_inicio else None
     fin = datetime.strptime(fecha_fin, "%Y-%m-%d") if fecha_fin else None
 
-    # Obtener todos los modelos y marcas posibles
     vehiculos_todos = Vehiculo.query.all()
     grupos = {}
     for v in vehiculos_todos:
@@ -117,15 +121,23 @@ def promedio_alquileres():
         if key not in grupos:
             grupos[key] = 0
 
-    # Obtener reservas finalizadas agrupadas por marca/modelo
-    from src.core.repositories.reserva import obtener_vehiculos_mas_alquilados
-    vehiculos_con_reservas = obtener_vehiculos_mas_alquilados(inicio, fin)
-    for vehiculo, cantidad in vehiculos_con_reservas:
-        modelo_nombre = vehiculo.modelo_rel.nombre if vehiculo.modelo_rel else ""
-        key = (vehiculo.marca, modelo_nombre)
-        grupos[key] = grupos.get(key, 0) + cantidad
+    # Solo reservas finalizadas en el rango de fechas
+    reservas_finalizadas = Reserva.query.filter(
+        Reserva.estado == "finalizada"
+    )
+    if inicio:
+        reservas_finalizadas = reservas_finalizadas.filter(Reserva.fecha_inicio >= inicio)
+    if fin:
+        reservas_finalizadas = reservas_finalizadas.filter(Reserva.fecha_fin <= fin)
+    reservas_finalizadas = reservas_finalizadas.all()
 
-    # Convertir a lista ordenada por cantidad desc
+    for reserva in reservas_finalizadas:
+        vehiculo = reserva.vehiculo
+        if vehiculo:
+            modelo_nombre = vehiculo.modelo_rel.nombre if vehiculo.modelo_rel else ""
+            key = (vehiculo.marca, modelo_nombre)
+            grupos[key] = grupos.get(key, 0) + 1
+
     agrupados_list = sorted(
         [ (marca, modelo, total) for (marca, modelo), total in grupos.items() ],
         key=lambda x: x[2], reverse=True
@@ -143,6 +155,7 @@ def promedio_alquileres():
 @has_permission("estadisticas_alquileres")
 def alquileres_por_sucursal():
     from src.core.repositories.sucursal import list_sucursales
+    from src.core.models.reserva import Reserva
 
     # Obtener todas las sucursales
     sucursales_objs = list_sucursales()
@@ -157,12 +170,16 @@ def alquileres_por_sucursal():
     if request.method == "POST":
         fecha_inicio = request.form.get("fecha_inicio") or fecha_inicio
         fecha_fin = request.form.get("fecha_fin") or fecha_fin
-        reservas = list_reservas_by_date_range(fecha_inicio, fecha_fin)
-    else:
-        reservas = list_reservas()
+
+    # Solo reservas finalizadas en el rango de fechas
+    reservas_finalizadas = Reserva.query.filter(
+        Reserva.estado == "finalizada",
+        Reserva.fecha_inicio >= fecha_inicio,
+        Reserva.fecha_fin <= fecha_fin
+    ).all()
 
     # Sumar reservas finalizadas por sucursal
-    for reserva in reservas:
+    for reserva in reservas_finalizadas:
         sucursal = getattr(getattr(reserva, "vehiculo", None), "sucursal", None)
         if sucursal:
             nombre_sucursal = getattr(sucursal, "nombre", "Desconocida")
