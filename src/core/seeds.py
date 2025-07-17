@@ -252,8 +252,8 @@ def run():
     create_reserva(
         vehiculo_id=vehiculos_demo[5].id,
         user_id=user.id,
-        fecha_inicio="2025-08-01",  
-        fecha_fin="2025-08-05",
+        fecha_inicio="2025-07-01",  
+        fecha_fin="2025-07-17",
         estado="activa",
         precio_total_vehiculo=vehiculos_demo[5].precio * 5
         )
