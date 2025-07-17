@@ -302,6 +302,13 @@ def run():
     db.session.add_all([adicional1, adicional2, adicional3])
     db.session.commit()
 
+    # Asignar adicional1 ("Silla para bebes") a una reserva finalizada cualquiera
+    from src.core.models.reserva import Reserva
+    reserva_finalizada = Reserva.query.filter_by(estado="finalizada").first()
+    if reserva_finalizada and adicional1 not in reserva_finalizada.adicionales:
+        reserva_finalizada.adicionales.append(adicional1)
+        db.session.commit()
+
     # Crear 2 vehículos nuevos iguales en la sucursal nueva
     modelo_nuevo = get_or_create_modelo("Fiesta", "Reembolso completo")
     vehiculo_oeste_1 = create_vehiculo(
