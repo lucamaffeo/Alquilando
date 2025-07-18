@@ -246,3 +246,76 @@ def finalizar_reserva_empleado(reserva_id, reporte_devolucion):
         return reserva
     return None
 
+def ingresos_total_vehiculos_por_sucursal(fecha_inicio=None, fecha_fin=None, sucursal_id=None):
+    from src.core.models.reserva import Reserva
+    from src.core.models.vehiculo import Vehiculo
+
+    if not fecha_inicio:
+        fecha_inicio = "2020-01-01"
+    if not fecha_fin:
+        from datetime import datetime
+        fecha_fin = datetime.now().date().isoformat()
+
+    reservas_finalizadas = Reserva.query.join(Vehiculo, Reserva.vehiculo_id == Vehiculo.id)
+    reservas_canceladas = Reserva.query.join(Vehiculo, Reserva.vehiculo_id == Vehiculo.id)
+
+    reservas_finalizadas = reservas_finalizadas.filter(
+        Reserva.fecha_fin >= fecha_inicio,
+        Reserva.fecha_fin <= fecha_fin,
+        Reserva.estado == "finalizada"
+    )
+    reservas_canceladas = reservas_canceladas.filter(
+        Reserva.fecha_cancelacion != None,
+        Reserva.fecha_cancelacion >= fecha_inicio,
+        Reserva.fecha_cancelacion <= fecha_fin,
+        Reserva.estado == "cancelada"
+    )
+
+    if sucursal_id:
+        reservas_finalizadas = reservas_finalizadas.filter(Vehiculo.sucursal_id == sucursal_id)
+        reservas_canceladas = reservas_canceladas.filter(Vehiculo.sucursal_id == sucursal_id)
+
+    reservas_finalizadas = reservas_finalizadas.all()
+    reservas_canceladas = reservas_canceladas.all()
+
+    import calendar
+    ingresos_por_mes = {}
+    total_general = 0.0
+
+    for r in reservas_finalizadas:
+        total = (r.precio_total_vehiculo or 0) + (r.precio_total_adicionales or 0)
+        fecha_ingreso = r.fecha_fin
+        ingreso = total
+        if fecha_ingreso:
+            mes_nombre = calendar.month_name[int(fecha_ingreso.month)]
+            clave = f"{mes_nombre} {fecha_ingreso.year}"
+            ingresos_por_mes[clave] = ingresos_por_mes.get(clave, 0) + float(ingreso or 0)
+            total_general += float(ingreso or 0)
+
+    for r in reservas_canceladas:
+        total = (r.precio_total_vehiculo or 0) + (r.precio_total_adicionales or 0)
+        politica = None
+        if r.vehiculo and r.vehiculo.modelo_rel and r.vehiculo.modelo_rel.politica_cancelacion:
+            politica = r.vehiculo.modelo_rel.politica_cancelacion.strip().lower()
+        else:
+            politica = "sin reembolso"
+        fecha_ingreso = r.fecha_cancelacion
+        if politica in ["sin reembolso"]:
+            ingreso = total
+        elif politica in ["reembolso parcial", "20% de reembolso"]:
+            ingreso = total * 0.8
+        elif politica in ["reembolso completo", "100% de reembolso"]:
+            ingreso = 0
+        else:
+            ingreso = total  # fallback
+        if fecha_ingreso:
+            mes_nombre = calendar.month_name[int(fecha_ingreso.month)]
+            clave = f"{mes_nombre} {fecha_ingreso.year}"
+            ingresos_por_mes[clave] = ingresos_por_mes.get(clave, 0) + float(ingreso or 0)
+            total_general += float(ingreso or 0)
+
+    if total_general > 0:
+        ingresos_por_mes["Total (todos los tiempos)"] = total_general
+
+    return ingresos_por_mes
+

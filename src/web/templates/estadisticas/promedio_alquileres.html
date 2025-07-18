@@ -1,56 +1,90 @@
-{% extends "estadisticas/layout.html" %}
-
-{% block estadisticas_content %}
+{% extends "estadisticas/layout.html" %} {% block estadisticas_content %}
 <h2 class="text-2xl font-bold mb-4">Vehículos más alquilados</h2>
 
 <form method="POST" class="row g-3 mb-4">
   <div class="col-md-5">
     <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-    <input type="date" name="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
+    <input
+      type="date"
+      name="fecha_inicio"
+      id="fecha_inicio"
+      class="form-control"
+      value="{{ fecha_inicio }}"
+    />
   </div>
   <div class="col-md-5">
     <label for="fecha_fin" class="form-label">Fecha de fin</label>
-    <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+    <input
+      type="date"
+      name="fecha_fin"
+      id="fecha_fin"
+      class="form-control"
+      value="{{ fecha_fin }}"
+      min="{{ fecha_inicio }}"
+    />
   </div>
   <div class="col-md-2 align-self-end">
     <button type="submit" class="btn btn-primary w-100">Buscar</button>
   </div>
 </form>
 
-<table class="table-auto w-full border-collapse border border-gray-400">
+<div class="tabla-container mb-4" style="width:100%;max-width:900px;margin:auto;">
+  <table class="table table-striped table-bordered w-100" style="background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
     <thead>
-        <tr class="bg-gray-200">
-            <th class="border px-4 py-2">#</th>
-            <th class="border px-4 py-2">Marca</th>
-            <th class="border px-4 py-2">Modelo</th>
-            <th class="border px-4 py-2">Cantidad de reservas</th>
-        </tr>
+      <tr class="bg-gray-200">
+        <th class="border px-4 py-2">#</th>
+        <th class="border px-4 py-2">Marca</th>
+        <th class="border px-4 py-2">Modelo</th>
+        <th class="border px-4 py-2">Cantidad de reservas</th>
+      </tr>
     </thead>
     <tbody>
-        {% if agrupados_list %}
-            {% for marca, modelo, total in agrupados_list %}
-            <tr>
-                <td class="border px-4 py-2">{{ loop.index }}</td>
-                <td class="border px-4 py-2">{{ marca }}</td>
-                <td class="border px-4 py-2">{{ modelo }}</td>
-                <td class="border px-4 py-2">{{ total }}</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-        <tr>
-            <td colspan="4" class="text-center text-gray-500 py-4">No vehículos alquilados en las fechas seleccionadas</td>
-        </tr>
-        {% endif %}
+      {% if agrupados_list %} {% for marca, modelo, total in agrupados_list %}
+      <tr>
+        <td class="border px-4 py-2">{{ loop.index }}</td>
+        <td class="border px-4 py-2">{{ marca }}</td>
+        <td class="border px-4 py-2">{{ modelo }}</td>
+        <td class="border px-4 py-2">{{ total }}</td>
+      </tr>
+      {% endfor %} {% else %}
+      <tr>
+        <td colspan="4" class="text-center text-gray-500 py-4">
+          No vehículos alquilados en las fechas seleccionadas
+        </td>
+      </tr>
+      {% endif %}
     </tbody>
-</table>
+  </table>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const fechaInicio = document.getElementById("fecha_inicio");
+    const fechaFin = document.getElementById("fecha_fin");
+    fechaInicio.addEventListener("change", function() {
+      fechaFin.min = fechaInicio.value;
+      if (fechaFin.value < fechaInicio.value) {
+        fechaFin.value = fechaInicio.value;
+      }
+    });
+  });
+</script>
+<style>
+  .tabla-container {
+    width: 100%;
+    max-width: 900px;
+    min-width: 300px;
+    margin: 0 auto 2rem auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  table.table {
+    width: 100% !important;
+    margin-bottom: 0;
+  }
+</style>
 {% endblock %}
-            </tr>
-
-        {% if agrupados_list|length == 0 %}
-        <tr>
-            <td colspan="4" class="text-center text-gray-500 py-4">No vehículos alquilados en las fechas seleccionadas</td>
-        </tr>
-        {% endif %}
-    </tbody>
-</table>
-

@@ -1,46 +1,80 @@
-{% extends "base_show.html" %}
-
-{% block header %}Usuario: {{ user.nombre }} {{ user.apellido }}{% endblock %}
-
-{% block details %}
+{% extends "base_show.html" %} {% block header %}Usuario: {{ user.nombre }} {{
+user.apellido }}{% endblock %} {% block details %}
 <p><strong>Email:</strong> {{ user.email }}</p>
 <p><strong>DNI:</strong>{{ user.dni }}</p>
 <p><strong>Teléfono:</strong> {{ user.telefono }}</p>
 <p><strong>Fecha de nacimiento:</strong> {{ user.fecha_nacimiento }}</p>
 
 <div class="d-flex gap-2">
-    {% if session.get("user_role") == "admin" or session.get("user_id") == user.id %}
-        <a href="{{ url_for('usuarios.update', user_id=user.id) }}" class="btn btn-primary" tabindex="-1" aria-disabled="true">Actualizar perfil</a>
-    {% endif %}
-    {% if user.role.name != "admin" and has_permission(session.get("user_id"), "user_delete") %}
-    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarUsuario">
-        Eliminar usuario
-    </button>
-    <!-- Modal de confirmación -->
-    <div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-labelledby="modalEliminarUsuarioLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background-color: #e3f2fd;">
-          <div class="modal-header" style="background-color: #1E2A38;">
-            <h5 class="modal-title text-white" id="modalEliminarUsuarioLabel">
-              <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar eliminación
-            </h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body text-center">
-            <p class="fs-5 mb-3">¿Estás seguro que deseas eliminar el usuario <strong>{{ user.email }}</strong>?</p>
-            <p class="text-muted mb-0">Esta acción marcará al usuario como eliminado y no podrá acceder al sistema.</p>
-          </div>
-          <div class="modal-footer justify-content-center">
-            <form method="POST" action="{{ url_for('usuarios.delete', user_id=user.id) }}">
-              <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
-              <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
-            </form>
-          </div>
+  {% if session.get("user_id") == user.id %}
+  <a
+    href="{{ url_for('usuarios.update', user_id=user.id) }}"
+    class="btn btn-primary"
+    tabindex="-1"
+    aria-disabled="true"
+    >Actualizar perfil</a
+  >
+  {% endif %} {% if user.role.name != "admin" and
+  has_permission(session.get("user_id"), "user_delete") %}
+  <button
+    class="btn btn-danger"
+    data-bs-toggle="modal"
+    data-bs-target="#modalEliminarUsuario"
+  >
+    Eliminar usuario
+  </button>
+  <!-- Modal de confirmación -->
+  <div
+    class="modal fade"
+    id="modalEliminarUsuario"
+    tabindex="-1"
+    aria-labelledby="modalEliminarUsuarioLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background-color: #e3f2fd">
+        <div class="modal-header" style="background-color: #1e2a38">
+          <h5 class="modal-title text-white" id="modalEliminarUsuarioLabel">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar
+            eliminación
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="modal"
+            aria-label="Cerrar"
+          ></button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="fs-5 mb-3">
+            ¿Estás seguro que deseas eliminar el usuario
+            <strong>{{ user.email }}</strong>?
+          </p>
+          <p class="text-muted mb-0">
+            Esta acción marcará al usuario como eliminado y no podrá acceder al
+            sistema.
+          </p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <form
+            method="POST"
+            action="{{ url_for('usuarios.delete', user_id=user.id) }}"
+          >
+            <button type="submit" class="btn btn-danger px-4">
+              Sí, eliminar
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary px-4"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+          </form>
         </div>
       </div>
     </div>
-    {% endif %}
+  </div>
+  {% endif %}
 </div>
-
 {% endblock %}
-

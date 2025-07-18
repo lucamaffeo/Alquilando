@@ -29,7 +29,12 @@
         {{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo_nombre() }} ({{ reserva.vehiculo.patente }})
     {% endif %}
 </p>
-<p>
+{% if reserva.vehiculo_asignado and reserva.vehiculo_asignado_id != reserva.vehiculo_id %}
+    <div style="color: red; font-weight: bold;">
+        ¡Atención! El vehículo asignado no es el que eligió originalmente el cliente.
+    </div>
+{% endif %}
+<br>
 <span title="Servicios extra">
     <i class="bi bi-plus-circle" style="color: #0d6efd;"></i>
 </span><strong>Adicionales:</strong>
@@ -48,61 +53,85 @@
 </p>
 <p><strong>Total a pagar por adicionales:</strong> ${{ reserva.precio_total_adicionales }}</p>
 
-{% if session.get("user_role") in ["admin", "empleado"] %}
-    {% if reserva.estado == "activa" %}
-    <!-- Formulario para iniciar reserva (asignar auto y adicionales) -->
-    <form method="POST" action="{{ url_for('reservas.detalle_reserva', reserva_id=reserva.id) }}">
-        <input type="hidden" name="accion" value="iniciar">
-        <div class="mb-3">
-            <label for="vehiculo_asignado_id" class="form-label"><strong>Asignar Vehículo:</strong></label>
-            <select name="vehiculo_asignado_id" class="form-select" required>
-                {% for v in vehiculos %}
-                    {% if not v.en_mantenimiento or v.id == reserva.vehiculo_id or v.id == reserva.vehiculo_asignado_id %}
-                        {% set disponible = true %}
-                        {% for r in v.reservas %}
-                            {% if r.id != reserva.id and r.estado in ["activa", "en curso"] and not (reserva.fecha_fin < r.fecha_inicio or reserva.fecha_inicio > r.fecha_fin) %}
-                                {% set disponible = false %}
+    {% if session.get("user_role") == "empleado" %}
+        {% if reserva.estado == "activa" %}
+        <!-- Formulario para iniciar reserva (asignar auto y adicionales) -->
+        <form method="POST" action="{{ url_for('reservas.detalle_reserva', reserva_id=reserva.id) }}">
+            <input type="hidden" name="accion" value="iniciar">
+            <div class="mb-3">
+                {% if (reserva.vehiculo.estado() != "Activo") %}
+                    <label for="vehiculo_asignado_id" class="form-label"><strong>Asignar Vehículo:</strong></label>
+                    <select name="vehiculo_asignado_id" class="form-select" required>
+                        {# Mostrar primero el vehículo reservado #}
+                        {# Luego mostrar los otros vehículos disponibles, excluyendo el reservado #}
+                        {% for v in vehiculos %}
+                            {% if (v.id != reserva.vehiculo.id) and (v.sucursal_id == reserva.vehiculo.sucursal_id) %}
+                                {% set asignable = (not v.en_mantenimiento and v.estado != "eliminado") %}
+                                {% for r in v.reservas %}
+                                    {% if r.id != reserva.id and r.estado == "en curso" and not (reserva.fecha_fin < r.fecha_inicio or reserva.fecha_inicio > r.fecha_fin) %}
+                                        {% set asignable = false %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if asignable %}
+                                    <option value="{{ v.id }}" {% if v.id == reserva.vehiculo_asignado_id %}selected{% endif %}>
+                                        {{ v.marca }} {{ v.modelo_nombre() }} ({{ v.patente }})
+                                    </option>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
-                        {% if disponible or v.id == reserva.vehiculo_id or v.id == reserva.vehiculo_asignado_id %}
-                            <option value="{{ v.id }}" {% if v.id == reserva.vehiculo_asignado_id or (reserva.vehiculo_asignado_id is none and v.id == reserva.vehiculo_id) %}selected{% endif %}>
-                                {{ v.marca }} {{ v.modelo_nombre() }} ({{ v.patente }})
-                            </option>
-                        {% endif %}
-                    {% endif %}
+                    </select>
+                {% else %}
+                    <input type="hidden" name="vehiculo_asignado_id" value="{{ reserva.vehiculo.id }}">
+                    <div class="alert alert-info mb-2">
+                        El vehículo reservado está <strong>activo</strong> y será asignado automáticamente.
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">
+                    <span title="Servicios extra">
+                        <i class="bi bi-plus-circle" style="color: #0d6efd;"></i>
+                    </span>
+                    <strong>Adicionales:</strong>
+                </label>
+                {% for adicional in adicionales %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="adicionales" value="{{ adicional.id }}"
+                            id="adicional{{ adicional.id }}"
+                            {% if adicional in reserva.adicionales %}checked{% endif %}>
+                        <label class="form-check-label" for="adicional{{ adicional.id }}">
+                            {{ adicional.nombre }} (${{ adicional.precio }})
+                        </label>
+                    </div>
                 {% endfor %}
-            </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">
-                <span title="Servicios extra">
-                    <i class="bi bi-plus-circle" style="color: #0d6efd;"></i>
-                </span>
-                <strong>Adicionales:</strong>
-            </label>
-            {% for adicional in adicionales %}
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="adicionales" value="{{ adicional.id }}"
-                        id="adicional{{ adicional.id }}"
-                        {% if adicional in reserva.adicionales %}checked{% endif %}>
-                    <label class="form-check-label" for="adicional{{ adicional.id }}">
-                        {{ adicional.nombre }} (${{ adicional.precio }})
-                    </label>
+            </div>
+            <button type="submit" class="btn btn-success">Iniciar Reserva</button>
+        </form>
+        {% elif reserva.estado == "en curso" %}
+        <!-- Formulario para finalizar reserva y cargar reporte -->
+        <form method="POST" action="{{ url_for('reservas.detalle_reserva', reserva_id=reserva.id) }}">
+            <input type="hidden" name="accion" value="finalizar">
+            <div class="mb-3">
+                <label for="reporte_devolucion" class="form-label"><strong>Reporte de devolución (estado del vehículo):</strong></label>
+                <textarea name="reporte_devolucion" id="reporte_devolucion" class="form-control" rows="4" maxlength="255" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning">Finalizar Reserva</button>
+        </form>
+        {% elif reserva.estado == "finalizada" %}
+            {% if reserva.reporte_devolucion %}
+                <div class="alert alert-info mt-3">
+                    <strong>Reporte de devolución:</strong><br>
+                    {{ reserva.reporte_devolucion }}
                 </div>
-            {% endfor %}
-        </div>
-        <button type="submit" class="btn btn-success">Iniciar Reserva</button>
-    </form>
-    {% elif reserva.estado == "en curso" %}
-    <!-- Formulario para finalizar reserva y cargar reporte -->
-    <form method="POST" action="{{ url_for('reservas.detalle_reserva', reserva_id=reserva.id) }}">
-        <input type="hidden" name="accion" value="finalizar">
-        <div class="mb-3">
-            <label for="reporte_devolucion" class="form-label"><strong>Reporte de devolución (estado del vehículo):</strong></label>
-            <textarea name="reporte_devolucion" id="reporte_devolucion" class="form-control" rows="4" maxlength="255" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-warning">Finalizar Reserva</button>
-    </form>
+            {% endif %}
+            {% if reserva.calificacion is not none and reserva.calificacion != "" %}
+                <div class="mt-4">
+                    <h5><span style="color: gold;">&#9733;</span> Calificación de la Reserva</h5>
+                    <p><strong>Calificación:</strong> {{ reserva.calificacion }} / 5</p>
+                    <p><strong>Comentario:</strong> {{ reserva.comentario }}</p>
+                </div>
+            {% endif %}
+        {% endif %}
     {% elif reserva.estado == "finalizada" %}
         {% if reserva.reporte_devolucion %}
             <div class="alert alert-info mt-3">
@@ -118,6 +147,5 @@
             </div>
         {% endif %}
     {% endif %}
-{% endif %}
-<a href="{{ url_for('reservas.index') }}" class="btn btn-secondary mt-3">Volver</a>
+<a href="{{ url_for('reservas.index') }}" class="btn btn-primary mt-3">Volver</a>
 {% endblock %}

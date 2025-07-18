@@ -87,6 +87,11 @@ def update_user(user_id, **kwargs):
 def delete_user(user_id):
     user = get_user_by_id(user_id)
     if user:
+        # Solo permitir eliminar usuario registrado si no tiene reservas activas o en curso
+        if user.role.name == "usuario registrado":
+            reservas_activas = [r for r in user.reservas if r.estado in ("activa", "en curso")]
+            if reservas_activas:
+                return False
         user.estado = "eliminado"
         from src.core.database import db
         db.session.commit()

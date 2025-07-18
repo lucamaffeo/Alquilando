@@ -75,7 +75,7 @@ def register():
                     anio=data["anio"],
                     sucursal_id=int(data["sucursal_id"]),
                     imagen=imagen_nombre,
-                    en_mantenimiento=True if data.get("en_mantenimiento") == "on" else False,
+                    # No modificar en_mantenimiento aquí
                 )
                 flash("Vehículo actualizado exitosamente.", "success")
             else:

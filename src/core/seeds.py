@@ -62,11 +62,10 @@ def run():
     ])
 
     # Crear usuarios
-
     admin3 = create_user(
         nombre="admin3",
         email="ale.proia@hotmail.com",
-        password="admin123",  # Cambiado a 8 caracteres
+        password="123456",
         role_id=1,
         apellido="Proia",
         telefono="123456789",
@@ -76,47 +75,17 @@ def run():
     admin4 = create_user(
         nombre="Guillermo",
         email="guillermohelfer@gmail.com",
-        password="admin123",  # Cambiado a 8 caracteres
+        password="123456",
         role_id=1,
         apellido="Helfer",
         telefono="123346568",
         dni="45034325",
         fecha_nacimiento="2000-01-01",
     )
-    admin2 = create_user(
-        nombre="admin2",
-        email="diamondcodedev@gmail.com",
-        password="admin123",  # Cambiado a 8 caracteres
-        role_id=1,
-        apellido="Helfer",
-        telefono="123456789",
-        dni="44444444",
-        fecha_nacimiento="2001-01-01",
-    )
-    admin = create_user(
-        nombre="Luca",
-        email="lucamaffeo@gmail.com",
-        password="admin123",  # Cambiado a 8 caracteres
-        role_id=1,
-        apellido="Maffeo",
-        telefono="123456789",
-        dni="40882818",
-        fecha_nacimiento="2000-01-01",
-    )
-    admin = create_user(
-        nombre="Luca",
-        email="diplacidofelipe@gmail.com",
-        password="admin123",  # Cambiado a 8 caracteres
-        role_id=1,
-        apellido="Maffeo",
-        telefono="123456789",
-        dni="12345679",
-        fecha_nacimiento="2000-01-01",
-    )
     empleado = create_user(
         nombre="empleado",
         email="empleado@empleado.com",
-        password="empleado123",  # Cambiado a más de 6 caracteres
+        password="123456",
         role_id=3,
         apellido="Proia",
         telefono="123456789",
@@ -126,7 +95,7 @@ def run():
     user = create_user(
         nombre="usuario",
         email="user@user.com",
-        password="123456",  # Cambiado a más de 6 caracteres
+        password="123456",
         role_id=2,
         apellido="Helfer",
         telefono="123456789",  
@@ -136,15 +105,35 @@ def run():
     usuario2 = create_user(
         nombre="usuario2",
         email="lucaaw37@gmail.com",
-        password="123456",  # Cambiado a más de 6 caracteres
+        password="123456",
         role_id=2,
         apellido="Maffeo",
         telefono="123456789",
         dni="88888888",
         fecha_nacimiento="2000-01-01",
     )
+    usuario3 = create_user(
+        nombre="usuario3",
+        email="usuario3@mail.com",
+        password="123456",
+        role_id=2,
+        apellido="Apellido3",
+        telefono="11111113",
+        dni="70000003",
+        fecha_nacimiento="1995-01-01"
+    )
+    usuario_eliminar = create_user(
+        nombre="usuario_eliminar",
+        email="usuario4@mail.com",
+        password="123456",
+        role_id=2,
+        apellido="Apellido4",
+        telefono="11111114",
+        dni="70000004",
+        fecha_nacimiento="1995-01-01"
+    )
 
-    # Crear sucursales
+    # Crear sucursales (solo 3 + 1 nueva)
     sucursal1 = create_sucursal(
         nombre="Sucursal Centro",
         ubicacion="Av. Corrientes 1234",
@@ -153,10 +142,13 @@ def run():
         nombre="Sucursal Norte",
         ubicacion="Av. Libertador 5678",
     )
-
     sucursal3 = create_sucursal(
         nombre="Sucursal Sur",
         ubicacion="Av. Rivadavia 91011",
+    )
+    sucursal4 = create_sucursal(
+        nombre="Sucursal Oeste",
+        ubicacion="Av. Juan B. Justo 2222",
     )
 
     # Crear modelos (si no existen)
@@ -170,202 +162,7 @@ def run():
             db.session.commit()
         return modelo
 
-   
-    # Crear vehículos para ambas sucursales
-    # Sucursal 1
-    # crear modelo
-
-
-    
-
-    # Sucursal 2 (solo autos con imágenes disponibles)
-    create_vehiculo(
-        patente="ABC456",
-        modelo_id=get_or_create_modelo("Corolla", "Reembolso completo").id,
-        marca="Toyota",
-        categoria="Sedan",
-        asientos=5,
-        precio=20000,
-        anio=2020,
-        sucursal_id=sucursal2.id,
-        imagen="Toyota_Corolla.png"
-    )
-    create_vehiculo(
-        patente="ZZZ949",
-        modelo_id=get_or_create_modelo("Corolla", "Reembolso completo").id,
-        marca="Toyota",
-        categoria="Sedan",
-        asientos=5,
-        precio=20000,
-        anio=2019,
-        sucursal_id=sucursal2.id,
-        imagen="Toyota_Corolla.png"
-    )
-    create_vehiculo(
-        patente="SUV555",
-        modelo_id=get_or_create_modelo("CR-V", "Reembolso completo").id,
-        marca="Honda",
-        categoria="SUV",
-        asientos=7,
-        precio=30000,
-        anio=2022,
-        sucursal_id=sucursal2.id,
-        imagen="Honda_CRV.jpg"
-    )
-    create_vehiculo(
-        patente="PKP444",
-        modelo_id=get_or_create_modelo("Amarok", "Sin Reembolso").id,
-        marca="Volkswagen",
-        categoria="Pickup",
-        asientos=5,
-        precio=35000,   
-        anio=2022,
-        sucursal_id=sucursal2.id,
-        imagen="Volkswagen_Amarok.png"
-    )
-    create_vehiculo(
-        patente="FOC111",
-        modelo_id=get_or_create_modelo("Focus", "Reembolso parcial").id,
-        marca="Ford",
-        categoria="Hatchback",
-        asientos=5,
-        precio=18000,
-        anio=2018,
-        sucursal_id=sucursal2.id,
-        imagen="Ford_Focus.png"
-    )
-    create_vehiculo(
-        patente="RAN222",
-        modelo_id=get_or_create_modelo("Ranger", "Reembolso parcial").id,
-        marca="Ford",
-        categoria="Pickup",
-        asientos=5,
-        precio=32000,
-        anio=2021,
-        sucursal_id=sucursal2.id,
-        imagen="Ford_Ranger.png"
-    )
-    create_vehiculo(
-        patente="FLU333",
-        modelo_id=get_or_create_modelo("Fluence", "Reembolso completo").id,
-        marca="Renault",
-        categoria="Sedan",
-        asientos=5,
-        precio=21000,
-        anio=2020,
-        sucursal_id=sucursal2.id,
-        imagen="Renault_Fluence.png"
-    )
-    create_vehiculo(
-        patente="HIL444",
-        modelo_id=get_or_create_modelo("Hilux", "Reembolso parcial").id,
-        marca="Toyota",
-        categoria="Pickup",
-        asientos=5,
-        precio=34000,
-        anio=2022,
-        sucursal_id=sucursal2.id,
-        imagen="Toyota_Hillux.png"
-    )
-    create_vehiculo(
-        patente="SWJ555",
-        modelo_id=get_or_create_modelo("SW4", "Reembolso completo").id,
-        marca="Toyota",
-        categoria="SUV",
-        asientos=7,
-        precio=37000,
-        anio=2023,
-        sucursal_id=sucursal2.id,
-        imagen="Toyota_Sw4.jpg"
-    )
-    create_vehiculo(
-        patente="AUD888",
-        modelo_id=get_or_create_modelo("A3", "Sin Reembolso").id,
-        marca="Audi",
-        categoria="Coupe",
-        asientos=2,
-        precio=35000,
-        anio=2022,
-        sucursal_id=sucursal2.id,
-        imagen="Audi_A3.png"
-    )
-    # Reservas
-    create_reserva(
-        vehiculo_id=5,  # ID del vehículo que se va a reservar
-        user_id=user.id,  # ID del usuario que realiza la reserva
-        fecha_inicio="2023-10-01",
-        fecha_fin="2023-10-05",
-        estado="finalizada",
-        precio_total_vehiculo=18000 * 5  # id=5, precio=18000, 5 días
-    )
-
-    # --- Reservas adicionales para user@user.com ---
-    
-    create_reserva(
-        vehiculo_id=1,
-        user_id=user.id,
-        fecha_inicio="2023-09-01",
-        fecha_fin="2023-09-05",
-        estado="finalizada",
-        precio_total_vehiculo=20000 * 5  # id=1, precio=20000, 5 días
-    )
-    # 2 canceladas
-    create_reserva(
-        vehiculo_id=4,
-        user_id=user.id,
-        fecha_inicio="2023-06-01",
-        fecha_fin="2023-06-05",
-        estado="cancelada",
-        precio_total_vehiculo=35000 * 5  # id=4, precio=35000, 5 días
-    )
-    create_reserva(
-        vehiculo_id=2,
-        user_id=user.id,
-        fecha_inicio="2023-05-10",
-        fecha_fin="2023-05-15",
-        estado="cancelada",
-        precio_total_vehiculo=20000 * 6  # id=2, precio=20000, 6 días
-    )
-    # 2 activas (misma fecha, diferente vehículo)
-    create_reserva(
-        vehiculo_id=1,
-        user_id=user.id,
-        fecha_inicio="2026-12-01",
-        fecha_fin="2026-12-10",
-        estado="activa",
-        precio_total_vehiculo=20000 * 10  # id=1, precio=20000, 10 días
-    )
-    create_reserva(
-        vehiculo_id=3,
-        user_id=user.id,
-        fecha_inicio="2026-12-01",
-        fecha_fin="2026-12-10",
-        estado="activa",
-        precio_total_vehiculo=30000 * 10  # id=3, precio=30000, 10 días
-    )
-
-    # Crear 5 usuarios extra con reservas
-    usuarios_extra = []
-    for i in range(1, 6):
-        usuarios_extra.append(create_user(
-            nombre=f"Usuario{i}",
-            email=f"usuario{i}@mail.com",
-            password="usuario123",
-            role_id=2,
-            apellido=f"Apellido{i}",
-            telefono=f"1111111{i}",
-            dni=f"7000000{i}",
-            fecha_nacimiento="1995-01-01"
-        ))
-
-    # Crear una cuarta sucursal
-    sucursal4 = create_sucursal(
-        nombre="Sucursal Oeste",
-        ubicacion="Av. San Martín 12345",
-    )
-
-    # Crear más vehículos en todas las sucursales, usando imágenes ya usadas
-    vehiculos_extra = []
+    # Crear 25 vehículos distribuidos en las 3 sucursales
     modelos_info = [
         ("Corolla", "Reembolso completo", "Toyota", "Sedan", 5, 20000, 2020, "Toyota_Corolla.png"),
         ("Focus", "Reembolso parcial", "Ford", "Hatchback", 5, 18000, 2018, "Ford_Focus.png"),
@@ -377,66 +174,205 @@ def run():
         ("SW4", "Reembolso completo", "Toyota", "SUV", 7, 37000, 2023, "Toyota_Sw4.jpg"),
         ("Ranger", "Reembolso parcial", "Ford", "Pickup", 5, 32000, 2021, "Ford_Ranger.png"),
     ]
-    sucursales = [sucursal1, sucursal2, sucursal3, sucursal4]
-    idx = 100
+    sucursales = [sucursal1, sucursal2, sucursal3]
+    idx = 1
+    vehiculos_demo = []
     for suc in sucursales:
         for modelo in modelos_info:
-            for j in range(3):  # 3 autos por modelo por sucursal
-                vehiculos_extra.append(create_vehiculo(
-                    patente=f"EXTRA{idx}",
-                    modelo_id=get_or_create_modelo(modelo[0], modelo[1]).id,
-                    marca=modelo[2],
-                    categoria=modelo[3],
-                    asientos=modelo[4],
-                    precio=modelo[5],
-                    anio=modelo[6],
-                    sucursal_id=suc.id,
-                    imagen=modelo[7]
-                ))
-                idx += 1
+            if idx > 25:
+                break
+            vehiculos_demo.append(create_vehiculo(
+                patente=f"ASD{idx:03d}",
+                modelo_id=get_or_create_modelo(modelo[0], modelo[1]).id,
+                marca=modelo[2],
+                categoria=modelo[3],
+                asientos=modelo[4],
+                precio=modelo[5],
+                anio=modelo[6],
+                sucursal_id=suc.id,
+                imagen=modelo[7],
+                en_mantenimiento=(idx % 7 == 0),  # Algunos en mantenimiento
+                inhabilitado=(idx % 8 == 0)      # Algunos inhabilitados
+            ))
+            idx += 1
 
-   
+    # Reservas para usuario2 (lucaaw37@gmail.com)
+    # 3 activas
+    create_reserva(
+        vehiculo_id=vehiculos_demo[0].id,
+        user_id=usuario2.id,
+        fecha_inicio="2027-01-01",
+        fecha_fin="2027-01-05",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[0].precio * 5
+    )
+    create_reserva(
+        vehiculo_id=vehiculos_demo[1].id,
+        user_id=usuario2.id,
+        fecha_inicio="2027-02-01",
+        fecha_fin="2027-02-05",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[1].precio * 5
+    )
+    create_reserva(
+        vehiculo_id=vehiculos_demo[2].id,
+        user_id=usuario2.id,
+        fecha_inicio="2027-03-01",
+        fecha_fin="2027-03-05",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[2].precio * 5
+    )
+    # 1 cancelada
+    create_reserva(
+        vehiculo_id=vehiculos_demo[3].id,
+        user_id=usuario3.id,
+        fecha_inicio="2027-04-01",
+        fecha_fin="2027-04-05",
+        estado="cancelada",
+        precio_total_vehiculo=vehiculos_demo[3].precio * 5
+    )
+    # 4 finalizadas con calificación
+    create_reserva(
+        vehiculo_id=vehiculos_demo[4].id,
+        user_id=usuario2.id,
+        fecha_inicio="2024-10-01",
+        fecha_fin="2024-10-05",
+        estado="finalizada",
+        precio_total_vehiculo=vehiculos_demo[4].precio * 5,
+    )
+    create_reserva(
+        vehiculo_id=vehiculos_demo[5].id,
+        user_id=user.id,
+        fecha_inicio="2024-09-01",
+        fecha_fin="2024-09-05",
+        estado="finalizada",
+        precio_total_vehiculo=vehiculos_demo[5].precio * 5,
+    )
+    #crear una reserva activa con un vehículo disponible para user
+    create_reserva(
+        vehiculo_id=vehiculos_demo[5].id,
+        user_id=user.id,
+        fecha_inicio="2025-07-01",  
+        fecha_fin="2025-07-17",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[5].precio * 5
+        )
+    create_reserva(
+        vehiculo_id=vehiculos_demo[0].id,
+        user_id=user.id,
+        fecha_inicio="2025-07-01",  
+        fecha_fin="2025-07-17",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[0].precio * 5
+        )
 
-    # Crear 3 reservas activas para usuario2: una sin Reembolso, una Reembolso parcial, una Reembolso completo
-    # usuario2 ya fue creado y no tiene reservas previas
-    vehiculo_sin_Reembolso = next((v for v in vehiculos_extra if "Sin Reembolso" in v.modelo_rel.politica_cancelacion), None)
-    vehiculo_parcial = next((v for v in vehiculos_extra if "Reembolso parcial" in v.modelo_rel.politica_cancelacion), None)
-    vehiculo_completo = next((v for v in vehiculos_extra if "Reembolso completo" in v.modelo_rel.politica_cancelacion), None)
-    if vehiculo_sin_Reembolso:
-        create_reserva(
-            vehiculo_id=vehiculo_sin_Reembolso.id,
-            user_id=usuario2.id,
-            fecha_inicio="2027-01-01",
-            fecha_fin="2027-01-05",
-            estado="activa",
-            precio_total_vehiculo=vehiculo_sin_Reembolso.precio * 5
-        )
-    if vehiculo_parcial:
-        create_reserva(
-            vehiculo_id=vehiculo_parcial.id,
-            user_id=usuario2.id,
-            fecha_inicio="2027-02-01",
-            fecha_fin="2027-02-05",
-            estado="activa",
-            precio_total_vehiculo=vehiculo_parcial.precio * 5
-        )
-    if vehiculo_completo:
-        create_reserva(
-            vehiculo_id=vehiculo_completo.id,
-            user_id=usuario2.id,
-            fecha_inicio="2027-03-01",
-            fecha_fin="2027-03-05",
-            estado="activa",
-            precio_total_vehiculo=vehiculo_completo.precio * 5
-        )
+    create_reserva(
+        vehiculo_id=vehiculos_demo[6].id,
+        user_id=user.id,
+        fecha_inicio="2024-08-01",
+        fecha_fin="2024-08-05",
+        estado="finalizada",
+        precio_total_vehiculo=vehiculos_demo[6].precio * 5,
+        calificacion=3,
+        comentario="Todo ok"
+    )
+    
+    # Reservas para otros usuarios (ejemplo)
+    
+    create_reserva(
+        vehiculo_id=vehiculos_demo[9].id,
+        user_id=usuario3.id,
+        fecha_inicio="2024-05-01",
+        fecha_fin="2024-05-05",
+        estado="finalizada",
+        precio_total_vehiculo=vehiculos_demo[9].precio * 5,
+        calificacion=2,
+        comentario="Podría mejorar"
+    )
 
-    # Crear adicionales
+    # Reservas activas adicionales (ninguna de usuario2/lucaaw37@gmail.com)
+
+    create_reserva(
+        vehiculo_id=vehiculos_demo[13].id,
+        user_id=usuario3.id,
+        fecha_inicio="2027-08-01",
+        fecha_fin="2027-08-05",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[13].precio * 5
+    )
+    create_reserva(
+        vehiculo_id=vehiculos_demo[7].id,
+        user_id=usuario3.id,
+        fecha_inicio="2027-08-01",
+        fecha_fin="2027-08-05",
+        estado="activa",
+        precio_total_vehiculo=vehiculos_demo[7].precio * 5
+    )
+
+    # Crear adicionales (sin GPS)
     from src.core.models.adicional import Adicional
     adicional1 = Adicional(nombre="Silla para bebes", precio=2000)
     adicional2 = Adicional(nombre="Valija de techo", precio=3000)
     adicional3 = Adicional(nombre="Seguro completo", precio=5000)
-    adicional4 = Adicional(nombre="GPS", precio=1500)
-    db.session.add_all([adicional1, adicional2, adicional3, adicional4])
+    db.session.add_all([adicional1, adicional2, adicional3])
     db.session.commit()
+
+    # Asignar adicional1 ("Silla para bebes") a una reserva finalizada cualquiera
+    from src.core.models.reserva import Reserva
+    reserva_finalizada = Reserva.query.filter_by(estado="finalizada").first()
+    if reserva_finalizada and adicional1 not in reserva_finalizada.adicionales:
+        reserva_finalizada.adicionales.append(adicional1)
+        db.session.commit()
+
+    # Crear 2 vehículos nuevos iguales en la sucursal nueva
+    modelo_nuevo = get_or_create_modelo("Fiesta", "Reembolso completo")
+    vehiculo_oeste_1 = create_vehiculo(
+        patente="OESTE001",
+        modelo_id=modelo_nuevo.id,
+        marca="Ford",
+        categoria="Hatchback",
+        asientos=5,
+        precio=17000,
+        anio=2021,
+        sucursal_id=sucursal4.id,
+        imagen="Ford_Fiesta.png",
+        en_mantenimiento=True,
+        inhabilitado=False
+    )
+    vehiculo_oeste_2 = create_vehiculo(
+        patente="OESTE002",
+        modelo_id=modelo_nuevo.id,
+        marca="Ford",
+        categoria="Hatchback",
+        asientos=5,
+        precio=17000,
+        anio=2021,
+        sucursal_id=sucursal4.id,
+        imagen="Ford_Fiesta.png",
+        en_mantenimiento=False,
+        inhabilitado=True
+    )
+
+    # Reservas finalizadas en 2023 para esos vehículos
+    create_reserva(
+        vehiculo_id=vehiculo_oeste_1.id,
+        user_id=user.id,
+        fecha_inicio="2023-03-10",
+        fecha_fin="2023-03-15",
+        estado="finalizada",
+        precio_total_vehiculo=vehiculo_oeste_1.precio * 6,
+        calificacion=5,
+        comentario="Muy buen Fiesta"
+    )
+    create_reserva(
+        vehiculo_id=vehiculo_oeste_2.id,
+        user_id=usuario3.id,
+        fecha_inicio="2023-04-01",
+        fecha_fin="2023-04-06",
+        estado="finalizada",
+        precio_total_vehiculo=vehiculo_oeste_2.precio * 6,
+        calificacion=4,
+        comentario="Cómodo y económico"
+    )
 
     print("Seed ejecutado correctamente!")

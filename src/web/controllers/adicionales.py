@@ -40,23 +40,33 @@ def actualizar(id):
     if not adicional:
         flash("Adicional no encontrado.", "error")
         return redirect(url_for("adicionales.index"))
+
+    # Verifica si el adicional está asignado a alguna reserva
+    asignado = hasattr(adicional, "reservas") and any(adicional.reservas)
+
     if request.method == "POST":
-        nombre = request.form.get("nombre")
         precio = request.form.get("precio")
-        if not nombre or not precio:
-            flash("Todos los campos son obligatorios.", "error")
-            return render_template("adicionales/register.html", adicional=adicional, is_update=True)
-        # Validar nombre único (excepto el propio)
-        existente = Adicional.query.filter(Adicional.nombre == nombre, Adicional.id != id).first()
-        if existente:
-            flash("Ya existe un adicional con ese nombre.", "error")
-            return render_template("adicionales/register.html", adicional=adicional, is_update=True)
-        adicional.nombre = nombre
+        # Solo permitir cambiar el nombre si no está asignado
+        if not asignado:
+            nombre = request.form.get("nombre")
+            if not nombre or not precio:
+                flash("Todos los campos son obligatorios.", "error")
+                return render_template("adicionales/actualizar.html", adicional=adicional, asignado=asignado)
+            # Validar nombre único (excepto el propio)
+            existente = Adicional.query.filter(Adicional.nombre == nombre, Adicional.id != id).first()
+            if existente:
+                flash("Ya existe un adicional con ese nombre.", "error")
+                return render_template("adicionales/actualizar.html", adicional=adicional, asignado=asignado)
+            adicional.nombre = nombre
+        else:
+            if not precio:
+                flash("El precio es obligatorio.", "error")
+                return render_template("adicionales/actualizar.html", adicional=adicional, asignado=asignado)
         adicional.precio = float(precio)
         db.session.commit()
         flash("Adicional actualizado exitosamente.", "success")
         return redirect(url_for("adicionales.index"))
-    return render_template("adicionales/register.html", adicional=adicional, is_update=True)
+    return render_template("adicionales/actualizar.html", adicional=adicional, asignado=asignado)
 
 @bp.route("/eliminar/<int:id>", methods=["POST"])
 @has_permission("adicional_delete")

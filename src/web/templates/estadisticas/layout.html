@@ -1,38 +1,47 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container-fluid">
   <div class="row">
     <!-- Menú lateral -->
-    <div class="col-md-3 col-lg-2 bg-dark text-white p-4" style="min-height: 100vh;">
+    <div
+      class="col-md-3 col-lg-2 bg-dark text-white p-4"
+      style="min-height: 100vh"
+    >
       <h4><i class="bi bi-bar-chart"></i> Estadísticas</h4>
-      <hr class="bg-light">
+      <hr class="bg-light" />
       <ul class="nav flex-column">
         <li class="nav-item">
-          <a class="nav-link text-white {% if request.endpoint == 'estadisticas.menu' %}bg-secondary{% endif %}" 
-            href="{{ url_for('estadisticas.menu') }}">
+          <a
+            class="nav-link text-white {% if request.endpoint == 'estadisticas.menu' %}bg-secondary{% endif %}"
+            href="{{ url_for('estadisticas.menu') }}"
+          >
             <i class="bi bi-currency-dollar"></i> Ingresos
           </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white {% if request.endpoint == 'estadisticas.calificaciones' %}bg-secondary{% endif %}" 
-            href="{{ url_for('estadisticas.calificaciones') }}">
+          <a
+            class="nav-link text-white {% if request.endpoint == 'estadisticas.calificaciones' %}bg-secondary{% endif %}"
+            href="{{ url_for('estadisticas.calificaciones') }}"
+          >
             <i class="bi bi-star"></i> Calificaciones
-            </a>
+          </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white {% if request.endpoint == 'estadisticas.promedio_alquileres' %}bg-secondary{% endif %}" 
-            href="{{ url_for('estadisticas.promedio_alquileres') }}">
+          <a
+            class="nav-link text-white {% if request.endpoint == 'estadisticas.promedio_alquileres' %}bg-secondary{% endif %}"
+            href="{{ url_for('estadisticas.promedio_alquileres') }}"
+          >
             <i class="bi bi-graph-up"></i> Alquileres por Vehículo
-            </a>
+          </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white {% if request.endpoint == 'estadisticas.alquileres_por_sucursal' %}bg-secondary{% endif %}" 
-            href="{{ url_for('estadisticas.alquileres_por_sucursal') }}">
+          <a
+            class="nav-link text-white {% if request.endpoint == 'estadisticas.alquileres_por_sucursal' %}bg-secondary{% endif %}"
+            href="{{ url_for('estadisticas.alquileres_por_sucursal') }}"
+          >
             <i class="bi bi-building"></i> Alquileres por Sucursal
-            </a>
+          </a>
         </li>
-        </ul>
+      </ul>
     </div>
 
     <!-- Contenido variable -->
@@ -40,19 +49,42 @@
       {% block estadisticas_content %}
       <h2 class="mb-4">Estadísticas de Ingresos por Mes</h2>
 
-      <form method="POST" class="row g-3 mb-4">
-      <div class="col-md-5">
-        <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-        <input type="date" name="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
-      </div>
-      <div class="col-md-5">
-        <label for="fecha_fin" class="form-label">Fecha de fin</label>
-        <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
-      </div>
-      <div class="col-md-2 align-self-end">
-        <button type="submit" class="btn btn-primary w-100">Buscar</button>
-      </div>
-    </form>
+      <form method="POST" class="row g-3 mb-4 align-items-end">
+        <div class="col-md-3">
+          <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+          <input
+            type="date"
+            name="fecha_inicio"
+            id="fecha_inicio"
+            class="form-control"
+            value="{{ fecha_inicio }}"
+            max="2030-12-31"
+          />
+        </div>
+        <div class="col-md-3">
+          <label for="fecha_fin" class="form-label">Fecha de fin</label>
+          <input
+            type="date"
+            name="fecha_fin"
+            id="fecha_fin"
+            class="form-control"
+            value="{{ fecha_fin }}"
+            max="2030-12-31"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="sucursal_id" class="form-label">Sucursal</label>
+          <div class="input-group">
+            <select name="sucursal_id" class="form-select" style="min-width: 180px;">
+              <option value="">Todas</option>
+              {% for suc in sucursales %}
+                <option value="{{ suc.id }}" {% if sucursal_id == suc.id %}selected{% endif %}>{{ suc.nombre }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary ms-2">Buscar</button>
+          </div>
+        </div>
+      </form>
 
       {% if ingresos %}
       <canvas id="graficoIngresos" height="100"></canvas>
@@ -60,48 +92,94 @@
       <p>No se encontraron ingresos en el rango seleccionado.</p>
       {% endif %}
       {% endblock %}
-
       {% block scripts %}
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       {% if ingresos %}
       <script>
-      const ctx = document.getElementById('graficoIngresos').getContext('2d');
-      const labels = {{ ingresos.keys()|list|tojson }};
-      const data = {{ ingresos.values()|list|tojson }};
+        // Usar los labels y data ordenados por el controlador
+        const labels = {{ labels|tojson }};
+        const data = {{ data|tojson }};
 
-      const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Ingresos por mes ($)',
-            data: data,
-            backgroundColor: 'rgba(0, 128, 0, 0.6)',
-            borderColor: 'rgba(0, 128, 0, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Ingresos ($)'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Mes'
+        // Colores: verde por defecto, azul para "Total (todos los tiempos)"
+        const backgroundColors = labels.map(label =>
+          label === "Total (todos los tiempos)" ? "rgba(0, 123, 255, 0.7)" : "rgba(0, 128, 0, 0.6)"
+        );
+        const borderColors = labels.map(label =>
+          label === "Total (todos los tiempos)" ? "rgba(0, 123, 255, 1)" : "rgba(0, 128, 0, 1)"
+        );
+
+        const ctx = document.getElementById('graficoIngresos').getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Ingresos por mes ($)',
+              data: data,
+              backgroundColor: backgroundColors,
+              borderColor: borderColors,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Ingresos ($)'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Mes'
+                }
               }
             }
           }
-        }
-      });
+        });
       </script>
       {% endif %}
+      <script>
+        // Validación de fechas: fecha_fin no puede ser menor a fecha_inicio
+        document.addEventListener("DOMContentLoaded", function () {
+          var fechaInicioInputs = document.querySelectorAll(
+            'input[name="fecha_inicio"]'
+          );
+          var fechaFinInputs = document.querySelectorAll(
+            'input[name="fecha_fin"]'
+          );
+          fechaInicioInputs.forEach(function (fechaInicio, idx) {
+            var fechaFin = fechaFinInputs[idx];
+            if (fechaInicio && fechaFin) {
+              fechaInicio.addEventListener("change", function () {
+                fechaFin.min = fechaInicio.value;
+              });
+              // Inicializa el min al cargar
+              if (fechaInicio.value) {
+                fechaFin.min = fechaInicio.value;
+              }
+            }
+          });
+        });
+      </script>
+      <script>
+        // Sincroniza fecha de fin con fecha de inicio si existen los campos
+        document.addEventListener("DOMContentLoaded", function() {
+          var fechaInicio = document.getElementById("fecha_inicio");
+          var fechaFin = document.getElementById("fecha_fin");
+          if (fechaInicio && fechaFin) {
+            fechaInicio.addEventListener("change", function() {
+              fechaFin.min = fechaInicio.value;
+              if (fechaFin.value && fechaFin.value < fechaInicio.value) {
+                fechaFin.value = fechaInicio.value;
+              }
+            });
+          }
+        });
+      </script>
       {% endblock %}
     </div>
   </div>
