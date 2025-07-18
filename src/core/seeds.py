@@ -62,6 +62,16 @@ def run():
     ])
 
     # Crear usuarios
+    admin = create_user(
+        nombre="admin",
+        email="lucamaffeo@gmail.com",
+        password="123456",  
+        role_id=1,
+        apellido="Maffeo",
+        telefono="123456789",
+        dni="12345678",
+        fecha_nacimiento="2000-01-01",
+    )
     admin3 = create_user(
         nombre="admin3",
         email="ale.proia@hotmail.com",
