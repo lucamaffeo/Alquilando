@@ -168,3 +168,67 @@ cython_debug/
 #.idea/
 
 flask_session/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Archivos de configuración y variables de entorno
+*.env
+.env.*
+*.ini
+*.cfg
+
+# Archivos de base de datos
+*.sqlite3
+*.db
+*.sqlite
+
+# Archivos de logs
+*.log
+
+# Archivos de caché
+.cache/
+*.cache
+
+# Archivos de usuario/editor
+*.swp
+*.swo
+*.bak
+*.tmp
+*.~*
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Node (por si usas frontend)
+node_modules/
+
+# Archivos de migraciones (si usas Flask-Migrate/Alembic)
+migrations/
+alembic/
+
+# Archivos de test y cobertura
+htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+
+# Otros
+.idea/
+.vscode/
+*.iml
+
+# Ignorar archivos de OneDrive
+*.lnk
