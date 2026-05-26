@@ -1,6 +1,20 @@
 # Alquilando
 
-Sistema web de gestión de alquiler de vehículos desarrollado con **Flask**. Permite a usuarios registrarse, reservar vehículos, realizar pagos y calificar sus experiencias. Incluye paneles de administración y estadísticas por sucursal.
+Sistema web de gestión de alquiler de vehículos desarrollado con **Flask**. Permite a usuarios registrarse, reservar vehículos, realizar pagos y calificar sus experiencias. Incluye paneles de administración, estadísticas por sucursal y envío de confirmaciones por correo electrónico.
+
+## Características
+
+- 🚗 Gestión de vehículos y disponibilidad
+- 📅 Sistema de reservas y alquileres
+- 💰 Procesamiento de pagos con validación de tarjetas
+- ⭐ Sistema de calificaciones y reseñas
+- 👥 Gestión de usuarios y empleados
+- 📊 Estadísticas de alquileres por sucursal
+- 🏢 Múltiples sucursales
+- 🔐 Autenticación y permisos de rol
+- 📧 Envío de confirmaciones y cancelaciones por correo
+- 🔄 Políticas de cancelación personalizables por modelo
+- 📝 Historial de reservas con calificación posterior
 
 ## Características
 
@@ -32,9 +46,14 @@ cd Alquilando
 poetry install
 ```
 
-### 3. Activar el entorno virtual
+### 3. Activar el entorno virtual (opcional)
 ```bash
-poetry shell
+poetry env activate
+```
+
+O ejecuta los comandos con Poetry sin activar:
+```bash
+poetry run flask run --debug
 ```
 
 ### 4. Configurar variables de entorno
@@ -76,6 +95,8 @@ Alquilando/
 ```
 
 ## Credenciales de Prueba
+### Admin
+- **Ver seeds.py.
 
 ### Usuario Regular
 - **Email:** user@user.com
@@ -89,9 +110,19 @@ Alquilando/
 
 - **Flask** - Framework web
 - **Flask-SQLAlchemy** - ORM para base de datos
-- **psycopg2** - Adaptador PostgreSQL
-- **Flask-Mail** - Envío de correos
+- **psycopg2-binary** - Adaptador PostgreSQL
+- **Flask-Mail** - Envío de correos automáticos
 - **python-dotenv** - Gestión de variables de entorno
+
+## Correos Automáticos
+
+La aplicación envía correos en los siguientes eventos:
+
+- **Confirmación de Reserva**: Se envía al usuario tras completar el pago con detalles del vehículo, fechas y precio
+- **Cancelación de Reserva**: Se envía al usuario con el detalle del reembolso según la política de cancelación
+- Configurado para usar Gmail SMTP
+
+Los correos se envían automáticamente desde: `diamondcodedev@gmail.com`
 
 ## Desarrollo
 

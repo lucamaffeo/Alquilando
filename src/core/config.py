@@ -1,10 +1,12 @@
 from os import environ, path
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 
 class Config(object):
-    """ Base configuration. """
+    """Base configuration."""
     SECRET_KEY = environ.get("SECRET_KEY", "my_precious")
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -18,7 +20,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    """ Production specific configuration. """
+    """Production specific configuration."""
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
 
     SQLALCHEMY_ENGINE_OPTIONS = {
@@ -43,10 +45,9 @@ class DevelopmentConfig(Config):
     DB_NAME = os.getenv('DB_NAME', 'grupo63')
     
     SQLALCHEMY_DATABASE_URI = (
-        f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        f"postgresql+psycopg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
     DEBUG = True
-
 
 
 class TestingConfig(Config):

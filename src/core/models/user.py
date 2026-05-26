@@ -8,7 +8,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    dni = db.Column(db.Integer, nullable=True)
+    dni = db.Column(db.String(20), nullable=True)
     nombre = db.Column(db.String(255), nullable=True)
     apellido = db.Column(db.String(255), nullable=True)
     telefono = db.Column(db.String(255), nullable=True)
